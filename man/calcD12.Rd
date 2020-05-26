@@ -20,6 +20,36 @@ calcD12(
   nsnpspermodel
 )
 }
+\arguments{
+\item{mod1}{vector of model indices for trait 1}
+
+\item{mod2}{vector of model indices for trait 2}
+
+\item{T1}{index of trait 1}
+
+\item{T2}{index of trait 2}
+
+\item{beta}{list of joint beta estimates for each trait}
+
+\item{SSy}{matrix of trait cross-products}
+
+\item{Sxy}{matrix with each column being the cross-product between SNPs and a trait}
+
+\item{xcovo}{covariance matrix of c("one"=1,X)}
+
+\item{Mx}{vector of SNP means}
+
+\item{Nqq}{has N[i,j] = no. with  both trait i and trait j measured}
+
+\item{Vres}{list of variance residuals}
+
+\item{covY}{covariance matrix of traits}
+
+\item{nsnpspermodel}{list of number of SNPs per model for each model in mod1, mod2}
+}
+\value{
+lbf12-lbf1-lbf2
+}
 \description{
 internal function for calcAdjPP for the 2-trait case
 }

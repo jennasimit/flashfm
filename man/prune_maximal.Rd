@@ -6,6 +6,9 @@
 \usage{
 prune_maximal(genotype_matrix)
 }
+\arguments{
+\item{genotype_matrix}{SNP matrix where SNPS are columns}
+}
 \description{
 internal function for ref.data.fn
 }

@@ -86,7 +86,7 @@ groupmulti <- function (SM2, snp.data, is.snpmat, min.mppi = 0.001, r2.minmerge 
     
     if(is.snpmat) {
     	snp.data <- snp.data[, snps]
-    	r2 <- ld(snp.data, snp.data, stats = "R.squared", symmetric = TRUE)
+    	r2 <- snpStats::ld(snp.data, snp.data, stats = "R.squared", symmetric = TRUE)
 		} else { 
 			snp.data <- snp.data[snps,snps]
 			r2 <- cov2cor(snp.data) 

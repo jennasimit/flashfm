@@ -6,6 +6,9 @@
 \usage{
 Vx.hat(maf)
 }
+\arguments{
+\item{maf}{vector of minor allele frequencies}
+}
 \description{
 Internal function, Vx.hat
 }

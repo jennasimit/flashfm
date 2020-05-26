@@ -2,10 +2,22 @@
 % Please edit documentation in R/prep.R
 \name{JAM_PointEstimates}
 \alias{JAM_PointEstimates}
-\title{internal function for multibeta, modified from JAM_PointEstimates_Package_Simplified of R2BGLiMS package}
+\title{internal function for multibeta, modified from JAM_PointEstimates_Package_Simplified of R2BGLiMS package (Paul Newcombe)}
 \usage{
 JAM_PointEstimates(marginal.betas = NULL, X.ref = NULL, n = NULL, ybar)
 }
+\arguments{
+\item{marginal.betas}{vector of single snp effect estimates from GWAS}
+
+\item{X.ref}{genotype matrix}
+
+\item{n}{sample size of GWAS}
+
+\item{ybar}{trait mean}
+}
+\value{
+joint effect estimates of snps
+}
 \description{
-internal function for multibeta, modified from JAM_PointEstimates_Package_Simplified of R2BGLiMS package
+internal function for multibeta, modified from JAM_PointEstimates_Package_Simplified of R2BGLiMS package (Paul Newcombe)
 }

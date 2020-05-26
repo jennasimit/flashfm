@@ -6,6 +6,15 @@
 \usage{
 Vres.all(Nqq, mbeta, SSy, Sxy)
 }
+\arguments{
+\item{Nqq}{matrix in which Nqq[i,j] = number of individuals  measured in both trait i and  trait j}
+
+\item{mbeta}{list of joint beta estimates for each trait}
+
+\item{SSy}{matrix of trait cross-products}
+
+\item{Sxy}{matrix with each column being the cross-product between SNPs and a trait}
+}
 \description{
 variance of model residuals for trait T1 at all models that have joint effect estimates
 }

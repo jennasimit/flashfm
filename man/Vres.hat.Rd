@@ -6,6 +6,19 @@
 \usage{
 Vres.hat(imod, T1, SSy, Sxy, mbeta, Nqq)
 }
+\arguments{
+\item{imod}{model index}
+
+\item{T1}{index of trait}
+
+\item{SSy}{matrix of trait cross-products}
+
+\item{Sxy}{matrix with each column being the cross-product between SNPs and a trait}
+
+\item{mbeta}{list of joint beta estimates for each trait}
+
+\item{Nqq}{matrix in which Nqq[i,j] = number of individuals  measured in both trait i and  trait j}
+}
 \description{
 variance of model residuals for trait T1 at model index imod
 }

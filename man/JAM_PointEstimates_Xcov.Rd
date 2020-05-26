@@ -6,6 +6,20 @@
 \usage{
 JAM_PointEstimates_Xcov(marginal.betas = NULL, Xcov = NULL, raf, n, ybar)
 }
+\arguments{
+\item{marginal.betas}{vector of single snp effect estimates from GWAS}
+
+\item{Xcov}{genotype covariance matrix}
+
+\item{raf}{vector of reference allele frequencies}
+
+\item{n}{sample size of GWAS}
+
+\item{ybar}{trait mean}
+}
+\value{
+joint effect estimates of snps
+}
 \description{
 internal function for multibeta, modified from JAM_PointEstimates_Package_Simplified of R2BGLiMS package
 }

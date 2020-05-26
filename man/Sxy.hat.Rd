@@ -8,6 +8,17 @@ Sxy.hat(beta1, Mx, N, Vx, muY)
 }
 \arguments{
 \item{beta1}{vector of effect estimates from single SNP models}
+
+\item{Mx}{vector of mean genotype counts; 2*raf}
+
+\item{N}{sample size}
+
+\item{Vx}{vector of genotype count variances}
+
+\item{muY}{trait variance}
+}
+\value{
+vector of cross-products between SNPs and trait
 }
 \description{
 estimates cross-product of each SNP with one trait

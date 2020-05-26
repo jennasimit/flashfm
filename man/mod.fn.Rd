@@ -6,6 +6,15 @@
 \usage{
 mod.fn(binout)
 }
+\arguments{
+\item{binout}{named vector of indicators for SNP presence in model; names are snp ids}
+}
+\value{
+snp model represented by snps separated by \code{"\%"}
+}
 \description{
 internal processing function for JAMexpanded.multi
+}
+\author{
+Jenn Asimit
 }

@@ -1,4 +1,7 @@
 #' @title internal function for makeplink
+#' @param snp column index of snp in genotype matrix
+#' @param G genotype matrix (SNPs in columns, individuals in rows)
+#' @param alleles data,frame of two columns where each row gives the alleles for each SNP in G 
 #' @author Jenn Asimit
 score2alleles <- function(snp,G,alleles) {
  g <- G[,snp] 
@@ -48,6 +51,7 @@ makeplink <- function(Gmat,snpinfo,chr) {
 }
 
 #' @title internal function for ref.data.fn
+#' @param genotype_matrix SNP matrix where SNPS are columns
 #' @author Simon Schoenbuchner 
 prune_maximal <- function(genotype_matrix) {  
     if (any(is.na(genotype_matrix))) {
@@ -87,6 +91,9 @@ refdata.fn <- function(X,r2=.99) {
 
 
 #' @title internal processing function for JAMexpanded.multi
+#' @param binout named vector of indicators for SNP presence in model; names are snp ids
+#' @return snp model represented by snps separated by \code{"\%"}
+#' @author Jenn Asimit
 mod.fn <- function(binout) {
  msnps <- names(binout)
  ind <- which(binout==1)
@@ -99,6 +106,9 @@ return(m)
 }
 
 #' @title internal function for expanding models by tag SNPs in JAMexpanded.multi
+#' @param snpmod intial snp model with snps separated by \code{"\%"}
+#' @param taglist list of tag snps for each snp
+#' @author Jenn Asimit
 expand.mod<- function(snpmod,taglist) {
  if(snpmod == "1") {
   df <- data.frame(str=snpmod,snps=snpmod,size=0,tag=FALSE,stringsAsFactors = FALSE)
@@ -126,7 +136,12 @@ expand.mod<- function(snpmod,taglist) {
  return(df)
 }
 
-#' @title internal function for multibeta, modified from JAM_PointEstimates_Package_Simplified of R2BGLiMS package
+#' @title internal function for multibeta, modified from JAM_PointEstimates_Package_Simplified of R2BGLiMS package (Paul Newcombe)
+#' @param marginal.betas vector of single snp effect estimates from GWAS
+#' @param X.ref genotype matrix 
+#' @param n sample size of GWAS
+#' @param ybar trait mean
+#' @return joint effect estimates of snps
 JAM_PointEstimates <- function(marginal.betas=NULL,X.ref=NULL,n=NULL,ybar) {
   
   # --- Setup sample sizes
@@ -172,6 +187,12 @@ JAM_PointEstimates <- function(marginal.betas=NULL,X.ref=NULL,n=NULL,ybar) {
 }
 
 #' @title internal function for multibeta, modified from JAM_PointEstimates_Package_Simplified of R2BGLiMS package
+#' @param marginal.betas vector of single snp effect estimates from GWAS
+#' @param Xcov genotype covariance matrix
+#' @param raf vector of reference allele frequencies 
+#' @param n sample size of GWAS
+#' @param ybar trait mean
+#' @return joint effect estimates of snps
 #' @author Jenn Asimit
 JAM_PointEstimates_Xcov <- function(marginal.betas=NULL,Xcov=NULL,raf,n,ybar) {
  
@@ -265,7 +286,7 @@ calcABF <- function(mod,mbeta,SSy,Sxy,Vy,N) {
  return(out)
 }
 
-#' @title SNP prior based on binomial distribution; modification of snpprior from GUESSFM package
+# SNP prior based on binomial distribution; modification of snpprior from GUESSFM package (Chris Wallace)
 SNPprior <- function(x=0:10, n, expected, overdispersion=1, pi0=NA, truncate=NA, overdispersion.warning=TRUE) {
   if(overdispersion < 1 & overdispersion.warning)
     stop("overdispersion parameter should be >= 1")
@@ -295,7 +316,7 @@ SNPprior <- function(x=0:10, n, expected, overdispersion=1, pi0=NA, truncate=NA,
   return(exp(prob))
 }
 
-#' @title converts data.frame of abfs to snpmod object; modified abf2snpmod from GUESSFM
+# converts data.frame of abfs to snpmod object; modified abf2snpmod from GUESSFM (Chris Wallace)
 makesnpmod <- function (abf, expected, overdispersion = 1, nsnps = NULL) {
     tmp <- new("snpmod")
     msize <- nchar(gsub("[^%]", "", abf$model)) + 1
@@ -315,17 +336,20 @@ makesnpmod <- function (abf, expected, overdispersion = 1, nsnps = NULL) {
     marg.snps(tmp)
 }
 
-
+#' internal function marg.snps from GUESSFM
+#' @param d snpmod object
+#' @author Chris Wallace
 marg.snps <- function(d) {
-# from GUESSFM
     mod <- makemod(d@models$str)
     marg.pp <- (d@models$PP %*% mod)[1,,drop=TRUE]
     d@snps <- marg.snps.vecs(d@models$str, d@models$PP)
     return(d)
 }
 
+#' internal function makemod from GUESSFM
+#' @param snps model given by snp ids separated by \code{"\%"}
+#' @author Chris Wallace
 makemod <- function(snps) {
-# from GUESSFM
   snps <- strsplit(snps,"%")
   all.snps <- unique(unlist(snps))
   mod <- Matrix(0,length(snps),length(all.snps),dimnames=list(NULL,all.snps))
@@ -336,9 +360,11 @@ makemod <- function(snps) {
   mod
 }
 
-
+#' internal function marg.snps.vec from GUESSFM
+#' @param str models given by snp ids separated by \code{"\%"}
+#' @param pp posterior probabilities
+#' @author Chris Wallace
 marg.snps.vecs <- function(str,pp) {
-# from GUESSFM
     mod <- makemod(str)
     marg.pp <- (pp %*% mod)[1,,drop=TRUE]
     data.frame(Marg_Prob_Incl=marg.pp, var=names(marg.pp), rownames=names(marg.pp), stringsAsFactors=FALSE)
@@ -622,7 +648,7 @@ summaryStats <- function(Xmat=TRUE,ybar.all,main.input) {
 }
 
 
-#' @title internal function for groupIDs.fn
+# internal function for groupIDs.fn
 ingroup.fn <- function(snp,group) {
  ind <- grep(snp,group)
  1*(length(ind)>0)

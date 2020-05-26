@@ -11,6 +11,16 @@ calcCres12(imod1, imod2, T1, T2, beta, SSy, Sxy, xcovo, Mx, Nqq)
 
 \item{imod2}{index of model from STR for trait T2, to be called from beta}
 
+\item{T1}{index of first trait}
+
+\item{T2}{index of second trait}
+
+\item{beta}{list of joint beta estimates for each trait}
+
+\item{SSy}{matrix of trait cross-products}
+
+\item{Sxy}{matrix with each column being the cross-product between SNPs and a trait}
+
 \item{xcovo}{covariance matrix of c("one"=1,X)}
 
 \item{Mx}{vector of SNP means}

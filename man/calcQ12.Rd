@@ -6,6 +6,23 @@
 \usage{
 calcQ12(i, j, T1, T2, SS, tau, nsnpspermodel, kappa)
 }
+\arguments{
+\item{i}{model index for trait 1}
+
+\item{j}{model index for trait 2}
+
+\item{T1}{index of trait 1}
+
+\item{T2}{index of trait 2}
+
+\item{SS}{list consisting of lists of model configuration SNPs for each trait}
+
+\item{tau}{matrix of adjustment terms}
+
+\item{nsnpspermodel}{list of number of SNPs per model for each model in STR}
+
+\item{kappa}{single value of sharing parameter kappa}
+}
 \description{
 internal function for calcAdjPP for a pair of traits
 }

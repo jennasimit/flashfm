@@ -6,6 +6,11 @@
 \usage{
 calcDcon(covY, Nqq)
 }
+\arguments{
+\item{covY}{trait covariance matrix}
+
+\item{Nqq}{has N[i,j] = no. with  both trait i and trait j measured}
+}
 \description{
 internal function for calcAdjPP that gives constant term for delta
 }

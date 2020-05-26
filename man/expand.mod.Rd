@@ -6,6 +6,14 @@
 \usage{
 expand.mod(snpmod, taglist)
 }
+\arguments{
+\item{snpmod}{intial snp model with snps separated by \code{"\%"}}
+
+\item{taglist}{list of tag snps for each snp}
+}
 \description{
 internal function for expanding models by tag SNPs in JAMexpanded.multi
+}
+\author{
+Jenn Asimit
 }

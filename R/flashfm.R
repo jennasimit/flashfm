@@ -155,7 +155,7 @@ marginalpp <- function(STR, PP, mbeta, covY, SSy, Sxy, kappa, N,Nqq,nsnps,Mx,xco
 #' @param TOdds Vector of target odds of no sharing to sharing
 #' @param covY trait covariance matrix
 #' @param ss.stats output from summaryStats; list of 4 components: Mx = mean of SNPs, xcovo = covariance matrix of SNPs, Sxy = matrix of Sxy values (column traits), ybar=vector of trait means 
-#' @param cpp.thr cumulative posterior probability threshold for selecting top models; this is ignored when maxmod is spe$
+#' @param cpp cumulative posterior probability threshold for selecting top models; this is ignored when maxmod is spe$
 #' @param maxmod maximum number of top models to output; NULL by default
 #' @return List consisting of PP: marginal PP for models and MPP: marginal PP of SNP inclusion
 #' @export
@@ -274,16 +274,28 @@ logsum <- function(x) {
 
 
 #' Internal function, Vx.hat
+#' @param maf vector of minor allele frequencies
 Vx.hat <- function(maf) 2*maf*(1-maf)
 
 #' @title estimates cross-product of each SNP with one trait
 #' @param beta1 vector of effect estimates from single SNP models
+#' @param Mx vector of mean genotype counts; 2*raf
+#' @param N sample size
+#' @param Vx vector of genotype count variances
+#' @param muY trait variance
+#' @return vector of cross-products between SNPs and trait
 #' @author Jenn Asimit
 Sxy.hat <- function(beta1,Mx,N,Vx,muY) {
 beta1*(N-1)*Vx + Mx*muY*N  
 }
 
 #' @title variance of model residuals for trait T1 at model index imod
+#' @param imod model index
+#' @param T1 index of trait 
+#' @param SSy matrix of trait cross-products
+#' @param Sxy matrix with each column being the cross-product between SNPs and a trait
+#' @param mbeta list of joint beta estimates for each trait
+#' @param Nqq matrix in which Nqq[i,j] = number of individuals  measured in both trait i and  trait j
 #' @author Jenn Asimit
 Vres.hat <- function(imod,T1,SSy,Sxy,mbeta,Nqq) {
  Syy <- SSy[T1,T1]
@@ -296,6 +308,10 @@ Vres.hat <- function(imod,T1,SSy,Sxy,mbeta,Nqq) {
 }
 
 #' @title variance of model residuals for trait T1 at all models that have joint effect estimates 
+#' @param Nqq matrix in which Nqq[i,j] = number of individuals  measured in both trait i and  trait j 
+#' @param mbeta list of joint beta estimates for each trait
+#' @param SSy matrix of trait cross-products
+#' @param Sxy matrix with each column being the cross-product between SNPs and a trait
 #' @author Jenn Asimit
 Vres.all <- function(Nqq,mbeta,SSy,Sxy) { 
  M <- nrow(Nqq) # number of traits
@@ -311,6 +327,11 @@ Vres.all <- function(Nqq,mbeta,SSy,Sxy) {
 #' @title covariance between residuals of a pair of models for  a trait pair
 #' @param imod1 index of model from STR for trait T1, to be called from beta
 #' @param imod2 index of model from STR for trait T2, to be called from beta
+#' @param T1 index of first trait
+#' @param T2 index of second trait
+#' @param beta list of joint beta estimates for each trait
+#' @param SSy matrix of trait cross-products
+#' @param Sxy matrix with each column being the cross-product between SNPs and a trait
 #' @param xcovo covariance matrix of c("one"=1,X)
 #' @param Mx vector of SNP means
 #' @param Nqq has N[i,j] = no. with  both trait i and trait j measured
@@ -343,6 +364,14 @@ calcCres12 <-  function(imod1,imod2,T1,T2,beta,SSy,Sxy,xcovo,Mx,Nqq) { # checked
 vcalcCres12 <- Vectorize(calcCres12,vectorize.args=c("imod1","imod2")) # calcCres12 that accepts vectors for mod1,mod2
 
 #' @title internal function for calcAdjPP for that gives list of covariance matrix of residuals for all trait pairs
+#' @param M number of traits
+#' @param nummods list where component i is the number of models for trait i
+#' @param beta list of joint beta estimates for each trait
+#' @param SSy matrix of trait cross-products
+#' @param Sxy matrix with each column being the cross-product between SNPs and a trait
+#' @param xcovo covariance matrix of c("one"=1,X)
+#' @param Mx vector of SNP means
+#' @param Nqq has N[i,j] = no. with  both trait i and trait j measured
 #' @author Jenn Asimit
 allC12 <- function(M,nummods,beta,SSy,Sxy,xcovo,Mx,Nqq) {
   np <- choose(M,2)
@@ -356,10 +385,22 @@ allC12 <- function(M,nummods,beta,SSy,Sxy,xcovo,Mx,Nqq) {
 
 
 #' @title internal function for calcAdjPP for the 2-trait case
+#' @param mod1 vector of model indices for trait 1
+#' @param mod2 vector of model indices for trait 2
+#' @param T1 index of trait 1
+#' @param T2 index of trait 2
+#' @param beta list of joint beta estimates for each trait
+#' @param SSy matrix of trait cross-products
+#' @param Sxy matrix with each column being the cross-product between SNPs and a trait
+#' @param xcovo covariance matrix of c("one"=1,X)
+#' @param Mx vector of SNP means
+#' @param Nqq has N[i,j] = no. with  both trait i and trait j measured
+#' @param Vres list of variance residuals
+#' @param covY covariance matrix of traits
+#' @param nsnpspermodel list of number of SNPs per model for each model in mod1, mod2
+#' @return lbf12-lbf1-lbf2
 #' @author Jenn Asimit
 calcD12 <- function(mod1,mod2,T1,T2,beta,SSy,Sxy,xcovo,Mx,Nqq,Vres,covY,nsnpspermodel) {
-# accepts vector arguments for mod1, mod2 
-# calculate lbf12-lbf1-lbf2
  C12 <- outer(mod1,mod2,vcalcCres12,T1,T2,beta,SSy,Sxy,xcovo,Mx,Nqq)
  V1 <- Vres[[T1]][mod1]
  V2 <- Vres[[T2]][mod2]
@@ -380,6 +421,14 @@ D12 <- -Nqq[T1,T2]*0.5*(log((1-r12)) - log((1-R12)))
 
 
 #' @title internal function for calcAdjPP for a pair of traits
+#' @param i model index for trait 1
+#' @param j model index for trait 2
+#' @param T1 index of trait 1
+#' @param T2 index of trait 2
+#' @param SS list consisting of lists of model configuration SNPs for each trait
+#' @param tau matrix of adjustment terms
+#' @param nsnpspermodel list of number of SNPs per model for each model in STR
+#' @param kappa single value of sharing parameter kappa
 #' @author Jenn Asimit
 calcQ12 <- function(i,j,T1,T2,SS,tau,nsnpspermodel,kappa) {
 # contributes to Q for 1 | 2 and 2|1
@@ -401,6 +450,8 @@ vcalcQ12 <- Vectorize(calcQ12,vectorize.args=c("i","j"),SIMPLIFY=FALSE) #last ar
 
 
 #' @title internal function for calcAdjPP that gives constant term for delta
+#' @param covY trait covariance matrix
+#' @param Nqq has N[i,j] = no. with  both trait i and trait j measured
 #' @author Jenn Asimit
 calcDcon <- function(covY,Nqq) {
 
@@ -658,7 +709,7 @@ best.models.cpp <- function (d, cpp.thr = .99,maxmod=NULL)
         d@models$PP <- d@models$PP/sum(d@models$PP)
         }
            
-    out <- cbind(d@models, snps = unlist(lapply(strsplit(d@models$str, "%"), makestr)))
+    out <- cbind(d@models, snps = unlist(lapply(strsplit(d@models$str, "%"), GUESSFM::makestr)))
      
     return(out)
 }
