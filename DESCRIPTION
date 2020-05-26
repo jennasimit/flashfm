@@ -1,0 +1,42 @@
+Package: flashfm
+Title: flexible and shared information fine-mapping
+Description: Flashfm is a computationally efficient approach to simultaneously 
+	     fine-map several related quantitative traits and borrows information 
+	     between diseases in a Bayesian framework. Joint models that 
+	     have at least one shared causal variant between a pair of 
+	     traits are given higher weight than those without shared 
+	     variants. Flashfm has greater accuracy than single trait analysis 
+	     when shared causal variants exist, and negligible loss of 
+	     precision otherwise. The best SNP models are summarised in terms of
+             sets of correlated SNPs that have a similar impact on the
+             trait. 
+Version: 0.0.0.9000
+Date: 2020-05-26
+Authors@R: c(person("Jenn", "Asimit", role=c("aut","cre"), email = "ja628@cam.ac.uk"),
+    person("Chris", "Wallace", role=c("aut"), email = "cew54@cam.ac.uk"))
+Maintainer: Jenn Asimit <ja628@cam.ac.uk> 
+Depends: R (>= 3.6.2)
+Imports:
+    GUESSFM,
+    snpStats,
+    R2BGLiMS,
+    rlist,
+    gtools,
+    Rcpp,
+    RcppArmadillo,
+    MASS,
+    MFM,
+    Matrix,
+    methods
+Suggests:
+    roxygen2,
+    devtools,
+    knitr,
+    rmarkdown
+License: GPL
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.0.2
+LinkingTo: 
+    Rcpp,
+    RcppArmadillo
