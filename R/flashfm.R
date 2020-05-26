@@ -680,6 +680,8 @@ Ctrans <- function(Vind,Cind) {
   return(ccind)
 }
 
+# from GUESSFM by Chris Wallace
+makestr <- function(x) {paste(sort(unique(x)),collapse="%")}
 
 #' @title Best models from a snpmpd object by cpp or maximum number of models - modification of best.models from GUESSFM by Chris Wallace
 #' @param d snpmod object
@@ -709,7 +711,7 @@ best.models.cpp <- function (d, cpp.thr = .99,maxmod=NULL)
         d@models$PP <- d@models$PP/sum(d@models$PP)
         }
            
-    out <- cbind(d@models, snps = unlist(lapply(strsplit(d@models$str, "%"), GUESSFM::makestr)))
+    out <- cbind(d@models, snps = unlist(lapply(strsplit(d@models$str, "%"), makestr)))
      
     return(out)
 }
