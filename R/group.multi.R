@@ -2,11 +2,11 @@
 #' @title Make SNP groups using fine-mapping information from all of the traits
 #' @param main.input output from flashfm.input function
 #' @param is.snpmat logical taking value TRUE when genotype matrix is provided and FALSE when covariance matrix is given
-#' @param min.mppi trim snp groups with total MPPI < min.mppi in all diseases; default 0.001
+#' @param min.mppi trim snp groups with total MPPI < min.mppi in all diseases; default 0.01
 #' @param r2.minmerge merge groups with minimum between-group r2 > r2.minmerge; default 0.5
 
 #' @export
-makeSNPgroups <- function(main.input,is.snpmat,min.mppi = 0.001,r2.minmerge=0.5) {
+makeSNPgroups <- function(main.input,is.snpmat,min.mppi = 0.01,r2.minmerge=0.5) {
 snp.data <- main.input$Gmat
 SMlist <- main.input$SM
 if(is.snpmat) { Xmat <- new("SnpMatrix",round(snp.data+1)) 
@@ -54,7 +54,7 @@ PP2snpmod <- function (ppdf)
 ##' 
 ##' Third is the r2 matrix calculated.
 #' @export
-groupmulti <- function (SM2, snp.data, is.snpmat, min.mppi = 0.001, r2.minmerge = 0.5) 
+groupmulti <- function (SM2, snp.data, is.snpmat, min.mppi = 0.01, r2.minmerge = 0.5) 
 {
     stopifnot(is.list(SM2))
     M <- length(SM2)
