@@ -10,7 +10,7 @@ makeSNPgroups <- function(main.input,is.snpmat,min.mppi = 0.001,r2.minmerge=0.5)
 snp.data <- main.input$Gmat
 SMlist <- main.input$SM
 if(is.snpmat) { Xmat <- new("SnpMatrix",round(snp.data+1)) 
-} else {Xmat <- snp.data } 
+} else {Xmat <- as.matrix(snp.data) } 
 sg <- groupmulti(SMlist,Xmat,is.snpmat,min.mppi,r2.minmerge)
 snpgroups <- sg$groups@.Data
 ng <- length(snpgroups)
@@ -82,18 +82,13 @@ groupmulti <- function (SM2, snp.data, is.snpmat, min.mppi = 0.001, r2.minmerge 
 
     snps <- setdiff(unique(bs[bs$Marg_Prob_Incl > 0.001, ]$var), 
         "1")
-    print(length(snps))
-    print(head(snps))
-    tmp <- which(snps %in% colnames(snp.data))
-    print(length(tmp))
-    if(length(tmp) != length(snps)) print(snps[-tmp]) 
     
     if(is.snpmat) {
     	snp.data <- snp.data[, snps]
     	r2 <- snpStats::ld(snp.data, snp.data, stats = "R.squared", symmetric = TRUE)
 		} else { 
 			snp.data <- snp.data[snps,snps]
-			r2 <- cov2cor(snp.data) 
+			r2 <- cov2cor(as.matrix(snp.data)) 
 			}
 
 #	s <- lapply(SM2,function(x) x@snps$var)
