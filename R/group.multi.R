@@ -77,12 +77,16 @@ groupmulti <- function (SM2, snp.data, is.snpmat, min.mppi = 0.001, r2.minmerge 
     }
        
     
-    bs <- best.snps(SM2, pp.thr = 0)
+    bs <- GUESSFM::best.snps(SM2, pp.thr = 0)
     bs <- do.call("rbind", bs)
 
     snps <- setdiff(unique(bs[bs$Marg_Prob_Incl > 0.001, ]$var), 
         "1")
-    
+    print(length(snps))
+    print(head(snps))
+    tmp <- which(snps %in% colnames(snp.data))
+    print(length(tmp))
+    if(length(tmp) != length(snps)) print(snps[-tmp]) 
     
     if(is.snpmat) {
     	snp.data <- snp.data[, snps]
