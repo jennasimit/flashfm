@@ -17,6 +17,14 @@ indices <- function(M) {
     .Call(`_flashfm_indices`, M)
 }
 
+Mlogsum1 <- function(x) {
+    .Call(`_flashfm_Mlogsum1`, x)
+}
+
+Mlogsum <- function(x) {
+    .Call(`_flashfm_Mlogsum`, x)
+}
+
 calcDelta <- function(imods, N, M, dcon, Vr, Cr, c2) {
     .Call(`_flashfm_calcDelta`, imods, N, M, dcon, Vr, Cr, c2)
 }

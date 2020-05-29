@@ -54,6 +54,28 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// Mlogsum1
+NumericMatrix Mlogsum1(const NumericMatrix& x);
+RcppExport SEXP _flashfm_Mlogsum1(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(Mlogsum1(x));
+    return rcpp_result_gen;
+END_RCPP
+}
+// Mlogsum
+double Mlogsum(const NumericMatrix& x);
+RcppExport SEXP _flashfm_Mlogsum(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(Mlogsum(x));
+    return rcpp_result_gen;
+END_RCPP
+}
 // calcDelta
 double calcDelta(const IntegerVector& imods, int N, int M, double dcon, List Vr, List Cr, NumericMatrix c2);
 RcppExport SEXP _flashfm_calcDelta(SEXP imodsSEXP, SEXP NSEXP, SEXP MSEXP, SEXP dconSEXP, SEXP VrSEXP, SEXP CrSEXP, SEXP c2SEXP) {
@@ -220,6 +242,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_flashfm_calcDij", (DL_FUNC) &_flashfm_calcDij, 5},
     {"_flashfm_pairs", (DL_FUNC) &_flashfm_pairs, 1},
     {"_flashfm_indices", (DL_FUNC) &_flashfm_indices, 1},
+    {"_flashfm_Mlogsum1", (DL_FUNC) &_flashfm_Mlogsum1, 1},
+    {"_flashfm_Mlogsum", (DL_FUNC) &_flashfm_Mlogsum, 1},
     {"_flashfm_calcDelta", (DL_FUNC) &_flashfm_calcDelta, 7},
     {"_flashfm_calcQD3", (DL_FUNC) &_flashfm_calcQD3, 12},
     {"_flashfm_ppadjT3", (DL_FUNC) &_flashfm_ppadjT3, 11},

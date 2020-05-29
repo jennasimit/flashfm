@@ -215,7 +215,7 @@ flashfm <- function(main.input,TOdds,covY,ss.stats,cpp=0.99,maxmod=NULL) {
     mpp1 <- lapply(mpp, t)
    
     MPP <- mpp1[[1]] 
-    for (k in 2:M) MPP <- smartbind(MPP, mpp1[[k]], fill = 0)
+    for (k in 2:M) MPP <- gtools::smartbind(MPP, mpp1[[k]], fill = 0)
     return(list(PP = pp, MPP = MPP,sharing=c("null",kappas)))
 }
 
@@ -581,8 +581,8 @@ calcAdjPP <- function(qt,STR,SS,tau,nsnpspermodel,kappa,PP,beta,SSy,Sxy,xcovo,Mx
 	 	  ccind <- apply(Cind,2,sort)
 	 	  c2ind <- Ctrans(Vind,ccind)
 	 	  
-		 Nsame <-0; 
-		 if(var(diag(Nqq))==0) Nsame <- 1 
+		 Nsame <-1; 
+		 if(var(diag(Nqq))==0) Nsame <- 0 
 		 PPadj[[i]] <- ppadjT3(N, nummods[Vind], allVres[Vind], Cij[pnames], Dcon, keep,Nqq[Vind,Vind],Ldcon12,c2ind-1,lPP[Vind],Nsame)
 	 	 	} else { PPadj[[i]] <- 1 }
 	 	 }
@@ -613,8 +613,9 @@ calcAdjPP <- function(qt,STR,SS,tau,nsnpspermodel,kappa,PP,beta,SSy,Sxy,xcovo,Mx
 	 	   CijI.3[[l]] <- CijI[-krm]
 	 	 }
 	 	 
-	 	 Nsame <-0; 
-		 if(var(diag(Nqq))==0) Nsame <- 1 
+	 	 Nsame <-1; 
+		 if(var(diag(Nqq))==0) Nsame <- 0 
+		
 		 PPadj[[i]] <- ppadjT4(N, nummods[Vind], allVres[Vind], CijI, Dcon, keep,Nqq[Vind,Vind],Ldcon12,Nq3[pnames],Ldcon123,CijI.3,lPP[Vind],Nsame)	
 	 	 	} else { PPadj[[i]] <- 1 }
 	 	 }
@@ -650,8 +651,8 @@ calcAdjPP <- function(qt,STR,SS,tau,nsnpspermodel,kappa,PP,beta,SSy,Sxy,xcovo,Mx
 	 	   CijI.4[[l]] <- CijI[-krm]
 	 	   }
 	 	  
-		Nsame <-0; 
-		if(var(diag(Nqq))==0) Nsame <- 1
+		Nsame <-1; 
+		if(var(diag(Nqq))==0) Nsame <- 0
 		 PPadj[[i]] <- ppadjT5(N, nummods[Vind], allVres[Vind], CijI, Dcon, keep,Nqq[Vind,Vind],Ldcon12,Nq3[pnames],Ldcon123,CijI.3,Nq4[Vind],Ldcon1234,CijI.4,lPP[Vind],Nsame)	
 	 	 	} else { PPadj[[i]] <- 1 }
 	 	 }
