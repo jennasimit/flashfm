@@ -18,13 +18,13 @@ BEGIN_RCPP
 END_RCPP
 }
 // calcDij
-NumericVector calcDij(int i, int j, const NumericMatrix& Cr12, const NumericVector& Vr1, const NumericVector& Vr2);
+NumericVector calcDij(const int i, const int j, const NumericMatrix& Cr12, const NumericVector& Vr1, const NumericVector& Vr2);
 RcppExport SEXP _flashfm_calcDij(SEXP iSEXP, SEXP jSEXP, SEXP Cr12SEXP, SEXP Vr1SEXP, SEXP Vr2SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type i(iSEXP);
-    Rcpp::traits::input_parameter< int >::type j(jSEXP);
+    Rcpp::traits::input_parameter< const int >::type i(iSEXP);
+    Rcpp::traits::input_parameter< const int >::type j(jSEXP);
     Rcpp::traits::input_parameter< const NumericMatrix& >::type Cr12(Cr12SEXP);
     Rcpp::traits::input_parameter< const NumericVector& >::type Vr1(Vr1SEXP);
     Rcpp::traits::input_parameter< const NumericVector& >::type Vr2(Vr2SEXP);
@@ -33,23 +33,23 @@ BEGIN_RCPP
 END_RCPP
 }
 // pairs
-NumericMatrix pairs(int M);
+NumericMatrix pairs(const int M);
 RcppExport SEXP _flashfm_pairs(SEXP MSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type M(MSEXP);
+    Rcpp::traits::input_parameter< const int >::type M(MSEXP);
     rcpp_result_gen = Rcpp::wrap(pairs(M));
     return rcpp_result_gen;
 END_RCPP
 }
 // indices
-NumericVector indices(int M);
+NumericVector indices(const int M);
 RcppExport SEXP _flashfm_indices(SEXP MSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type M(MSEXP);
+    Rcpp::traits::input_parameter< const int >::type M(MSEXP);
     rcpp_result_gen = Rcpp::wrap(indices(M));
     return rcpp_result_gen;
 END_RCPP
@@ -77,161 +77,161 @@ BEGIN_RCPP
 END_RCPP
 }
 // calcDelta
-double calcDelta(const IntegerVector& imods, int N, int M, double dcon, List Vr, List Cr, NumericMatrix c2);
+double calcDelta(const IntegerVector& imods, const int N, const int M, const double dcon, const List Vr, const List Cr, const NumericMatrix& c2);
 RcppExport SEXP _flashfm_calcDelta(SEXP imodsSEXP, SEXP NSEXP, SEXP MSEXP, SEXP dconSEXP, SEXP VrSEXP, SEXP CrSEXP, SEXP c2SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const IntegerVector& >::type imods(imodsSEXP);
-    Rcpp::traits::input_parameter< int >::type N(NSEXP);
-    Rcpp::traits::input_parameter< int >::type M(MSEXP);
-    Rcpp::traits::input_parameter< double >::type dcon(dconSEXP);
-    Rcpp::traits::input_parameter< List >::type Vr(VrSEXP);
-    Rcpp::traits::input_parameter< List >::type Cr(CrSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type c2(c2SEXP);
+    Rcpp::traits::input_parameter< const int >::type N(NSEXP);
+    Rcpp::traits::input_parameter< const int >::type M(MSEXP);
+    Rcpp::traits::input_parameter< const double >::type dcon(dconSEXP);
+    Rcpp::traits::input_parameter< const List >::type Vr(VrSEXP);
+    Rcpp::traits::input_parameter< const List >::type Cr(CrSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type c2(c2SEXP);
     rcpp_result_gen = Rcpp::wrap(calcDelta(imods, N, M, dcon, Vr, Cr, c2));
     return rcpp_result_gen;
 END_RCPP
 }
 // calcQD3
-double calcQD3(int mod1, int N, NumericVector nummods, List Vr, List Cr, double dcon, List keep, NumericMatrix Nqq, NumericVector Ldcon12, NumericMatrix c2, List lPP, int Nsame);
+double calcQD3(const int mod1, const int N, const NumericVector& nummods, const List Vr, const List Cr, const double dcon, const List keep, const NumericMatrix& Nqq, const NumericVector& Ldcon12, const NumericMatrix& c2, const List lPP, const int Nsame);
 RcppExport SEXP _flashfm_calcQD3(SEXP mod1SEXP, SEXP NSEXP, SEXP nummodsSEXP, SEXP VrSEXP, SEXP CrSEXP, SEXP dconSEXP, SEXP keepSEXP, SEXP NqqSEXP, SEXP Ldcon12SEXP, SEXP c2SEXP, SEXP lPPSEXP, SEXP NsameSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type mod1(mod1SEXP);
-    Rcpp::traits::input_parameter< int >::type N(NSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type nummods(nummodsSEXP);
-    Rcpp::traits::input_parameter< List >::type Vr(VrSEXP);
-    Rcpp::traits::input_parameter< List >::type Cr(CrSEXP);
-    Rcpp::traits::input_parameter< double >::type dcon(dconSEXP);
-    Rcpp::traits::input_parameter< List >::type keep(keepSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type Nqq(NqqSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type Ldcon12(Ldcon12SEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type c2(c2SEXP);
-    Rcpp::traits::input_parameter< List >::type lPP(lPPSEXP);
-    Rcpp::traits::input_parameter< int >::type Nsame(NsameSEXP);
+    Rcpp::traits::input_parameter< const int >::type mod1(mod1SEXP);
+    Rcpp::traits::input_parameter< const int >::type N(NSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type nummods(nummodsSEXP);
+    Rcpp::traits::input_parameter< const List >::type Vr(VrSEXP);
+    Rcpp::traits::input_parameter< const List >::type Cr(CrSEXP);
+    Rcpp::traits::input_parameter< const double >::type dcon(dconSEXP);
+    Rcpp::traits::input_parameter< const List >::type keep(keepSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type Nqq(NqqSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type Ldcon12(Ldcon12SEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type c2(c2SEXP);
+    Rcpp::traits::input_parameter< const List >::type lPP(lPPSEXP);
+    Rcpp::traits::input_parameter< const int >::type Nsame(NsameSEXP);
     rcpp_result_gen = Rcpp::wrap(calcQD3(mod1, N, nummods, Vr, Cr, dcon, keep, Nqq, Ldcon12, c2, lPP, Nsame));
     return rcpp_result_gen;
 END_RCPP
 }
 // ppadjT3
-NumericVector ppadjT3(int N, NumericVector nummods, List Vr, List Cr, double dcon, List keep, NumericMatrix Nqq, NumericVector Ldcon12, NumericMatrix c2, List lPP, int Nsame);
+NumericVector ppadjT3(const int N, const NumericVector& nummods, const List Vr, const List Cr, const double dcon, const List keep, const NumericMatrix& Nqq, const NumericVector& Ldcon12, const NumericMatrix& c2, const List lPP, const int Nsame);
 RcppExport SEXP _flashfm_ppadjT3(SEXP NSEXP, SEXP nummodsSEXP, SEXP VrSEXP, SEXP CrSEXP, SEXP dconSEXP, SEXP keepSEXP, SEXP NqqSEXP, SEXP Ldcon12SEXP, SEXP c2SEXP, SEXP lPPSEXP, SEXP NsameSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type N(NSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type nummods(nummodsSEXP);
-    Rcpp::traits::input_parameter< List >::type Vr(VrSEXP);
-    Rcpp::traits::input_parameter< List >::type Cr(CrSEXP);
-    Rcpp::traits::input_parameter< double >::type dcon(dconSEXP);
-    Rcpp::traits::input_parameter< List >::type keep(keepSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type Nqq(NqqSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type Ldcon12(Ldcon12SEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type c2(c2SEXP);
-    Rcpp::traits::input_parameter< List >::type lPP(lPPSEXP);
-    Rcpp::traits::input_parameter< int >::type Nsame(NsameSEXP);
+    Rcpp::traits::input_parameter< const int >::type N(NSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type nummods(nummodsSEXP);
+    Rcpp::traits::input_parameter< const List >::type Vr(VrSEXP);
+    Rcpp::traits::input_parameter< const List >::type Cr(CrSEXP);
+    Rcpp::traits::input_parameter< const double >::type dcon(dconSEXP);
+    Rcpp::traits::input_parameter< const List >::type keep(keepSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type Nqq(NqqSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type Ldcon12(Ldcon12SEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type c2(c2SEXP);
+    Rcpp::traits::input_parameter< const List >::type lPP(lPPSEXP);
+    Rcpp::traits::input_parameter< const int >::type Nsame(NsameSEXP);
     rcpp_result_gen = Rcpp::wrap(ppadjT3(N, nummods, Vr, Cr, dcon, keep, Nqq, Ldcon12, c2, lPP, Nsame));
     return rcpp_result_gen;
 END_RCPP
 }
 // calcQD4
-double calcQD4(int mod1, int N, NumericVector nummods, List Vr, List Cr, double dcon, List keep, NumericMatrix Nqq, NumericVector Ldcon12, NumericVector Nq3, NumericVector Ldcon123, List Cr3, List lPP, int Nsame);
+double calcQD4(const int mod1, const int N, const NumericVector& nummods, const List Vr, const List Cr, const double dcon, const List keep, const NumericMatrix& Nqq, const NumericVector& Ldcon12, const NumericVector& Nq3, const NumericVector& Ldcon123, const List Cr3, const List lPP, const int Nsame);
 RcppExport SEXP _flashfm_calcQD4(SEXP mod1SEXP, SEXP NSEXP, SEXP nummodsSEXP, SEXP VrSEXP, SEXP CrSEXP, SEXP dconSEXP, SEXP keepSEXP, SEXP NqqSEXP, SEXP Ldcon12SEXP, SEXP Nq3SEXP, SEXP Ldcon123SEXP, SEXP Cr3SEXP, SEXP lPPSEXP, SEXP NsameSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type mod1(mod1SEXP);
-    Rcpp::traits::input_parameter< int >::type N(NSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type nummods(nummodsSEXP);
-    Rcpp::traits::input_parameter< List >::type Vr(VrSEXP);
-    Rcpp::traits::input_parameter< List >::type Cr(CrSEXP);
-    Rcpp::traits::input_parameter< double >::type dcon(dconSEXP);
-    Rcpp::traits::input_parameter< List >::type keep(keepSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type Nqq(NqqSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type Ldcon12(Ldcon12SEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type Nq3(Nq3SEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type Ldcon123(Ldcon123SEXP);
-    Rcpp::traits::input_parameter< List >::type Cr3(Cr3SEXP);
-    Rcpp::traits::input_parameter< List >::type lPP(lPPSEXP);
-    Rcpp::traits::input_parameter< int >::type Nsame(NsameSEXP);
+    Rcpp::traits::input_parameter< const int >::type mod1(mod1SEXP);
+    Rcpp::traits::input_parameter< const int >::type N(NSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type nummods(nummodsSEXP);
+    Rcpp::traits::input_parameter< const List >::type Vr(VrSEXP);
+    Rcpp::traits::input_parameter< const List >::type Cr(CrSEXP);
+    Rcpp::traits::input_parameter< const double >::type dcon(dconSEXP);
+    Rcpp::traits::input_parameter< const List >::type keep(keepSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type Nqq(NqqSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type Ldcon12(Ldcon12SEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type Nq3(Nq3SEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type Ldcon123(Ldcon123SEXP);
+    Rcpp::traits::input_parameter< const List >::type Cr3(Cr3SEXP);
+    Rcpp::traits::input_parameter< const List >::type lPP(lPPSEXP);
+    Rcpp::traits::input_parameter< const int >::type Nsame(NsameSEXP);
     rcpp_result_gen = Rcpp::wrap(calcQD4(mod1, N, nummods, Vr, Cr, dcon, keep, Nqq, Ldcon12, Nq3, Ldcon123, Cr3, lPP, Nsame));
     return rcpp_result_gen;
 END_RCPP
 }
 // ppadjT4
-NumericVector ppadjT4(int N, NumericVector nummods, List Vr, List Cr, double dcon, List keep, NumericMatrix Nqq, NumericVector Ldcon12, NumericVector Nq3, NumericVector Ldcon123, List Cr3, List lPP, int Nsame);
+NumericVector ppadjT4(const int N, const NumericVector& nummods, const List Vr, const List Cr, const double dcon, const List keep, const NumericMatrix& Nqq, const NumericVector& Ldcon12, const NumericVector& Nq3, const NumericVector& Ldcon123, const List Cr3, const List lPP, const int Nsame);
 RcppExport SEXP _flashfm_ppadjT4(SEXP NSEXP, SEXP nummodsSEXP, SEXP VrSEXP, SEXP CrSEXP, SEXP dconSEXP, SEXP keepSEXP, SEXP NqqSEXP, SEXP Ldcon12SEXP, SEXP Nq3SEXP, SEXP Ldcon123SEXP, SEXP Cr3SEXP, SEXP lPPSEXP, SEXP NsameSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type N(NSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type nummods(nummodsSEXP);
-    Rcpp::traits::input_parameter< List >::type Vr(VrSEXP);
-    Rcpp::traits::input_parameter< List >::type Cr(CrSEXP);
-    Rcpp::traits::input_parameter< double >::type dcon(dconSEXP);
-    Rcpp::traits::input_parameter< List >::type keep(keepSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type Nqq(NqqSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type Ldcon12(Ldcon12SEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type Nq3(Nq3SEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type Ldcon123(Ldcon123SEXP);
-    Rcpp::traits::input_parameter< List >::type Cr3(Cr3SEXP);
-    Rcpp::traits::input_parameter< List >::type lPP(lPPSEXP);
-    Rcpp::traits::input_parameter< int >::type Nsame(NsameSEXP);
+    Rcpp::traits::input_parameter< const int >::type N(NSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type nummods(nummodsSEXP);
+    Rcpp::traits::input_parameter< const List >::type Vr(VrSEXP);
+    Rcpp::traits::input_parameter< const List >::type Cr(CrSEXP);
+    Rcpp::traits::input_parameter< const double >::type dcon(dconSEXP);
+    Rcpp::traits::input_parameter< const List >::type keep(keepSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type Nqq(NqqSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type Ldcon12(Ldcon12SEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type Nq3(Nq3SEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type Ldcon123(Ldcon123SEXP);
+    Rcpp::traits::input_parameter< const List >::type Cr3(Cr3SEXP);
+    Rcpp::traits::input_parameter< const List >::type lPP(lPPSEXP);
+    Rcpp::traits::input_parameter< const int >::type Nsame(NsameSEXP);
     rcpp_result_gen = Rcpp::wrap(ppadjT4(N, nummods, Vr, Cr, dcon, keep, Nqq, Ldcon12, Nq3, Ldcon123, Cr3, lPP, Nsame));
     return rcpp_result_gen;
 END_RCPP
 }
 // calcQD5
-double calcQD5(int mod1, int N, NumericVector nummods, List Vr, List Cr, double dcon, List keep, NumericMatrix Nqq, NumericVector Ldcon12, NumericVector Nq3, NumericVector Ldcon123, List Cr3, NumericVector Nq4, NumericVector Ldcon1234, List Cr4, List lPP, int Nsame);
+double calcQD5(const int mod1, const int N, const NumericVector& nummods, const List Vr, const List Cr, const double dcon, const List keep, const NumericMatrix& Nqq, const NumericVector& Ldcon12, const NumericVector& Nq3, const NumericVector& Ldcon123, const List Cr3, const NumericVector& Nq4, const NumericVector& Ldcon1234, const List Cr4, const List lPP, const int Nsame);
 RcppExport SEXP _flashfm_calcQD5(SEXP mod1SEXP, SEXP NSEXP, SEXP nummodsSEXP, SEXP VrSEXP, SEXP CrSEXP, SEXP dconSEXP, SEXP keepSEXP, SEXP NqqSEXP, SEXP Ldcon12SEXP, SEXP Nq3SEXP, SEXP Ldcon123SEXP, SEXP Cr3SEXP, SEXP Nq4SEXP, SEXP Ldcon1234SEXP, SEXP Cr4SEXP, SEXP lPPSEXP, SEXP NsameSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type mod1(mod1SEXP);
-    Rcpp::traits::input_parameter< int >::type N(NSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type nummods(nummodsSEXP);
-    Rcpp::traits::input_parameter< List >::type Vr(VrSEXP);
-    Rcpp::traits::input_parameter< List >::type Cr(CrSEXP);
-    Rcpp::traits::input_parameter< double >::type dcon(dconSEXP);
-    Rcpp::traits::input_parameter< List >::type keep(keepSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type Nqq(NqqSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type Ldcon12(Ldcon12SEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type Nq3(Nq3SEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type Ldcon123(Ldcon123SEXP);
-    Rcpp::traits::input_parameter< List >::type Cr3(Cr3SEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type Nq4(Nq4SEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type Ldcon1234(Ldcon1234SEXP);
-    Rcpp::traits::input_parameter< List >::type Cr4(Cr4SEXP);
-    Rcpp::traits::input_parameter< List >::type lPP(lPPSEXP);
-    Rcpp::traits::input_parameter< int >::type Nsame(NsameSEXP);
+    Rcpp::traits::input_parameter< const int >::type mod1(mod1SEXP);
+    Rcpp::traits::input_parameter< const int >::type N(NSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type nummods(nummodsSEXP);
+    Rcpp::traits::input_parameter< const List >::type Vr(VrSEXP);
+    Rcpp::traits::input_parameter< const List >::type Cr(CrSEXP);
+    Rcpp::traits::input_parameter< const double >::type dcon(dconSEXP);
+    Rcpp::traits::input_parameter< const List >::type keep(keepSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type Nqq(NqqSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type Ldcon12(Ldcon12SEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type Nq3(Nq3SEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type Ldcon123(Ldcon123SEXP);
+    Rcpp::traits::input_parameter< const List >::type Cr3(Cr3SEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type Nq4(Nq4SEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type Ldcon1234(Ldcon1234SEXP);
+    Rcpp::traits::input_parameter< const List >::type Cr4(Cr4SEXP);
+    Rcpp::traits::input_parameter< const List >::type lPP(lPPSEXP);
+    Rcpp::traits::input_parameter< const int >::type Nsame(NsameSEXP);
     rcpp_result_gen = Rcpp::wrap(calcQD5(mod1, N, nummods, Vr, Cr, dcon, keep, Nqq, Ldcon12, Nq3, Ldcon123, Cr3, Nq4, Ldcon1234, Cr4, lPP, Nsame));
     return rcpp_result_gen;
 END_RCPP
 }
 // ppadjT5
-NumericVector ppadjT5(int N, NumericVector nummods, List Vr, List Cr, double dcon, List keep, NumericMatrix Nqq, NumericVector Ldcon12, NumericVector Nq3, NumericVector Ldcon123, List Cr3, NumericVector Nq4, NumericVector Ldcon1234, List Cr4, List lPP, int Nsame);
+NumericVector ppadjT5(const int N, const NumericVector& nummods, const List Vr, const List Cr, const double dcon, const List keep, const NumericMatrix& Nqq, const NumericVector& Ldcon12, const NumericVector& Nq3, const NumericVector& Ldcon123, const List Cr3, const NumericVector& Nq4, const NumericVector& Ldcon1234, const List Cr4, const List lPP, const int Nsame);
 RcppExport SEXP _flashfm_ppadjT5(SEXP NSEXP, SEXP nummodsSEXP, SEXP VrSEXP, SEXP CrSEXP, SEXP dconSEXP, SEXP keepSEXP, SEXP NqqSEXP, SEXP Ldcon12SEXP, SEXP Nq3SEXP, SEXP Ldcon123SEXP, SEXP Cr3SEXP, SEXP Nq4SEXP, SEXP Ldcon1234SEXP, SEXP Cr4SEXP, SEXP lPPSEXP, SEXP NsameSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type N(NSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type nummods(nummodsSEXP);
-    Rcpp::traits::input_parameter< List >::type Vr(VrSEXP);
-    Rcpp::traits::input_parameter< List >::type Cr(CrSEXP);
-    Rcpp::traits::input_parameter< double >::type dcon(dconSEXP);
-    Rcpp::traits::input_parameter< List >::type keep(keepSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type Nqq(NqqSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type Ldcon12(Ldcon12SEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type Nq3(Nq3SEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type Ldcon123(Ldcon123SEXP);
-    Rcpp::traits::input_parameter< List >::type Cr3(Cr3SEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type Nq4(Nq4SEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type Ldcon1234(Ldcon1234SEXP);
-    Rcpp::traits::input_parameter< List >::type Cr4(Cr4SEXP);
-    Rcpp::traits::input_parameter< List >::type lPP(lPPSEXP);
-    Rcpp::traits::input_parameter< int >::type Nsame(NsameSEXP);
+    Rcpp::traits::input_parameter< const int >::type N(NSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type nummods(nummodsSEXP);
+    Rcpp::traits::input_parameter< const List >::type Vr(VrSEXP);
+    Rcpp::traits::input_parameter< const List >::type Cr(CrSEXP);
+    Rcpp::traits::input_parameter< const double >::type dcon(dconSEXP);
+    Rcpp::traits::input_parameter< const List >::type keep(keepSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type Nqq(NqqSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type Ldcon12(Ldcon12SEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type Nq3(Nq3SEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type Ldcon123(Ldcon123SEXP);
+    Rcpp::traits::input_parameter< const List >::type Cr3(Cr3SEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type Nq4(Nq4SEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type Ldcon1234(Ldcon1234SEXP);
+    Rcpp::traits::input_parameter< const List >::type Cr4(Cr4SEXP);
+    Rcpp::traits::input_parameter< const List >::type lPP(lPPSEXP);
+    Rcpp::traits::input_parameter< const int >::type Nsame(NsameSEXP);
     rcpp_result_gen = Rcpp::wrap(ppadjT5(N, nummods, Vr, Cr, dcon, keep, Nqq, Ldcon12, Nq3, Ldcon123, Cr3, Nq4, Ldcon1234, Cr4, lPP, Nsame));
     return rcpp_result_gen;
 END_RCPP

@@ -25,7 +25,7 @@ String concat(CharacterVector x) {
 
 
 // [[Rcpp::export]]
-NumericVector calcDij(int i, int j, 
+NumericVector calcDij(const int i, const int j, 
 					const NumericMatrix& Cr12, 
 					const NumericVector& Vr1,
 			   		const NumericVector& Vr2) {
@@ -49,7 +49,7 @@ NumericVector calcDij(int i, int j,
 
 
 // [[Rcpp::export]]
-NumericMatrix pairs(int M) {
+NumericMatrix pairs(const int M) {
 // returns matrix of 2 rows and M*(M-1)/2 columns; each column is a pair of indices
 	Function f("combn");
 //	NumericVector inds = indices(M); 
@@ -58,7 +58,7 @@ NumericMatrix pairs(int M) {
 }
 
 // [[Rcpp::export]]
-NumericVector indices(int M) {
+NumericVector indices(const int M) {
 	Function f("seq");
 	return f(_["from"]=0,_["to"]=M-1,_["by"]=1);
 }
@@ -135,14 +135,14 @@ double Mlogsum(const NumericMatrix& x) {
 
 // [[Rcpp::export]]
 double calcDelta(const IntegerVector& imods, // vector of model indices for M traits, in same order as traits
-						int N, int M, double dcon,
-						List Vr, List Cr,
-						NumericMatrix c2) {
+						const int N, const int M, const double dcon,
+						const List Vr, const List Cr,
+						const NumericMatrix& c2) {
 // N is the number measured for all M traits						
-	int T1;
-	int T2;
-	int mod1;
-	int mod2;
+	
+	int T1, T2;
+	int mod1, mod2;
+	
 	NumericVector dd(2);
 	double val;
 	double sign;
@@ -176,39 +176,39 @@ double calcDelta(const IntegerVector& imods, // vector of model indices for M tr
 
 
 // [[Rcpp::export]]
-double calcQD3(int mod1, int N,
-					NumericVector nummods,
-					List Vr, List Cr,double dcon,
-					List keep, NumericMatrix Nqq,
-					NumericVector Ldcon12,
-					NumericMatrix c2,
-					List lPP,int Nsame) {		
+double calcQD3(const int mod1, const int N,
+					const NumericVector& nummods,
+					const List Vr, const List Cr, const double dcon,
+					const List keep, const NumericMatrix& Nqq,
+					const NumericVector& Ldcon12,
+					const NumericMatrix& c2,
+					const List lPP,const int Nsame) {		
 	
-	int T1 = 0;
-	int M = 3;
+	const int T1 = 0;
+	const int M = 3;
 	
 	
 	IntegerVector imods(M), im2(M-1);
 	
-	NumericVector tmp = indices(M);
+	const NumericVector& tmp = indices(M);
 //	NumericVector notT1 = tmp[ tmp != T1 ];
 //	int T2 = notT1(0);
 //	int T3 = notT1(1);
-	int T2 = 1;
-	int T3 = 2;
-	int mT2 = nummods(T2);
-	int mT3 = nummods(T3);
+	const int T2 = 1;
+	const int T3 = 2;
+	const int mT2 = nummods(T2);
+	const int mT3 = nummods(T3);
 
 
 	NumericMatrix QD(mT2,mT3);
 	NumericMatrix Kterm(mT2,mT3);	
-	NumericVector lPP2 = lPP[1];
-	NumericVector lPP3 = lPP[2];
+	const NumericVector& lPP2 = lPP[1];
+	const NumericVector& lPP3 = lPP[2];
 
-	int Tt1, Tt2;
 	
-	NumericMatrix K1 = keep[0];
-	NumericMatrix K2 = keep[1]; // keep is in order and on log scale
+	
+	const NumericMatrix& K1 = keep[0];
+	const NumericMatrix& K2 = keep[1]; // keep is in order and on log scale
 	
 	double  ddd,nn;
 
@@ -216,7 +216,7 @@ double calcQD3(int mod1, int N,
 	double val;
 	double sign;
 	
-	int np = M*(M-1)/2; // number of pairs
+	const int np = M*(M-1)/2; // number of pairs
 	mat Dij(M-1,M-1,fill::eye); // identity matrix size M
 			
 		// calculate all Dijk*PPj*PPk (log sum) for given i and adjust to sum to 1
@@ -233,8 +233,8 @@ double calcQD3(int mod1, int N,
 	// calculate d12 adjustment term between all pairs			
 				
 		for(int l=0; l<np ; ++l) {
-			Tt1 = c2(0,l);
-			Tt2 = c2(1,l);
+			int Tt1 = c2(0,l);
+			int Tt2 = c2(1,l);
 			int mod1 = imods(Tt1);
 			int mod2 = imods(Tt2);
 			int N12 = Nqq(Tt1,Tt2);	
@@ -279,16 +279,16 @@ return(out);
 
 
 // [[Rcpp::export]]
-NumericVector ppadjT3(int N,
-					NumericVector nummods,
-					List Vr, List Cr,double dcon,
-					List keep, NumericMatrix Nqq,
-					NumericVector Ldcon12,
-					NumericMatrix c2,
-					List lPP, int Nsame) {	 	
+NumericVector ppadjT3(const int N,
+					const NumericVector& nummods,
+					const List Vr, const List Cr, const double dcon,
+					const List keep, const NumericMatrix& Nqq,
+					const NumericVector& Ldcon12,
+					const NumericMatrix& c2,
+					const List lPP, const int Nsame) {	 	
 					
-	int mT1 = nummods(0);
-	NumericVector lPP1 = lPP[0];
+	const int mT1 = nummods(0);
+	const NumericVector& lPP1 = lPP[0];
 	NumericVector QD(mT1);
 	NumericVector lppadj(mT1);
 	
@@ -297,14 +297,14 @@ NumericVector ppadjT3(int N,
 	}
 
 	
-	double lsum = logsum(QD);
+	const double lsum = logsum(QD);
 
 	for(int i = 0; i<mT1; i++) {
 		lppadj(i) = QD(i)-lsum + lPP1(i);	
 	 	}
 	 	 
-	 NumericVector lppadj1 = logsum1(lppadj);
-	 NumericVector ppadj = exp(lppadj1);
+	 const NumericVector& lppadj1 = logsum1(lppadj);
+	 const NumericVector& ppadj = exp(lppadj1);
 	 					
 return(ppadj);					
 }					
@@ -312,45 +312,46 @@ return(ppadj);
 
 
 // [[Rcpp::export]]
-double calcQD4(int mod1, int N,
-					NumericVector nummods,
-					List Vr, List Cr,double dcon,
-					List keep, NumericMatrix Nqq, 
-					NumericVector Ldcon12,
-					NumericVector Nq3,
-					NumericVector Ldcon123, List Cr3,
-					List lPP, int Nsame) {		
+double calcQD4(const int mod1, const int N,
+					const NumericVector& nummods,
+					const List Vr, const List Cr, const double dcon,
+					const List keep, const NumericMatrix& Nqq, 
+					const NumericVector& Ldcon12,
+					const NumericVector& Nq3,
+					const NumericVector& Ldcon123, const List Cr3,
+					const List lPP, const int Nsame) {		
 	
-	int T1 = 0;
-	int M = 4;
+	const int T1 = 0;
+	const int M = 4;
 	
 	
 	IntegerVector imods(M), im2(M-1);
 	
-	NumericVector tmp = indices(M);
-	int T2 = 1;
-	int T3 = 2;
-	int T4 = 3;
-	int mT2 = nummods(T2);
-	int mT3 = nummods(T3);
-	int mT4 = nummods(T4);
+	const NumericVector& tmp = indices(M);
+	const int T2 = 1;
+	const int T3 = 2;
+	const int T4 = 3;
+	const int mT2 = nummods(T2);
+	const int mT3 = nummods(T3);
+	const int mT4 = nummods(T4);
 
 //	int Nc = mT2*mT3*mT4;
 //	NumericVector QD(Nc);
 //	NumericVector Kterm(Nc);
 
-	arma::cube QD = arma::zeros(mT2,mT3,mT4);
-	arma::cube Kterm = arma::zeros(mT2,mT3,mT4);
+	const int N23 = mT2*mT3;
+	NumericMatrix QD(N23,mT4);
+	NumericMatrix Kterm(N23,mT4);
 	
-	NumericVector lPP2 = lPP[1];
-	NumericVector lPP3 = lPP[2];
-	NumericVector lPP4 = lPP[3];
+	const NumericVector& lPP2 = lPP[1];
+	const NumericVector& lPP3 = lPP[2];
+	const NumericVector& lPP4 = lPP[3];
 	
-	int Tt1, Tt2;
 	
-	NumericMatrix K1 = keep[0];
-	NumericMatrix K2 = keep[1]; // keep is in order and on log scale
-	NumericMatrix K3 = keep[2];
+	
+	const NumericMatrix& K1 = keep[0];
+	const NumericMatrix& K2 = keep[1]; // keep is in order and on log scale
+	const NumericMatrix& K3 = keep[2];
 	
 	double ddd,nn;
 
@@ -359,12 +360,12 @@ double calcQD4(int mod1, int N,
 	double sign;
 	
 	mat Dij(2,2,fill::eye); // identity matrix size M
-	int np = M*(M-1)/2; // number of pairs
-	NumericMatrix c2 = pairs(4);		
+	const int np = M*(M-1)/2; // number of pairs
+	const NumericMatrix& c2 = pairs(4);		
 
 		// calculate all Dijkl*PPj*PPk*PPl (log sum) for given i and adjust to sum to 1
 		imods(T1) = mod1;
-//		int i = 0;  // each i is for a triple (j,k,l) models for T2,T3,T4
+		int i = 0;  // each i is for a pair (j,k) models for T2,T3
 
 		for(int j = 0; j < mT2; j++) {
 			imods(T2) = j;
@@ -372,8 +373,8 @@ double calcQD4(int mod1, int N,
 				imods(T3) = k;	
 				for(int l = 0; l < mT4; l++) {
 					imods(T4) = l;					
-				QD(j,k,l) = calcDelta(imods, N, M, dcon, Vr, Cr, c2) + lPP2(j) + lPP3(k) +lPP4(l);
-				Kterm(j,k,l) = K1(mod1,j)+K2(mod1,k)+K3(mod1,l);
+				QD(i,l) = calcDelta(imods, N, M, dcon, Vr, Cr, c2) + lPP2(j) + lPP3(k) +lPP4(l);
+				Kterm(i,l) = K1(mod1,j)+K2(mod1,k)+K3(mod1,l);
 
 
 	
@@ -381,11 +382,10 @@ double calcQD4(int mod1, int N,
 		if(Nsame>0) {
 				
 		for(int l=0; l<np ; ++l) {
-			Tt1 = c2(0,l);
-			Tt2 = c2(1,l);
+			int Tt1 = c2(0,l);
+			int Tt2 = c2(1,l);
 			int mod1 = imods(Tt1);
 			int mod2 = imods(Tt2);
-			NumericVector tmp = indices(M);
 			NumericVector notT12 = tmp[ (tmp != Tt1) & (tmp != Tt2)];
 			int nTt1 = notT12(0);
 			int nTt2 = notT12(1);
@@ -404,16 +404,15 @@ double calcQD4(int mod1, int N,
 				double lDD = val*sign;
 				double dcon12 = Ldcon12(l);
 				ddd = -Nqq(Tt1,Tt2)*0.5*(lDD-dcon12);		
-				QD(j,k,l) += nn*ddd;
+				QD(i,l) += nn*ddd;
 				}
 			}
 	
 	
 	// calculate d123 adjustment term between all triples
 		
-		
+		const NumericMatrix& c23 = pairs(3);
 		for(int l=0; l<M; ++l) {
-			NumericVector tmp = indices(M);
 			NumericVector notT1 = tmp[ tmp != l];
 			int nTt1 = notT1(0);
 			int nTt2 = notT1(1);
@@ -428,7 +427,7 @@ double calcQD4(int mod1, int N,
 				Vr3[0]=Vr[nTt1];
 				Vr3[1]=Vr[nTt2];
 				Vr3[2]=Vr[nTt3];
-				NumericMatrix c23 = pairs(3);
+				
 				IntegerVector imods3(3);
 				imods3(0)=imods(nTt1);
 				imods3(1)=imods(nTt2);
@@ -437,53 +436,46 @@ double calcQD4(int mod1, int N,
 				double dcon123 = Ldcon123(l);
 				int nq123 = Nq3(l);
 				ddd=calcDelta(imods3,nq123 , 3, dcon123, Vr3, Cr3l,c23);
-			 	QD(j,k,l) += nn*ddd;
+			 	QD(i,l) += nn*ddd;
 			}
 		
 		
 		}
 		} // loop above run if different N among traits						
-//				i += 1;				
-			}
-		}
-		}
+							
+			} // l
+		i += 1;	// increment for each (j,k) pair	
+		}  // k  
+		}  // j
 
 
   
-  double maxX = QD.max();
-  arma::cube y(mT2,mT3,mT4);
-  y = exp(QD-maxX);
-  double lsum = accu(y);
-  double lsumx = maxX + log(lsum); //logsum(x) =log(sum(x))
-  y = QD - lsumx;
-  QD = y; // re-scaled to sum to 1; sum(exp(qd))=1
- 
+ 	QD = Mlogsum1(QD); // sum(exp(qd))=1
+		for(int j = 0; j < N23; j++) {
+			for(int k = 0; k < mT4; k++) {
+			 QD(j,k) += Kterm(j,k);
+			 }
+			 }
+	
+	double out = Mlogsum(QD);			
 
-
-//	for(i=0; i< Nc; i++) QD(i) += Kterm(i);	
-//	double out = logsum(QD);			
-
-  QD = QD + Kterm;
-  maxX = QD.max();
-  double outL = accu(exp(QD-maxX));
-  double out = maxX + log(outL);
 
 return(out);			
 }
 
 
 // [[Rcpp::export]]
-NumericVector ppadjT4(int N,
-					NumericVector nummods,
-					List Vr, List Cr,double dcon,
-					List keep, NumericMatrix Nqq, 
-					NumericVector Ldcon12,
-					NumericVector Nq3,
-					NumericVector Ldcon123, List Cr3,
-					List lPP, int Nsame) {	 	
+NumericVector ppadjT4(const int N,
+					const NumericVector& nummods,
+					const List Vr, const List Cr, const double dcon,
+					const List keep, const NumericMatrix& Nqq, 
+					const NumericVector& Ldcon12,
+					const NumericVector& Nq3,
+					const NumericVector& Ldcon123, const List Cr3,
+					const List lPP, const int Nsame) {	 	
 					
-	int mT1 = nummods(0);
-	NumericVector lPP1 = lPP[0];
+	const int mT1 = nummods(0);
+	const NumericVector& lPP1 = lPP[0];
 	NumericVector QD(mT1);
 	NumericVector lppadj(mT1);
 	
@@ -492,14 +484,14 @@ NumericVector ppadjT4(int N,
 					Ldcon123,  Cr3, lPP, Nsame);
 	}
 	
-	double lsum = logsum(QD);
+	const double lsum = logsum(QD);
 
 	for(int i = 0; i<mT1; i++) {
 		lppadj(i) = QD(i)-lsum + lPP1(i);	
 	 	}
 	 	 
-	 NumericVector lppadj1 = logsum1(lppadj);
-	 NumericVector ppadj = exp(lppadj1);
+	 const NumericVector& lppadj1 = logsum1(lppadj);
+	 const NumericVector& ppadj = exp(lppadj1);
 	 					
 return(ppadj);					
 }					
@@ -507,45 +499,50 @@ return(ppadj);
 
 
 // [[Rcpp::export]]
-double calcQD5(int mod1, int N,
-					NumericVector nummods,
-					List Vr, List Cr,double dcon,
-					List keep, NumericMatrix Nqq,
-					NumericVector Ldcon12,
-					NumericVector Nq3,
-					NumericVector Ldcon123, List Cr3,
-					NumericVector Nq4, NumericVector Ldcon1234, 
-					List Cr4,List lPP, int Nsame) {		
+double calcQD5(const int mod1, const int N,
+					const NumericVector& nummods,
+					const List Vr, const List Cr, const double dcon,
+					const List keep, const NumericMatrix& Nqq,
+					const NumericVector& Ldcon12,
+					const NumericVector& Nq3,
+					const NumericVector& Ldcon123, const List Cr3,
+					const NumericVector& Nq4, const NumericVector& Ldcon1234, 
+					const List Cr4, const List lPP, const int Nsame) {		
 	
-	int T1 = 0;
-	int M = 5;
+	const int T1 = 0;
+	const int M = 5;
 	
 	IntegerVector imods(M), im2(M-1);
 	
-	NumericVector tmp = indices(M);
-	int T2 = 1;
-	int T3 = 2;
-	int T4 = 3;
-	int T5 = 4;
-	int mT2 = nummods(T2);
-	int mT3 = nummods(T3);
-	int mT4 = nummods(T4);
-	int mT5 = nummods(T5);
+	
+	const int T2 = 1;
+	const int T3 = 2;
+	const int T4 = 3;
+	const int T5 = 4;
+	const int mT2 = nummods(T2);
+	const int mT3 = nummods(T3);
+	const int mT4 = nummods(T4);
+	const int mT5 = nummods(T5);
 
-	int Nc = mT2*mT3*mT4*mT5;
-	NumericVector QD(Nc);
-	NumericVector Kterm(Nc);
-	NumericVector lPP2 = lPP[1];
-	NumericVector lPP3 = lPP[2];
-	NumericVector lPP4 = lPP[3];
-	NumericVector lPP5 = lPP[4];
+//	const int Nc = mT2*mT3*mT4*mT5;
+//	NumericVector QD(Nc);
+//	NumericVector Kterm(Nc);
+
+	const int N234 = mT2*mT3*mT4;
+	NumericMatrix QD(N234,mT5);
+	NumericMatrix Kterm(N234,mT5);
+	
+	const NumericVector& lPP2 = lPP[1];
+	const NumericVector& lPP3 = lPP[2];
+	const NumericVector& lPP4 = lPP[3];
+	const NumericVector& lPP5 = lPP[4];
 
 	int Tt1, Tt2;
 	
-	NumericMatrix K1 = keep[0];
-	NumericMatrix K2 = keep[1]; // keep is in order and on log scale
-	NumericMatrix K3 = keep[2];
-	NumericMatrix K4 = keep[3];
+	const NumericMatrix& K1 = keep[0];
+	const NumericMatrix& K2 = keep[1]; // keep is in order and on log scale
+	const NumericMatrix& K3 = keep[2];
+	const NumericMatrix& K4 = keep[3];
 	
 //	double delta, d12, ddd,nn, d123, d1234;
 	double nn, ddd;
@@ -555,11 +552,14 @@ double calcQD5(int mod1, int N,
 	double sign;
 	
 	mat Dij(2,2,fill::eye); // identity matrix size M
-	int np = M*(M-1)/2; // number of pairs
-	NumericMatrix c2 = pairs(M);		
-
+	const int np = M*(M-1)/2; // number of pairs
+	const NumericMatrix& c2 = pairs(M);		
+	const NumericVector& tmp = indices(M);
+	const NumericMatrix& c234 = pairs(3);
+	const NumericMatrix& c2345 = pairs(4);
+	
 		imods(T1) = mod1;
-		int i = 0;  // each i is for a quadruple (j,k,l,r) models for T2,T3,T4,T5
+		int i = 0;  // each i is for a triple(j,k,l) models for T2,T3,T4
 		
 		for(int j = 0; j < mT2; j++) {
 			imods(T2) = j;
@@ -569,9 +569,9 @@ double calcQD5(int mod1, int N,
 					imods(T4) = l;
 					for(int r = 0; r < mT5; r++) {	
 					imods(T5) = r;		
-					QD(i) = j;		
-				QD(i) = calcDelta(imods, N, M, dcon, Vr, Cr, c2) + lPP2(j) + lPP3(k) +lPP4(l) +lPP5(r);
-				Kterm(i) = K1(mod1,j)+K2(mod1,k)+K3(mod1,l)+K4(mod1,r);
+						
+				QD(i,r) = calcDelta(imods, N, M, dcon, Vr, Cr, c2) + lPP2(j) + lPP3(k) +lPP4(l) +lPP5(r);
+				Kterm(i,r) = K1(mod1,j)+K2(mod1,k)+K3(mod1,l)+K4(mod1,r);
 
 	// calculate d12 adjustment term between all pairs	if have missing trait measurements		
 			
@@ -582,7 +582,7 @@ double calcQD5(int mod1, int N,
 			Tt2 = c2(1,l);
 			int mod1 = imods(Tt1);
 			int mod2 = imods(Tt2);
-			NumericVector tmp = indices(M);
+			
 			NumericVector notT12 = tmp[ (tmp != Tt1) & (tmp != Tt2)];
 			int nTt1 = notT12(0);
 			int nTt2 = notT12(1);
@@ -601,7 +601,7 @@ double calcQD5(int mod1, int N,
 				log_det(val, sign, Dij);
 				double lDD = val*sign;
 				double dcon12 = Ldcon12(l);
-				QD(i) += nn*(-Nqq(Tt1,Tt2)*0.5*(lDD-dcon12));		
+				QD(i,r) += nn*(-Nqq(Tt1,Tt2)*0.5*(lDD-dcon12));		
 //				d12 += nn*ddd;
 				}
 			}
@@ -611,7 +611,7 @@ double calcQD5(int mod1, int N,
 		for(int l=0; l<np ; ++l) {
 			Tt1 = c2(0,l);
 			Tt2 = c2(1,l);
-			NumericVector tmp = indices(M);
+			
 			NumericVector notT12 = tmp[ (tmp != Tt1) & (tmp != Tt2)]; // the 3 that are not in the pair are the focus
 			int nTt1 = notT12(0);
 			int nTt2 = notT12(1);
@@ -625,7 +625,7 @@ double calcQD5(int mod1, int N,
 				Vr3[0]=Vr[nTt1];
 				Vr3[1]=Vr[nTt2];
 				Vr3[2]=Vr[nTt3];
-				NumericMatrix c234 = pairs(3);
+				
 				IntegerVector imods3(3);
 				imods3(0)=imods(nTt1);
 				imods3(1)=imods(nTt2);
@@ -634,7 +634,7 @@ double calcQD5(int mod1, int N,
 				double dcon123 = Ldcon123(l);
 				int nq123 = Nq3(l);
 				ddd=calcDelta(imods3,nq123 , 3, dcon123, Vr3, Cr3l,c234);		
-				QD(i) += nn*ddd;
+				QD(i,r) += nn*ddd;
 				}
 			}
 
@@ -659,7 +659,7 @@ double calcQD5(int mod1, int N,
 				Vr4[1]=Vr[nTt2];
 				Vr4[2]=Vr[nTt3];
 				Vr4[3]=Vr[nTt4];
-				NumericMatrix c234 = pairs(4);
+				
 				IntegerVector imods4(4);
 				imods4(0)=imods(nTt1);
 				imods4(1)=imods(nTt2);
@@ -668,16 +668,17 @@ double calcQD5(int mod1, int N,
 				List Cr4l = Cr4[l];
 				double dcon1234 = Ldcon1234(l);
 				int nq1234 = Nq4(l);
-				ddd=calcDelta(imods4,nq1234 , 4, dcon1234, Vr4, Cr4l,c234);
-			 	QD(i) += nn*ddd;
+				ddd=calcDelta(imods4,nq1234 , 4, dcon1234, Vr4, Cr4l,c2345);
+			 	QD(i,r) += nn*ddd;
 			}			
 		}
 		
 	}
 			 
-				i += 1;		
+					
 					
 			}
+			i += 1;	
 			
 		} 
 		
@@ -685,29 +686,33 @@ double calcQD5(int mod1, int N,
 		
 		}
 
-		QD = logsum1(QD); // sum(exp(qd))=1
+		
 
-
-	for(i=0; i< Nc; i++) QD(i) += Kterm(i);
+	QD = Mlogsum1(QD); // sum(exp(qd))=1
+		for(int j = 0; j < N234; j++) {
+			for(int k = 0; k < mT5; k++) {
+			 QD(j,k) += Kterm(j,k);
+			 }
+			 }
 	
-	double out = logsum(QD);	
+	double out = Mlogsum(QD);			
 						
 
 return(out);			
 }
 
 // [[Rcpp::export]]
-NumericVector ppadjT5(int N, NumericVector nummods,
-					List Vr, List Cr,double dcon,
-					List keep, NumericMatrix Nqq,
-					NumericVector Ldcon12,
-					NumericVector Nq3,
-					NumericVector Ldcon123, List Cr3,
-					NumericVector Nq4, NumericVector Ldcon1234, 
-					List Cr4,List lPP, int Nsame) {		
+NumericVector ppadjT5(const int N, const NumericVector& nummods,
+					const List Vr, const List Cr, const double dcon,
+					const List keep, const NumericMatrix& Nqq,
+					const NumericVector& Ldcon12,
+					const NumericVector& Nq3,
+					const NumericVector& Ldcon123, const List Cr3,
+					const NumericVector& Nq4, const NumericVector& Ldcon1234, 
+					const List Cr4, const List lPP, const int Nsame) {		
 					
-	int mT1 = nummods(0);
-	NumericVector lPP1 = lPP[0];
+	const int mT1 = nummods(0);
+	const NumericVector& lPP1 = lPP[0];
 	NumericVector QD(mT1);
 	NumericVector lppadj(mT1);
 	
@@ -716,15 +721,15 @@ NumericVector ppadjT5(int N, NumericVector nummods,
 					Ldcon123,  Cr3, Nq4,Ldcon1234, Cr4, lPP, Nsame);
 	}
 	
-	double lsum = logsum(QD);
+	const double lsum = logsum(QD);
 //	NumericVector qp(mT1); 
 	for(int i = 0; i<mT1; i++) {
 		lppadj(i) = QD(i)-lsum + lPP1(i);	
 //	 	lppadj(i) += lPP1(i) + qp(i);
 	 	}
 	 	 
-	 NumericVector lppadj1 = logsum1(lppadj);
-	 NumericVector ppadj = exp(lppadj1);
+	 const NumericVector& lppadj1 = logsum1(lppadj);
+	 const NumericVector& ppadj = exp(lppadj1);
 	 					
 return(ppadj);					
 }					

@@ -180,7 +180,7 @@ flashfm <- function(main.input,TOdds,covY,ss.stats,cpp=0.99,maxmod=NULL) {
 	nd <- M <- length(SM)
 	qt <- names(main.input$SM)    	
 	kappas <- c()
-	for(j in 1:length(TOdds)) kappas <- c(kappas,calckappa(nsnps=nsnps,p=2/nsnps,ndis=nd,target.odds=TOdds[j]))
+	for(j in 1:length(TOdds)) kappas <- c(kappas,MFM::calckappa(nsnps=nsnps,p=2/nsnps,ndis=nd,target.odds=TOdds[j]))
     kappas <- round(kappas)
     traits <- paste(qt, collapse = "-")
     bestmod.thr <- vector("list",M)

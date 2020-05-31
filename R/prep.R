@@ -35,7 +35,7 @@ makeplink <- function(Gmat,snpinfo,chr) {
  N <- nrow(Gmat)
 
  out <- lapply(vlist,score2alleles,G=Gmat,alleles=AA) 
- out2 <- list.cbind(out)
+ out2 <- rlist::list.cbind(out)
  FID <- paste0("F",1:N)
  IID <- paste0("I",1:N)
  PID <- rep(0,N)
@@ -484,7 +484,7 @@ if(nsnps < nrow(Gmat)) {
 
  tlist <- read.table(paste0(fstub,"-pruned-tags.tags.list"),header=TRUE,as.is=TRUE)
 
- expmods <- list.stack(lapply(snpPP$snps,expand.mod,taglist=tlist))
+ expmods <- rlist::list.stack(lapply(snpPP$snps,expand.mod,taglist=tlist))
  wh <- which(duplicated(expmods$snps))
  if(length(wh)>0){ expmods <- expmods[-wh,] } # some expanded models appear twice because ld(snp1, snp2) <.99 and snp1 and snp2 both tag snp3
  row.names(expmods) <- expmods$snps
@@ -517,7 +517,7 @@ if(nsnps < nrow(Gmat)) {
         if(!length(wh)) {
         	dd[[j]] <- data.frame(model=c("1",expmods$snps),tag = c(FALSE,expmods$tag),lBF=c(0,lABF),stringsAsFactors = FALSE)
         	l1 <- multibeta("1",beta1[[j]],Gmat,N=N[j],ybar=ybar[j],is.snpmat=TRUE)
-        	mbeta <- list.append(mbeta,"1"=l1)
+        	mbeta <- rlist::list.append(mbeta,"1"=l1)
         } else {
             dd[[j]] <- data.frame(model=expmods$snps,tag = expmods$tag,lBF=lABF,stringsAsFactors = FALSE)
         }
