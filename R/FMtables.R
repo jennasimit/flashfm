@@ -11,8 +11,7 @@
 #' @author Nico Hernandez
 #' @export
 FMtables <- function(PP,SW, stepwise=F, regname, path.input, path.output, trait.id, trait.names=NULL){
-          
-k <- chr
+         
 load(paste0(path.input,PP,'.Rdata'))
 load(paste0(path.input,SW,'.Rdata'))
 mpp.pp<-get(PP)
