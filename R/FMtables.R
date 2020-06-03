@@ -1,8 +1,7 @@
-#' @title Result processing for FineMap results.
 #' @param PP MFM:::MPP.PP.groups.fn output from 'flashfm' in Rdata format.
 #' @param snpgroups makeSNPgroups output from 'flashfm' in Rdata format.
-#' @param sw==NULL stepwise list of results from Stepwise model. By def. = NULL
-#' @param stepwise=F TRUE if list of results from sw is provided. By def. = FALSE
+#' @param sw stepwise list of results from Stepwise model. By def. = NULL
+#' @param stepwise TRUE if list of results from sw is provided. By def. = FALSE
 #' @param chr Chromosome
 #' @param lb Region - lower bound
 #' @param ub Region - upper bound
@@ -15,8 +14,6 @@
 #' @export
 FMtables <- function(PP,snpgroups, sw, stepwise=F, chr, lb, ub, path.input, path.output, trait.id, trait.names=NULL){
           
-library(xtable); library(data.table)
-  
 k <- chr
 regname <- paste0("chr",chr,"-",lb,":",ub)
 load(paste0(path.input,PP,'.Rdata'))
@@ -117,7 +114,7 @@ if (stepwise==TRUE){
 # PREPARING XTABLE
 if (stepwise==TRUE){
 names(ST)<-c(ts)
-ST<-rbindlist(ST,idcol = T)
+ST<-data.table::rbindlist(ST,idcol = T)
 colnames(ST)<-c('Traits','SNP/Model','P-value','Model','PP','Model', 'PP')
 ST$Traits[which(duplicated(ST$Traits))]<-''
 cols <- colnames(ST)
@@ -125,13 +122,13 @@ addtorow <- list()
 addtorow$pos <- list(0,0)
 addtorow$command <- c(paste0("&\\multicolumn{2}{c}{Stepwise} & \\multicolumn{2}{c}{FineMap} & \\multicolumn{2}{c}{FM-FlashFM}\\\\\n"), 
                         paste(paste(cols, collapse=" & "), "\\\\\n") )
-TABLE<-print(xtable(ST, caption = paste0('Fine Mapping Results ',"Chr ",chr,"-",lb,":",ub),
+TABLE<-print(xtable::xtable(ST, caption = paste0('Fine Mapping Results ',"Chr ",chr,"-",lb,":",ub),
                              align = c("l","l","c","c","c","c","c","c")), add.to.row=addtorow, include.colnames=F, include.rownames = F,
                              NA.string="-", booktabs = F)
 } else {
   
   names(ST)<-c(ts)
-  ST<-rbindlist(ST,idcol = T)
+  ST<-data.table::rbindlist(ST,idcol = T)
   colnames(ST)<-c('Traits','Model','PP','Model', 'PP')
   ST$Traits[which(duplicated(ST$Traits))]<-''
   cols <- colnames(ST)
@@ -139,7 +136,7 @@ TABLE<-print(xtable(ST, caption = paste0('Fine Mapping Results ',"Chr ",chr,"-",
   addtorow$pos <- list(0,0)
   addtorow$command <- c(paste0("&\\multicolumn{2}{c}{FineMap} & \\multicolumn{2}{c}{FM-FlashFM}\\\\\n"), 
                         paste(paste(cols, collapse=" & "), "\\\\\n") )
-  TABLE<-print(xtable(ST, caption = paste0('Fine Mapping Results ',"Chr ",chr,"-",lb,":",ub),
+  TABLE<-print(xtable::xtable(ST, caption = paste0('Fine Mapping Results ',"Chr ",chr,"-",lb,":",ub),
                       align = c("l","l","c","c","c","c")), add.to.row=addtorow, include.colnames=F, include.rownames = F,
                NA.string="-", booktabs = F)
 }
@@ -147,5 +144,4 @@ TABLE<-print(xtable(ST, caption = paste0('Fine Mapping Results ',"Chr ",chr,"-",
 write.table(TABLE, paste0(path.output,'TABLE_',regname,'.txt'), col.names = F, row.names = F)
 return(TABLE)
 
-}  
-  
+}
