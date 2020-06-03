@@ -390,7 +390,7 @@ marg.snps.vecs <- function(str,pp) {
 #' @author Jenn Asimit
 #' @return list with 3 components: SM a list of snpmod objects giving fine-mapping results for each trait; mbeta a list of joint effect estimates for each trait; nsnps number of SNPs
 #' @export
-JAMexpanded.multi <- function(beta1,Gmat,snpinfo,ybar,Vy,N,chr=10,fstub="/net/bliss-04-nfs/scratch/jennifer/sims/sims1",mafthr=0.005,path2plink="/home/ja628/software/plink",r2=0.99,save.path,related=FALSE,y=NULL) {
+JAMexpanded.multi <- function(beta1,Gmat,snpinfo,ybar,Vy,N,chr=10,fstub,mafthr=0.005,path2plink,r2=0.99,save.path,related=FALSE,y=NULL) {
 
  
     if(!related) Nlist <- makeNlist(Nall=N,y=y,Nsame=NULL)

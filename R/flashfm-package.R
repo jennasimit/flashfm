@@ -8,6 +8,8 @@
 #' @importFrom gtools smartbind
 #' @importFrom MASS mvrnorm
 #' @importFrom snpStats ld
+#' @importFrom data.table rbindlist
+#' @importFrom xtable xtable
 #' @import R2BGLiMS 
 #' @import GUESSFM
 #' @import Matrix

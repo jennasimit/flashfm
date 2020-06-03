@@ -12,8 +12,9 @@ Description: Flashfm is a computationally efficient approach to simultaneously
              trait. 
 Version: 0.0.0.9000
 Date: 2020-05-26
-Authors@R: c(person("Jenn", "Asimit", role=c("aut","cre"), email = "ja628@cam.ac.uk"),
-    person("Chris", "Wallace", role=c("aut"), email = "cew54@cam.ac.uk"))
+Authors@R: c(person("Nico","Hernandez", role=c("aut"), email="nh535@cam.ac.uk"),
+    person("Chris", "Wallace", role=c("aut"), email = "cew54@cam.ac.uk"),
+    person("Jenn", "Asimit", role=c("aut","cre"), email = "ja628@cam.ac.uk"))
 Maintainer: Jenn Asimit <ja628@cam.ac.uk> 
 Depends: R (>= 3.6.0)
 Imports:
@@ -27,7 +28,9 @@ Imports:
     MASS,
     MFM,
     Matrix,
-    methods
+    methods,
+    data.table,
+    xtable
 Suggests:
     roxygen2,
     devtools,
