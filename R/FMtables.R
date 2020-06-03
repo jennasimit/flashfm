@@ -8,15 +8,17 @@
 #' @param trait.id id. number if the traits.
 #' @param trait.names trait names. If not provided a vector is constructed. 'Trait_1', 'Trait_2', ...
 #' @return Table results as txt file.
-#' @author Nico Hernandez
+#' @author Nico Hernandez 
 #' @export
 FMtables <- function(PP,SW, stepwise=F, regname, path.input, path.output, trait.id, trait.names=NULL){
   
   load(paste0(path.input,PP,'.Rdata'))
-  load(paste0(path.input,SW,'.Rdata'))
   mpp.pp<-get(PP)
-  sw<-get(SW)
-  
+  if (stepwise==T){
+    load(paste0(path.input,SW,'.Rdata'));
+    sw<-get(SW)
+    }
+
   # TRAITS
   qt <- trait.id
   if (is.null(trait.names)) {
