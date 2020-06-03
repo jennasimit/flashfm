@@ -1,3 +1,4 @@
+#' @title Result processing for FineMap results.
 #' @param PP MFM:::MPP.PP.groups.fn output from 'flashfm' in Rdata format.
 #' @param snpgroups makeSNPgroups output from 'flashfm' in Rdata format.
 #' @param sw==NULL stepwise list of results from Stepwise model. By def. = NULL
