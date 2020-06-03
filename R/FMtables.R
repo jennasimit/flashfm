@@ -78,7 +78,7 @@ if (stepwise==TRUE){
     }
     
     aux.res.sw<-as.data.frame(cbind(sw.model, sw[[i]][,3]))
-    aux.res.sw[,2]<-scales::scientific(as.numeric(levels(aux.res.sw$V2))[aux.res.sw$V2],digits=3)
+    aux.res.sw[,2]<-signif(as.numeric(levels(aux.res.sw$V2))[aux.res.sw$V2],digits=3)
     RES.sw[[i]]<-aux.res.sw
     
     ##### MERGING RESUTLS
