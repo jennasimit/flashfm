@@ -1,3 +1,4 @@
+#' @title Formats flashfm output to table format
 #' @param PP MFM:::MPP.PP.groups.fn output from 'flashfm' in Rdata format.
 #' @param SW stepwise list of results from Stepwise model. By def. = NULL
 #' @param stepwise TRUE if list of results from sw is provided. By def. = FALSE
