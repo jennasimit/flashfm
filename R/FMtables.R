@@ -119,7 +119,7 @@ addtorow <- list()
 addtorow$pos <- list(0,0)
 addtorow$command <- c(paste0("&\\multicolumn{2}{c}{Stepwise} & \\multicolumn{2}{c}{FineMap} & \\multicolumn{2}{c}{FM-FlashFM}\\\\\n"), 
                         paste(paste(cols, collapse=" & "), "\\\\\n") )
-TABLE<-print(xtable::xtable(ST, caption = paste0('Fine Mapping Results ',"Chr ",chr,"-",lb,":",ub),
+TABLE<-print(xtable::xtable(ST, caption = regname,
                              align = c("l","l","c","c","c","c","c","c")), add.to.row=addtorow, include.colnames=F, include.rownames = F,
                              NA.string="-", booktabs = F)
 } else {
