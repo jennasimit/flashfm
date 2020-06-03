@@ -1,10 +1,7 @@
 #' @param PP MFM:::MPP.PP.groups.fn output from 'flashfm' in Rdata format.
-#' @param snpgroups makeSNPgroups output from 'flashfm' in Rdata format.
-#' @param sw stepwise list of results from Stepwise model. By def. = NULL
+#' @param SW stepwise list of results from Stepwise model. By def. = NULL
 #' @param stepwise TRUE if list of results from sw is provided. By def. = FALSE
-#' @param chr Chromosome
-#' @param lb Region - lower bound
-#' @param ub Region - upper bound
+#' @param regname Region name for table caption
 #' @param path.input path where the input files are located.
 #' @param path.output path to save the output latex table.
 #' @param trait.id id. number if the traits.
@@ -12,13 +9,13 @@
 #' @return Table results as txt file.
 #' @author Nico Hernandez
 #' @export
-FMtables <- function(PP,snpgroups, sw, stepwise=F, chr, lb, ub, path.input, path.output, trait.id, trait.names=NULL){
+FMtables <- function(PP,SW, stepwise=F, regname, path.input, path.output, trait.id, trait.names=NULL){
           
 k <- chr
-regname <- paste0("chr",chr,"-",lb,":",ub)
 load(paste0(path.input,PP,'.Rdata'))
-load(paste0(path.input,snpgroups,'.Rdata'))
-load(paste0(path.input,sw,'.Rdata'))
+load(paste0(path.input,SW,'.Rdata'))
+mpp.pp<-get(PP)
+sw<-get(SW)
   
 # TRAITS
 qt <- trait.id
@@ -81,7 +78,7 @@ if (stepwise==TRUE){
     }
     
     aux.res.sw<-as.data.frame(cbind(sw.model, sw[[i]][,3]))
-    aux.res.sw[,2]<-scientific(as.numeric(levels(aux.res.sw$V2))[aux.res.sw$V2],digits=3)
+    aux.res.sw[,2]<-scales::scientific(as.numeric(levels(aux.res.sw$V2))[aux.res.sw$V2],digits=3)
     RES.sw[[i]]<-aux.res.sw
     
     ##### MERGING RESUTLS
@@ -136,7 +133,7 @@ TABLE<-print(xtable::xtable(ST, caption = paste0('Fine Mapping Results ',"Chr ",
   addtorow$pos <- list(0,0)
   addtorow$command <- c(paste0("&\\multicolumn{2}{c}{FineMap} & \\multicolumn{2}{c}{FM-FlashFM}\\\\\n"), 
                         paste(paste(cols, collapse=" & "), "\\\\\n") )
-  TABLE<-print(xtable::xtable(ST, caption = paste0('Fine Mapping Results ',"Chr ",chr,"-",lb,":",ub),
+  TABLE<-print(xtable::xtable(ST, caption = regname,
                       align = c("l","l","c","c","c","c")), add.to.row=addtorow, include.colnames=F, include.rownames = F,
                NA.string="-", booktabs = F)
 }
@@ -144,4 +141,4 @@ TABLE<-print(xtable::xtable(ST, caption = paste0('Fine Mapping Results ',"Chr ",
 write.table(TABLE, paste0(path.output,'TABLE_',regname,'.txt'), col.names = F, row.names = F)
 return(TABLE)
 
-}
+}  
