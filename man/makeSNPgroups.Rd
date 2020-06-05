@@ -15,6 +15,9 @@ makeSNPgroups(main.input, is.snpmat, min.mppi = 0.01, r2.minmerge = 0.5)
 
 \item{r2.minmerge}{merge groups with minimum between-group r2 > r2.minmerge; default 0.5}
 }
+\value{
+list of  SNP groups
+}
 \description{
 Make SNP groups using fine-mapping information from all of the traits
 }

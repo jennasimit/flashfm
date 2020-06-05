@@ -2,23 +2,20 @@
 #' @param PP MFM:::MPP.PP.groups.fn output from 'flashfm' in Rdata format.
 #' @param SW stepwise list of results from Stepwise model. By def. = NULL
 #' @param stepwise TRUE if list of results from sw is provided. By def. = FALSE
+#' @param method name of the method used for the FineMap eg: 'FineMap', 'JAM' etc. By def. = FineMap
 #' @param regname Region name for table caption
 #' @param path.input path where the input files are located.
 #' @param path.output path to save the output latex table.
 #' @param trait.id id. number if the traits.
 #' @param trait.names trait names. If not provided a vector is constructed. 'Trait_1', 'Trait_2', ...
 #' @return Table results as txt file.
-#' @author Nico Hernandez 
+#' @author Nico Hernandez and Jenn Asimit
 #' @export
-FMtables <- function(PP,SW, stepwise=F, regname, path.input, path.output, trait.id, trait.names=NULL){
+FMtables <- function(PP,SW=NULL, stepwise=F, method='FineMap', regname, path.input, path.output, trait.id, trait.names=NULL){
   
   load(paste0(path.input,PP,'.Rdata'))
   mpp.pp<-get(PP)
-  if (stepwise==T){
-    load(paste0(path.input,SW,'.Rdata'));
-    sw<-get(SW)
-    }
-
+ 
   # TRAITS
   qt <- trait.id
   if (is.null(trait.names)) {
@@ -60,7 +57,15 @@ FMtables <- function(PP,SW, stepwise=F, regname, path.input, path.output, trait.
     
     #### STEPWISE FineMap
     
-    if (stepwise==TRUE){
+    if (stepwise==FALSE){
+      
+      ST[[i]]<-RES_FM[[i]]
+      ST[[i]][is.na(ST[[i]])] <- '--'
+      
+    } else {
+      
+      load(paste0(path.input,SW,'.Rdata'));
+      sw<-get(SW)
       
       chr.name<-strsplit(as.character(sw[[i]][,1]), split="\\,")
       snps.aux<-c()
@@ -101,30 +106,12 @@ FMtables <- function(PP,SW, stepwise=F, regname, path.input, path.output, trait.
         ST[[i]]<-cbind(RES.sw[[i]],ST[[i]])
       } else { ST[[i]]<-cbind(RES.sw[[i]],ST[[i]]) }
       
-    } else {
-      
-      ST[[i]]<-RES_FM[[i]]
-      ST[[i]][is.na(ST[[i]])] <- '--'
-      
-    }
+    } 
     
   } # END LOOP
   
   # PREPARING XTABLE
-  if (stepwise==TRUE){
-    names(ST)<-c(ts)
-    ST<-data.table::rbindlist(ST,idcol = T)
-    colnames(ST)<-c('Traits','SNP/Model','P-value','Model','PP','Model', 'PP')
-    ST$Traits[which(duplicated(ST$Traits))]<-''
-    cols <- colnames(ST)
-    addtorow <- list()
-    addtorow$pos <- list(0,0)
-    addtorow$command <- c(paste0("&\\multicolumn{2}{c}{Stepwise} & \\multicolumn{2}{c}{FineMap} & \\multicolumn{2}{c}{FM-FlashFM}\\\\\n"), 
-                          paste(paste(cols, collapse=" & "), "\\\\\n") )
-    TABLE<-print(xtable::xtable(ST, caption = regname,
-                                align = c("l","l","c","c","c","c","c","c")), add.to.row=addtorow, include.colnames=F, include.rownames = F,
-                 NA.string="-", booktabs = F)
-  } else {
+  if (stepwise==FALSE){
     
     names(ST)<-c(ts)
     ST<-data.table::rbindlist(ST,idcol = T)
@@ -133,15 +120,30 @@ FMtables <- function(PP,SW, stepwise=F, regname, path.input, path.output, trait.
     cols <- colnames(ST)
     addtorow <- list()
     addtorow$pos <- list(0,0)
-    addtorow$command <- c(paste0("&\\multicolumn{2}{c}{FineMap} & \\multicolumn{2}{c}{FM-FlashFM}\\\\\n"), 
+    addtorow$command <- c(paste0("&\\multicolumn{2}{c}{",method,"} & \\multicolumn{2}{c}{FlashFM}\\\\\n"), 
                           paste(paste(cols, collapse=" & "), "\\\\\n") )
     TABLE<-print(xtable::xtable(ST, caption = regname,
                                 align = c("l","l","c","c","c","c")), add.to.row=addtorow, include.colnames=F, include.rownames = F,
                  NA.string="-", booktabs = F)
+    
+    } else {
+    
+      names(ST)<-c(ts)
+      ST<-data.table::rbindlist(ST,idcol = T)
+      colnames(ST)<-c('Traits','SNP/Model','P-value','Model','PP','Model', 'PP')
+      ST$Traits[which(duplicated(ST$Traits))]<-''
+      cols <- colnames(ST)
+      addtorow <- list()
+      addtorow$pos <- list(0,0)
+      addtorow$command <- c(paste0("&\\multicolumn{2}{c}{Stepwise} & \\multicolumn{2}{c}{",method,"} & \\multicolumn{2}{c}{FlashFM}\\\\\n"), 
+                            paste(paste(cols, collapse=" & "), "\\\\\n") )
+      TABLE<-print(xtable::xtable(ST, caption = regname,
+                                  align = c("l","l","c","c","c","c","c","c")), add.to.row=addtorow, include.colnames=F, include.rownames = F,
+                   NA.string="-", booktabs = F)
+    
   }
   
   write.table(TABLE, paste0(path.output,'TABLE_',regname,'.txt'), col.names = F, row.names = F)
-  return(TABLE)
   
 }  
   

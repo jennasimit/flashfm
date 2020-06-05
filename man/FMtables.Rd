@@ -6,8 +6,9 @@
 \usage{
 FMtables(
   PP,
-  SW,
+  SW = NULL,
   stepwise = F,
+  method = "FineMap",
   regname,
   path.input,
   path.output,
@@ -21,6 +22,8 @@ FMtables(
 \item{SW}{stepwise list of results from Stepwise model. By def. = NULL}
 
 \item{stepwise}{TRUE if list of results from sw is provided. By def. = FALSE}
+
+\item{method}{name of the method used for the FineMap eg: 'FineMap', 'JAM' etc. By def. = FineMap}
 
 \item{regname}{Region name for table caption}
 
@@ -39,5 +42,5 @@ Table results as txt file.
 Formats flashfm output to table format
 }
 \author{
-Nico Hernandez
+Nico Hernandez and Jenn Asimit
 }

@@ -4,7 +4,7 @@
 #' @param is.snpmat logical taking value TRUE when genotype matrix is provided and FALSE when covariance matrix is given
 #' @param min.mppi trim snp groups with total MPPI < min.mppi in all diseases; default 0.01
 #' @param r2.minmerge merge groups with minimum between-group r2 > r2.minmerge; default 0.5
-
+#' @return list of  SNP groups
 #' @export
 makeSNPgroups <- function(main.input,is.snpmat,min.mppi = 0.01,r2.minmerge=0.5) {
 snp.data <- main.input$Gmat
@@ -17,6 +17,9 @@ ng <- length(snpgroups)
 names(snpgroups) <- LETTERS[1:ng] # arbitrary names
 if(ng>26) names(snpgroups)[27:min(ng,52)] <- paste0(LETTERS[1:(ng-26)],2)
 if(ng>52) names(snpgroups)[53:min(ng,78)] <- paste0(LETTERS[1:(ng-52)],3)
+if(ng>78) names(snpgroups)[79:min(ng,104)] <- paste0(LETTERS[1:(ng-78)],4)
+Ng <- lapply(snpgroups,length)
+message("SNP group sizes are: "); print(Ng)
 return(snpgroups)
 }
 

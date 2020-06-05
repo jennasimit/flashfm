@@ -4,7 +4,15 @@
 \alias{flashfm}
 \title{Marginal PP for models of a set of traits, sharing information between the traits}
 \usage{
-flashfm(main.input, TOdds, covY, ss.stats, cpp = 0.99, maxmod = NULL)
+flashfm(
+  main.input,
+  TOdds,
+  covY,
+  ss.stats,
+  cpp = 0.99,
+  maxmod = NULL,
+  fastapprox = FALSE
+)
 }
 \arguments{
 \item{main.input}{List of 3 components: SM=list of snpmod objects for a set of traits; mbeta=list of joint effects for each trait; nsnps= number of SNPs in the region 
@@ -19,6 +27,8 @@ This could be obtained from flashfm.input or JAMexpanded.multi.}
 \item{cpp}{cumulative posterior probability threshold for selecting top models; this is ignored when maxmod is spe$}
 
 \item{maxmod}{maximum number of top models to output; NULL by default}
+
+\item{fastapprox}{logical that is TRUE when fast approximation is used that does not include unequal sample size adjustments; default is FALSE}
 }
 \value{
 List consisting of PP: marginal PP for models and MPP: marginal PP of SNP inclusion

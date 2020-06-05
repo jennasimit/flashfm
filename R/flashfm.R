@@ -157,10 +157,11 @@ marginalpp <- function(STR, PP, mbeta, covY, SSy, Sxy, kappa, N,Nqq,nsnps,Mx,xco
 #' @param ss.stats output from summaryStats; list of 4 components: Mx = mean of SNPs, xcovo = covariance matrix of SNPs, Sxy = matrix of Sxy values (column traits), ybar=vector of trait means 
 #' @param cpp cumulative posterior probability threshold for selecting top models; this is ignored when maxmod is spe$
 #' @param maxmod maximum number of top models to output; NULL by default
+#' @param fastapprox logical that is TRUE when fast approximation is used that does not include unequal sample size adjustments; default is FALSE
 #' @return List consisting of PP: marginal PP for models and MPP: marginal PP of SNP inclusion
 #' @export
 #' @author Jenn Asimit
-flashfm <- function(main.input,TOdds,covY,ss.stats,cpp=0.99,maxmod=NULL) {
+flashfm <- function(main.input,TOdds,covY,ss.stats,cpp=0.99,maxmod=NULL,fastapprox=FALSE) {
 	
 	Nlist <- main.input$Nlist
 	Nqq <- as.matrix(Nlist$Nqq)
@@ -491,9 +492,10 @@ Dij <- diag(M)
 #' @param Nqq matrix of all pair-wise counts of number of individuals with both traits in a pair measured;
 #' @param Nq3  vector of counts of number of individuals with three traits measured; all triples considered; NULL if M < 4
 #' @param Nq4  vector of counts of number of individuals with four traits measured; all quadruples considered; NULL if M < 5
+#' @param fastapprox logical that is TRUE when fast approximation is used that does not include unequal sample size adjustments; default is FALSE
 #' @return list of trait-adjusted posterior probabilities for each trait at sharing parameter kappa
 #' @author Jenn Asimit
-calcAdjPP <- function(qt,STR,SS,tau,nsnpspermodel,kappa,PP,beta,SSy,Sxy,xcovo,Mx,N,allVres,covY,Nqq,Nq3,Nq4) {
+calcAdjPP <- function(qt,STR,SS,tau,nsnpspermodel,kappa,PP,beta,SSy,Sxy,xcovo,Mx,N,allVres,covY,Nqq,Nq3,Nq4,fastapprox) {
  
     M <- length(qt)
     np <- choose(M,2)
@@ -582,7 +584,7 @@ calcAdjPP <- function(qt,STR,SS,tau,nsnpspermodel,kappa,PP,beta,SSy,Sxy,xcovo,Mx
 	 	  c2ind <- Ctrans(Vind,ccind)
 	 	  
 		 Nsame <-1; 
-		 if(var(diag(Nqq))==0) Nsame <- 0 
+		 if(var(diag(Nqq))==0 | fastapprox) Nsame <- 0 
 		 PPadj[[i]] <- ppadjT3(N, nummods[Vind], allVres[Vind], Cij[pnames], Dcon, keep,Nqq[Vind,Vind],Ldcon12,c2ind-1,lPP[Vind],Nsame)
 	 	 	} else { PPadj[[i]] <- 1 }
 	 	 }
@@ -614,7 +616,7 @@ calcAdjPP <- function(qt,STR,SS,tau,nsnpspermodel,kappa,PP,beta,SSy,Sxy,xcovo,Mx
 	 	 }
 	 	 
 	 	 Nsame <-1; 
-		 if(var(diag(Nqq))==0) Nsame <- 0 
+		 if(var(diag(Nqq))==0 | fastapprox) Nsame <- 0 
 		
 		 PPadj[[i]] <- ppadjT4(N, nummods[Vind], allVres[Vind], CijI, Dcon, keep,Nqq[Vind,Vind],Ldcon12,Nq3[pnames],Ldcon123,CijI.3,lPP[Vind],Nsame)	
 	 	 	} else { PPadj[[i]] <- 1 }
@@ -652,7 +654,7 @@ calcAdjPP <- function(qt,STR,SS,tau,nsnpspermodel,kappa,PP,beta,SSy,Sxy,xcovo,Mx
 	 	   }
 	 	  
 		Nsame <-1; 
-		if(var(diag(Nqq))==0) Nsame <- 0
+		if(var(diag(Nqq))==0 | fastapprox) Nsame <- 0
 		 PPadj[[i]] <- ppadjT5(N, nummods[Vind], allVres[Vind], CijI, Dcon, keep,Nqq[Vind,Vind],Ldcon12,Nq3[pnames],Ldcon123,CijI.3,Nq4[Vind],Ldcon1234,CijI.4,lPP[Vind],Nsame)	
 	 	 	} else { PPadj[[i]] <- 1 }
 	 	 }
@@ -709,6 +711,7 @@ best.models.cpp <- function (d, cpp.thr = .99,maxmod=NULL)
         
         if(!is.null(maxmod)){
         d@models <- d@models[order(d@models$PP, decreasing = TRUE) , ][1:min(maxmod,nrow(d@models)),]
+        message("Before adjustment, CPP of top",maxmod,"models is", sum(d@models$PP))
         d@models$PP <- d@models$PP/sum(d@models$PP)
         }
            
