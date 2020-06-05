@@ -42,5 +42,5 @@ Table results as txt file.
 Formats flashfm output to table format
 }
 \author{
-Nico Hernandez and Jenn Asimit
+Nico Hernandez
 }
