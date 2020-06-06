@@ -18,7 +18,8 @@ marginalpp(
   Mx,
   xcovo,
   Nq3,
-  Nq4
+  Nq4,
+  fastapprox
 )
 }
 \arguments{
@@ -55,6 +56,8 @@ included, and if not will be prepended.}
 \item{Nq3}{vector of counts of number of individuals with three traits measured; all triples considered; NULL if M < 4}
 
 \item{Nq4}{vector of counts of number of individuals with four traits measured; all quadruples considered; NULL if M < 5}
+
+\item{fastapprox}{logical that is TRUE when fast approximation is used that does not include unequal sample size adjustments; default is FALSE}
 }
 \value{
 list of: - single.pp: list of pp for each model in

@@ -101,11 +101,12 @@ return(list(N=N, Nqq=Nqq, Nq3=Nq3, Nq4=Nq4))
 ##' @param xcovo SNP covariance matrix
 ##' @param Nq3  vector of counts of number of individuals with three traits measured; all triples considered; NULL if M < 4
 ##' @param Nq4  vector of counts of number of individuals with four traits measured; all quadruples considered; NULL if M < 5
+#' @param fastapprox logical that is TRUE when fast approximation is used that does not include unequal sample size adjustments; default is FALSE
 ##' @return list of: - single.pp: list of pp for each model in
 ##'     \code{STR[[i]]} for trait i - shared.pp: list of pp for each model
 ##'     in \code{STR[[i]]} for trait i
 						
-marginalpp <- function(STR, PP, mbeta, covY, SSy, Sxy, kappa, N,Nqq,nsnps,Mx,xcovo,Nq3,Nq4) {  
+marginalpp <- function(STR, PP, mbeta, covY, SSy, Sxy, kappa, N,Nqq,nsnps,Mx,xcovo,Nq3,Nq4,fastapprox) {  
     
     nq <- diag(Nqq)
     n <- length(STR) # number of traits
@@ -135,7 +136,7 @@ marginalpp <- function(STR, PP, mbeta, covY, SSy, Sxy, kappa, N,Nqq,nsnps,Mx,xco
     vr <- Vres.all(Nqq,mbeta,SSy,Sxy)
     
    
-    alt.pp <- calcAdjPP(qt=qt,STR=STR,SS=SS,tau=tau,nsnpspermodel=nsnpspermodel,kappa=kappa,PP=PP,beta=mbeta,SSy=SSy,Sxy=Sxy,xcovo=xcovo,Mx=Mx,N=N,allVres=vr,covY=covY,Nqq=Nqq,Nq3=Nq3,Nq4=Nq4)
+    alt.pp <- calcAdjPP(qt=qt,STR=STR,SS=SS,tau=tau,nsnpspermodel=nsnpspermodel,kappa=kappa,PP=PP,beta=mbeta,SSy=SSy,Sxy=Sxy,xcovo=xcovo,Mx=Mx,N=N,allVres=vr,covY=covY,Nqq=Nqq,Nq3=Nq3,Nq4=Nq4,fastapprox)
 
     
     for(i in seq_along(alt.pp)){
@@ -201,7 +202,7 @@ flashfm <- function(main.input,TOdds,covY,ss.stats,cpp=0.99,maxmod=NULL,fastappr
        
      for(kappa in kappas) {
      
-     ret <- marginalpp(STR, PP, mbeta, covY, SSy, Sxy, kappa, N,Nqq,nsnps,Mx,xcovo,Nq3,Nq4)    
+     ret <- marginalpp(STR, PP, mbeta, covY, SSy, Sxy, kappa, N,Nqq,nsnps,Mx,xcovo,Nq3,Nq4,fastapprox)    
      for(i in 1:nd) pp[[i]] <- cbind(pp[[i]],ret[[i]]$shared.pp)
      } 
       for(i in 1:nd) {
