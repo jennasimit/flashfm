@@ -9,8 +9,9 @@
 makeSNPgroups <- function(main.input,is.snpmat,min.mppi = 0.01,r2.minmerge=0.5) {
 snp.data <- main.input$Gmat
 SMlist <- main.input$SM
-if(is.snpmat) { Xmat <- new("SnpMatrix",round(snp.data+1)) 
-} else {Xmat <- as.matrix(snp.data) } 
+#if(is.snpmat) { Xmat <- new("SnpMatrix",round(snp.data+1)) 
+#} else {Xmat <- as.matrix(snp.data) } 
+Xmat <- as.matrix(snp.data)
 sg <- groupmulti(SMlist,Xmat,is.snpmat,min.mppi,r2.minmerge)
 snpgroups <- sg$groups@.Data
 ng <- length(snpgroups)
@@ -19,9 +20,142 @@ if(ng>26) names(snpgroups)[27:min(ng,52)] <- paste0(LETTERS[1:(ng-26)],2)
 if(ng>52) names(snpgroups)[53:min(ng,78)] <- paste0(LETTERS[1:(ng-52)],3)
 if(ng>78) names(snpgroups)[79:min(ng,104)] <- paste0(LETTERS[1:(ng-78)],4)
 Ng <- lapply(snpgroups,length)
-message("SNP group sizes are: "); print(Ng)
+sgd <- t(data.frame(Ng)); colnames(sgd) <- "Group Size"
+message("SNP group sizes are: "); print(sgd)
 return(snpgroups)
 }
+
+
+#' @title Make two sets of SNP groups using fine-mapping information from all of the traits using two sets of results and maps the names between them 
+#' @param main.input output from flashfm.input function
+#' @param fm.multi output from flashfm function
+#' @param is.snpmat logical taking value TRUE when genotype matrix is provided and FALSE when covariance matrix is given
+#' @param min.mppi trim snp groups with total MPPI < min.mppi in all diseases; default 0.01
+#' @param r2.minmerge merge groups with minimum between-group r2 > r2.minmerge; default 0.5
+#' @return list of  three objects: groups.fm is a list of SNP groups using the single-trait results; groups.flashfm is a list of SNP groups using the flashfm results; group.sizes is  a table of SNP group sizes for the two sets of groups
+#' @export
+makeSNPgroups2 <- function(main.input,fm.multi,is.snpmat,min.mppi = 0.01,r2.minmerge=0.5) {
+snp.data <- main.input$Gmat
+
+SMlist <- main.input$SM
+#if(is.snpmat) { Xmat <- new("SnpMatrix",round(snp.data+1)) 
+#} else {Xmat <- as.matrix(snp.data) } 
+Xmat <- as.matrix(snp.data)
+sg <- groupmulti(SMlist,Xmat,is.snpmat,min.mppi,r2.minmerge)
+snpgroups <- sg$groups@.Data
+ng <- length(snpgroups)
+names(snpgroups) <- LETTERS[1:ng] # arbitrary names
+if(ng>26) names(snpgroups)[27:min(ng,52)] <- paste0(LETTERS[1:(ng-26)],2)
+if(ng>52) names(snpgroups)[53:min(ng,78)] <- paste0(LETTERS[1:(ng-52)],3)
+if(ng>78) names(snpgroups)[79:min(ng,104)] <- paste0(LETTERS[1:(ng-78)],4)
+Ng <- lapply(snpgroups,length)
+#sgd <- t(data.frame(Ng)); colnames(sgd) <- "Group Size"
+#message("SNP group sizes based on single-trait results are: "); print(sgd)
+
+fmpp  <- fm.multi$PP
+M <- length(fmpp)
+SM2list <- vector("list",M)
+for(i in 1:M) {
+ ppdf <- data.frame(str=as.character(rownames(fmpp[[i]])),PP=fmpp[[i]][,2], stringsAsFactors = FALSE)
+ SM2list[[i]] <- PP2snpmod(ppdf)
+ }
+sg2 <- groupmulti(SM2list,Xmat,is.snpmat,min.mppi,r2.minmerge)
+snpgroups2 <- sg2$groups@.Data
+ng2 <- length(snpgroups2)
+names(snpgroups2) <- LETTERS[1:ng2] # arbitrary names
+if(ng2>26) names(snpgroups)[27:min(ng2,52)] <- paste0(LETTERS[1:(ng2-26)],2)
+if(ng2>52) names(snpgroups)[53:min(ng2,78)] <- paste0(LETTERS[1:(ng2-52)],3)
+if(ng2>78) names(snpgroups)[79:min(ng2,104)] <- paste0(LETTERS[1:(ng2-78)],4)
+Ng2 <- lapply(snpgroups2,length)
+#sgd2 <- t(data.frame(Ng2)); colnames(sgd2) <- "Group Size"
+#message("SNP group sizes based on flashfm results are: "); print(sgd2)
+
+wh <- NULL
+for(i in 1:ng) {
+ for(j in 1:ng2) {
+  if(length(intersect(snpgroups[[i]],snpgroups2[[j]])) > 0 )wh <- rbind(wh,c(i,j))
+ }
+}
+
+
+
+
+if(ng > ng2) {
+
+ newnames <- c()
+ newsg2 <- list()  
+
+ if(any(duplicated(wh[,2]))) {
+  dup <- which(duplicated(wh[,2]))
+  dups <- c()
+  
+  for(i in 1:length(dup)) { 
+  	dd <- which(wh[,2]==wh[i,2])
+  	dups <- c(dups,dd)
+  	for(j in 1:length(dd)) {
+  	newsg2[[j]] <- snpgroups[[wh[dd[j],1]]]
+  	newnames <- c(newnames,names(snpgroups)[wh[dd[j],1]])
+  		}	
+  	}
+  	NNg <- length(newsg2)
+  wh <- wh[-dd,]
+   for(i in 1:nrow(wh)) {
+     newsg2[[NNg+i]] <- snpgroups2[[wh[i,2]]]
+     newnames <- c(newnames, names(snpgroups)[wh[i,1]]) 
+     }
+  
+ }
+ names(newsg2) <- newnames
+ snpgroups2 <- newsg2[order(names(newsg2))]
+ 
+}
+
+
+
+if(ng2 > ng) {
+ newsg <- list()
+  newnames <- c()
+  
+ if(any(duplicated(wh[,1]))) {
+  dup <- which(duplicated(wh[,1]))
+  dups <- c()
+  
+  for(i in 1:length(dup)) { 
+  	dd <- which(wh[,1]==wh[i,1])
+  	dups <- c(dups,dd)
+  	for(j in 1:length(dd)) {
+  	newsg[[j]] <- snpgroups[[wh[dd[j],2]]]
+  	newnames <- c(newnames,names(snpgroups2)[wh[dd[j],2]])
+  		}	
+  	}
+  	NNg <- length(newsg)
+  wh <- wh[-dd,]
+   for(i in 1:nrow(wh)) {
+     newsg[[NNg+i]] <- snpgroups[[wh[i,1]]]
+     newnames <- c(newnames, names(snpgroups2)[wh[i,2]]) 
+     }
+  
+ }
+ names(newsg) <- newnames
+ snpgroups <- newsg[order(names(newsg))]
+ 
+ 
+}
+
+Ng <- lapply(snpgroups,length)
+sgd <- t(data.frame(Ng)); colnames(sgd) <- "Group Size"
+message("SNP group sizes based on single-trait results are: "); print(sgd)
+
+Ng2 <- lapply(snpgroups2,length)
+sgd2 <- t(data.frame(Ng2)); colnames(sgd2) <- "Group Size"
+message("SNP group sizes based on flashfm results are: "); print(sgd2)
+
+group.sizes <- do.call("smartbind",c(list(t(sgd),t(sgd2)),fill=0))
+rownames(group.sizes) <- fm.multi$sharing
+
+return(list(groups.fm=snpgroups,groups.flashfm=snpgroups2, group.sizes=group.sizes))
+}
+
 
 
 PP2snpmod <- function (ppdf) 
@@ -88,10 +222,11 @@ groupmulti <- function (SM2, snp.data, is.snpmat, min.mppi = 0.01, r2.minmerge =
     
     if(is.snpmat) {
     	snp.data <- snp.data[, snps]
-    	r2 <- snpStats::ld(snp.data, snp.data, stats = "R.squared", symmetric = TRUE)
+#    	r2 <- snpStats::ld(snp.data, snp.data, stats = "R.squared", symmetric = TRUE)
+		r2 <- cor(snp.data)^2
 		} else { 
 			snp.data <- snp.data[snps,snps]
-			r2 <- cov2cor(as.matrix(snp.data)) 
+			r2 <- cov2cor(as.matrix(snp.data))^2 
 			}
 
 #	s <- lapply(SM2,function(x) x@snps$var)

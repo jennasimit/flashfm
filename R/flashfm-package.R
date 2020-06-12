@@ -2,7 +2,7 @@
 #' @useDynLib flashfm, .registration = TRUE
 #' @importFrom Rcpp sourceCpp
 #' @importFrom methods as is new
-#' @importFrom stats as.dendrogram as.dist dbinom hclust is.leaf median na.omit quantile var
+#' @importFrom stats cor as.dendrogram as.dist dbinom hclust is.leaf median na.omit quantile var
 #' @importFrom utils combn read.table write.table
 #' @importFrom rlist list.cbind list.stack list.append
 #' @importFrom gtools smartbind
