@@ -97,14 +97,15 @@ if(ng > ng2) {
   	newnames <- c(newnames,names(snpgroups)[wh[dd[j],1]])
   		}	
   	}
-  	NNg <- length(newsg2)
-  wh <- wh[-dd,]
+   wh <- wh[-dd,]
+   }
+   NNg <- length(newsg2)
    for(i in 1:nrow(wh)) {
      newsg2[[NNg+i]] <- snpgroups2[[wh[i,2]]]
      newnames <- c(newnames, names(snpgroups)[wh[i,1]]) 
      }
   
- }
+ 
  names(newsg2) <- newnames
  snpgroups2 <- newsg2[order(names(newsg2))]
  
@@ -128,14 +129,15 @@ if(ng2 > ng) {
   	newnames <- c(newnames,names(snpgroups2)[wh[dd[j],2]])
   		}	
   	}
-  	NNg <- length(newsg)
   wh <- wh[-dd,]
+  }
+  NNg <- length(newsg)
    for(i in 1:nrow(wh)) {
      newsg[[NNg+i]] <- snpgroups[[wh[i,1]]]
      newnames <- c(newnames, names(snpgroups2)[wh[i,2]]) 
      }
   
- }
+ 
  names(newsg) <- newnames
  snpgroups <- newsg[order(names(newsg))]
  
