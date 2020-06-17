@@ -283,6 +283,7 @@ PP2snpmod <- function (ppdf)
 ##' @param is.snpmat logical taking value TRUE when SnpMatrix is provided and FALSE when covariance matrix is given
 ##' @param min.mppi trim snp groups with total MPPI < min.mppi in all
 ##'     diseases
+##' @param minsnpmppi only group snps with total MPPI > minsnpmppi
 ##' @param r2.minmerge merge groups with minimum between-group r2 >
 ##'     r2.minmerge
 ##' @return list with three components.
@@ -294,7 +295,7 @@ PP2snpmod <- function (ppdf)
 ##' 
 ##' Third is the r2 matrix calculated.
 #' @export
-groupmulti <- function (SM2, snp.data, is.snpmat, min.mppi = 0.01, r2.minmerge = 0.5) 
+groupmulti <- function (SM2, snp.data, is.snpmat, min.mppi = 0.01, minsnpmppi=0.01, r2.minmerge = 0.5) 
 {
     stopifnot(is.list(SM2))
     M <- length(SM2)
@@ -320,7 +321,7 @@ groupmulti <- function (SM2, snp.data, is.snpmat, min.mppi = 0.01, r2.minmerge =
     bs <- GUESSFM::best.snps(SM2, pp.thr = 0)
     bs <- do.call("rbind", bs)
 
-    snps <- setdiff(unique(bs[bs$Marg_Prob_Incl > 0.01, ]$var), 
+    snps <- setdiff(unique(bs[bs$Marg_Prob_Incl > minsnpmppi, ]$var), 
         "1")
     
     if(is.snpmat) {

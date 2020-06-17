@@ -4,7 +4,14 @@
 \alias{groupmulti}
 \title{Group SNPs; adapted from group.multi of https://github.com/chr1swallace/GUESSFM}
 \usage{
-groupmulti(SM2, snp.data, is.snpmat, min.mppi = 0.01, r2.minmerge = 0.5)
+groupmulti(
+  SM2,
+  snp.data,
+  is.snpmat,
+  min.mppi = 0.01,
+  minsnpmppi = 0.01,
+  r2.minmerge = 0.5
+)
 }
 \arguments{
 \item{SM2}{snpmod object}
@@ -15,6 +22,8 @@ groupmulti(SM2, snp.data, is.snpmat, min.mppi = 0.01, r2.minmerge = 0.5)
 
 \item{min.mppi}{trim snp groups with total MPPI < min.mppi in all
 diseases}
+
+\item{minsnpmppi}{only group snps with total MPPI > minsnpmppi}
 
 \item{r2.minmerge}{merge groups with minimum between-group r2 >
 r2.minmerge}
