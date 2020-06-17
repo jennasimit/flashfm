@@ -84,30 +84,40 @@ if(ng > ng2) {
 
  newnames <- c()
  newsg2 <- list()  
+ 
+ ind <- which(1:ng2 %in% wh[,2])
+ 
 
  if(any(duplicated(wh[,2]))) {
   dup <- which(duplicated(wh[,2]))
   dups <- c()
   
-  for(i in 1:length(dup)) { 
+  for(i in 1:dup) { 
   	dd <- which(wh[,2]==wh[i,2])
-  	dups <- c(dups,dd)
+  	NNg <- length(newsg2)
   	for(j in 1:length(dd)) {
-  	newsg2[[j]] <- snpgroups[[wh[dd[j],1]]]
+  	newsg2[[j+NNg]] <- snpgroups[[wh[dd[j],1]]]
   	newnames <- c(newnames,names(snpgroups)[wh[dd[j],1]])
   		}	
   	}
-   wh <- wh[-dd,]
+   wh <- matrix(wh[-dd,],ncol=2)
    }
    NNg <- length(newsg2)
    for(i in 1:nrow(wh)) {
      newsg2[[NNg+i]] <- snpgroups2[[wh[i,2]]]
      newnames <- c(newnames, names(snpgroups)[wh[i,1]]) 
      }
-  
- 
+   
  names(newsg2) <- newnames
- snpgroups2 <- newsg2[order(names(newsg2))]
+ newsg2 <- newsg2[order(names(newsg2))]
+ 
+ 
+ if(length(ind)<ng2) {
+  keep <- (1:ng2)[-ind]
+  moreg2 <- snpgroups2[keep]
+  names(moreg2) <- LETTERS[(ng+1):(ng+length(keep))]
+  snpgroups2 <- append(newsg2,moreg2) 
+ } else {snpgroups2 <- newsg2}
  
 }
 
@@ -117,19 +127,21 @@ if(ng2 > ng) {
  newsg <- list()
   newnames <- c()
   
+  ind <- which(1:ng %in% wh[,1])
+  
  if(any(duplicated(wh[,1]))) {
   dup <- which(duplicated(wh[,1]))
   dups <- c()
   
-  for(i in 1:length(dup)) { 
+  for(i in dup) { 
   	dd <- which(wh[,1]==wh[i,1])
-  	dups <- c(dups,dd)
+  	NNg <- length(newsg)
   	for(j in 1:length(dd)) {
-  	newsg[[j]] <- snpgroups[[wh[dd[j],2]]]
+  	newsg[[j+NNg]] <- snpgroups2[[wh[dd[j],2]]]
   	newnames <- c(newnames,names(snpgroups2)[wh[dd[j],2]])
   		}	
   	}
-  wh <- wh[-dd,]
+  wh <- matrix(wh[-dd,],ncol=2)
   }
   NNg <- length(newsg)
    for(i in 1:nrow(wh)) {
@@ -139,9 +151,98 @@ if(ng2 > ng) {
   
  
  names(newsg) <- newnames
- snpgroups <- newsg[order(names(newsg))]
+ newsg <- newsg[order(names(newsg))]
  
  
+ if(length(ind)<ng) {
+  keep <- (1:ng)[-ind]
+  moreg2 <- snpgroups[keep]
+  names(moreg2) <- LETTERS[(ng2+1):(ng2+length(keep))]
+  snpgroups <- append(newsg,moreg2)  
+ } else{snpgroups <- newsg}
+
+}
+
+
+if(ng == ng2) {
+
+ newnames <- c()
+ newsg2 <- newsg <- list()  
+ 
+ 
+ if(any(duplicated(wh[,2]))) {
+  ind <- which(1:ng2 %in% wh[,2])
+  dup <- which(duplicated(wh[,2]))
+  dups <- c()
+  
+  for(i in 1:dup) { 
+  	dd <- which(wh[,2]==wh[i,2])
+  	NNg <- length(newsg2)
+  	for(j in 1:length(dd)) {
+  	newsg2[[j+NNg]] <- snpgroups[[wh[dd[j],1]]]
+  	newnames <- c(newnames,names(snpgroups)[wh[dd[j],1]])
+  		}	
+  	}
+   wh <- matrix(wh[-dd,],ncol=2)
+   NNg <- length(newsg2)
+   for(i in 1:nrow(wh)) {
+     newsg2[[NNg+i]] <- snpgroups2[[wh[i,2]]]
+     newnames <- c(newnames, names(snpgroups)[wh[i,1]]) 
+     }
+  
+ 
+ names(newsg2) <- newnames
+ newsg2 <- newsg2[order(names(newsg2))]
+ 
+  if(length(ind)<ng2) {
+  keep <- (1:ng2)[-ind]
+  moreg2 <- snpgroups2[keep]
+  names(moreg2) <- LETTERS[(ng+1):(ng+length(keep))]
+  snpgroups2 <- append(newsg2,moreg2)  
+ } else{ snpgroups2 <- newsg2}
+ 
+   } 	else if(any(duplicated(wh[,1]))) {	# else 1
+  ind <- which(1:ng %in% wh[,1])
+  dup <- which(duplicated(wh[,1]))
+  dups <- c()
+  
+  for(i in dup) { 
+  	dd <- which(wh[,1]==wh[dup,1])
+    NNg <- length(newsg)
+  	for(j in 1:length(dd)) {
+  	newsg[[j+NNg]] <- snpgroups2[[wh[dd[j],2]]]
+  	newnames <- c(newnames,names(snpgroups2)[wh[dd[j],2]])
+  		}	
+  	}
+  wh <- matrix(wh[-dd,],ncol=2)
+  NNg <- length(newsg)
+   for(i in 1:nrow(wh)) {
+     newsg[[NNg+i]] <- snpgroups[[wh[i,1]]]
+     newnames <- c(newnames, names(snpgroups2)[wh[i,2]]) 
+     }
+  
+ 
+ names(newsg) <- newnames
+ newsg <- newsg[order(names(newsg))]
+ 
+  if(length(ind)<ng) {
+  keep <- (1:ng)[-ind]
+  moreg2 <- snpgroups[keep]
+  names(moreg2) <- LETTERS[(ng2+1):(ng2+length(keep))]
+  snpgroups <- append(newsg,moreg2)  
+ } else{snpgroups <- newsg}
+ 
+  } else {								# else 2
+  
+ 
+   for(i in 1:nrow(wh)) {
+     newsg2[[i]] <- snpgroups2[[wh[i,2]]]
+     newnames <- c(newnames, names(snpgroups)[wh[i,1]]) 
+     }
+     snpgroups2 <- newsg2 
+     names(snpgroups2) <- newnames
+   }
+      
 }
 
 Ng <- lapply(snpgroups,length)
@@ -219,7 +320,7 @@ groupmulti <- function (SM2, snp.data, is.snpmat, min.mppi = 0.01, r2.minmerge =
     bs <- GUESSFM::best.snps(SM2, pp.thr = 0)
     bs <- do.call("rbind", bs)
 
-    snps <- setdiff(unique(bs[bs$Marg_Prob_Incl > 0.001, ]$var), 
+    snps <- setdiff(unique(bs[bs$Marg_Prob_Incl > 0.01, ]$var), 
         "1")
     
     if(is.snpmat) {
