@@ -31,17 +31,18 @@ return(snpgroups)
 #' @param fm.multi output from flashfm function
 #' @param is.snpmat logical taking value TRUE when genotype matrix is provided and FALSE when covariance matrix is given
 #' @param min.mppi trim snp groups with total MPPI < min.mppi in all diseases; default 0.01
+#' @param minsnpmppi only group snps with total MPPI > minsnpmppi; default 0.01
 #' @param r2.minmerge merge groups with minimum between-group r2 > r2.minmerge; default 0.5
 #' @return list of  three objects: groups.fm is a list of SNP groups using the single-trait results; groups.flashfm is a list of SNP groups using the flashfm results; group.sizes is  a table of SNP group sizes for the two sets of groups
 #' @export
-makeSNPgroups2 <- function(main.input,fm.multi,is.snpmat,min.mppi = 0.01,r2.minmerge=0.5) {
+makeSNPgroups2 <- function(main.input,fm.multi,is.snpmat,min.mppi = 0.01,minsnpmppi=0.01,r2.minmerge=0.5) {
 snp.data <- main.input$Gmat
 
 SMlist <- main.input$SM
 #if(is.snpmat) { Xmat <- new("SnpMatrix",round(snp.data+1)) 
 #} else {Xmat <- as.matrix(snp.data) } 
 Xmat <- as.matrix(snp.data)
-sg <- groupmulti(SMlist,Xmat,is.snpmat,min.mppi,r2.minmerge)
+sg <- groupmulti(SMlist,Xmat,is.snpmat,min.mppi,minsnpmppi,r2.minmerge)
 snpgroups <- sg$groups@.Data
 ng <- length(snpgroups)
 names(snpgroups) <- LETTERS[1:ng] # arbitrary names
@@ -59,7 +60,7 @@ for(i in 1:M) {
  ppdf <- data.frame(str=as.character(rownames(fmpp[[i]])),PP=fmpp[[i]][,2], stringsAsFactors = FALSE)
  SM2list[[i]] <- PP2snpmod(ppdf)
  }
-sg2 <- groupmulti(SM2list,Xmat,is.snpmat,min.mppi,r2.minmerge)
+sg2 <- groupmulti(SM2list,Xmat,is.snpmat,min.mppi,minsnpmppi,r2.minmerge)
 snpgroups2 <- sg2$groups@.Data
 ng2 <- length(snpgroups2)
 names(snpgroups2) <- LETTERS[1:ng2] # arbitrary names

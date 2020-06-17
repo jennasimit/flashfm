@@ -9,6 +9,7 @@ makeSNPgroups2(
   fm.multi,
   is.snpmat,
   min.mppi = 0.01,
+  minsnpmppi = 0.01,
   r2.minmerge = 0.5
 )
 }
@@ -20,6 +21,8 @@ makeSNPgroups2(
 \item{is.snpmat}{logical taking value TRUE when genotype matrix is provided and FALSE when covariance matrix is given}
 
 \item{min.mppi}{trim snp groups with total MPPI < min.mppi in all diseases; default 0.01}
+
+\item{minsnpmppi}{only group snps with total MPPI > minsnpmppi; default 0.01}
 
 \item{r2.minmerge}{merge groups with minimum between-group r2 > r2.minmerge; default 0.5}
 }
