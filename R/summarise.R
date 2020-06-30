@@ -48,7 +48,7 @@ MPPmodGroups <- function(PP1) {
 #' @title Summarise PP and MPP results from single-trait fine-mapping and flashfm, by SNP and by SNP group
 #' @param fm.multi output from flashfm function
 #' @param snpGroups  list of two sets of snp groups; output from makeSNPgroups2
-#' @param minPP a single value such that output consists of snp/group models where PP > minPP for at least one set of fine-mapping results; default is 0.05 
+#' @param minPP a single value such that output for groups consists of group models where PP > minPP for at least one set of fine-mapping results; default is 0.05 
 #' @return a list of 4 objects: MPP lists trait-specific PP of SNP inclusion in a model; MPPg lists trait-specific PP of SNP group inclusion in a model;  
 #'			PP lists trait-specific model PP; PPg lists trait-specific model PP in terms of  SNP group
 #' @author Jenn Asimit
@@ -68,8 +68,8 @@ PPsummarise <- function (fm.multi, snpGroups, minPP=0.05)
 	MPPout <- MPPout2 <- outMPPg <- outMPP <- vector("list",M)
 	
 	for(i in 1:M) {
-	 PPout[[i]] <- PPmodGroups(fm.multi$PP[[i]][,1],snpgroups, minPP)
-	 PPout2[[i]] <- PPmodGroups(fm.multi$PP[[i]][,2],snpgroups2, minPP)
+	 PPout[[i]] <- PPmodGroups(fm.multi$PP[[i]][,1],snpgroups, minPP=0)
+	 PPout2[[i]] <- PPmodGroups(fm.multi$PP[[i]][,2],snpgroups2, minPP=0)
 	 pplist <- list(t(data.frame(PPout[[i]]$group[,2],row.names=rownames(PPout[[i]]$group))),t(data.frame(PPout2[[i]]$group[,2],row.names=rownames(PPout2[[i]]$group))))
 	 outPPg[[i]] <- t(do.call("smartbind",c(pplist,fill=0)))
 	 colnames(outPPg[[i]]) <- fm.multi$sharing
@@ -88,6 +88,10 @@ PPsummarise <- function (fm.multi, snpGroups, minPP=0.05)
 	  pplist <- list(t(data.frame(MPPout[[i]][,1],row.names=rownames(MPPout[[i]]))),t(data.frame(MPPout2[[i]][,1],row.names=rownames(MPPout2[[i]]))))
 	  outMPPg[[i]] <- t(do.call("smartbind",c(pplist,fill=0)))
 	  colnames(outMPPg[[i]]) <- fm.multi$sharing
+	  
+	  outPPg[[i]] <- outPPg[[i]][outPPg[[i]][,1]>minPP | outPPg[[i]][,2]>minPP,]
+	  outMPPg[[i]] <- outMPPg[[i]][outMPPg[[i]][,1]>minPP | outMPPg[[i]][,2]>minPP,]
+	  
 	  }
 	  
 	  
