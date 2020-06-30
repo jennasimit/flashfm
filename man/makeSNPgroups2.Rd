@@ -9,7 +9,7 @@ makeSNPgroups2(
   fm.multi,
   is.snpmat,
   min.mppi = 0.01,
-  minsnpmppi = 0.01,
+  minsnpmppi = 0.001,
   r2.minmerge = 0.5
 )
 }
