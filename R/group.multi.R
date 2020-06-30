@@ -92,7 +92,7 @@ for(i in 1:ng) {
   
   for(i in dup) { 
   	dd <- which(wh[,1]==wh[i,1])
-  	for(j in 1:length(dd)) newnames[wh[dd[j],2]] <- paste(names(snpgroups)[i],j,sep=".")  			
+  	for(j in 1:length(dd)) newnames[wh[dd[j],2]] <- paste(names(snpgroups)[wh[i,1]],j,sep=".")  			
 	wrm <- c(wrm,dd)
 	}
    wh <- matrix(wh[-wrm,],ncol=2)
