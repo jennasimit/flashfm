@@ -89,8 +89,17 @@ PPsummarise <- function (fm.multi, snpGroups, minPP=0.05)
 	  outMPPg[[i]] <- t(do.call("smartbind",c(pplist,fill=0)))
 	  colnames(outMPPg[[i]]) <- fm.multi$sharing
 	  
-	  outPPg[[i]] <- outPPg[[i]][outPPg[[i]][,1]>minPP | outPPg[[i]][,2]>minPP,]
-	  outMPPg[[i]] <- outMPPg[[i]][outMPPg[[i]][,1]>minPP | outMPPg[[i]][,2]>minPP,]
+	  ind <- which(outPPg[[i]][,1]>minPP | outPPg[[i]][,2]>minPP)
+	  rnames <- rownames(outPPg[[i]])
+	  if(length(ind)>1) {tmp <- outPPg[[i]][ind,]} else{tmp <- t(as.matrix(outPPg[[i]][ind,]))}
+	  rownames(tmp) <- rnames[ind]
+	  outPPg[[i]] <- tmp
+	  
+	  ind <- which(outMPPg[[i]][,1]>minPP | outMPPg[[i]][,2]>minPP)
+	  rnames <- rownames(outMPPg[[i]])
+	  if(length(ind)>1) {tmp <- outMPPg[[i]][ind,]} else{tmp <- t(as.matrix(outMPPg[[i]][ind,]))}
+	  rownames(tmp) <- rnames[ind]
+	  outMPPg[[i]] <- tmp
 	  
 	  }
 	  

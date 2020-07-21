@@ -92,7 +92,7 @@ for(i in 1:ng) {
   
   for(i in dup) { 
   	dd <- which(wh[,1]==wh[i,1])
-  	for(j in 1:length(dd)) newnames[wh[dd[j],2]] <- paste(names(snpgroups)[wh[i,1]],j,sep=".")  			
+  	for(j in 1:length(dd)) newnames[wh[dd[j],2]] <- paste(names(snpgroups)[wh[dd[j],1]],j,sep=".")  			
 	wrm <- c(wrm,dd)
 	}
    wh <- matrix(wh[-wrm,],ncol=2)
@@ -100,9 +100,17 @@ for(i in 1:ng) {
    
    
 for(i in 1:nrow(wh)) newnames[wh[i,2]] <- names(snpgroups)[wh[i,1]]
-names(snpgroups2) <- newnames  
-     
  
+
+
+nc <- nchar(newnames)
+snames <- c(LETTERS[1:26],paste0(LETTERS[1:26],2),paste0(LETTERS[1:26],3),paste0(LETTERS[1:26],4))
+if(any(nc==0)){
+	ind <- which(nc==0)
+	newnames[ind] <-  snames[(ng+1):(ng+1+ng2)]	
+	}     
+names(snpgroups2) <- newnames 
+snpgroups2 <- snpgroups2[order(names(snpgroups2))]
 
 Ng <- lapply(snpgroups,length)
 sgd <- t(data.frame(Ng)); colnames(sgd) <- "Group Size"
