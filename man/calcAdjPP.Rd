@@ -23,7 +23,8 @@ calcAdjPP(
   Nqq,
   Nq3,
   Nq4,
-  fastapprox
+  fastapprox,
+  NCORES
 )
 }
 \arguments{
@@ -64,6 +65,8 @@ calcAdjPP(
 \item{Nq4}{vector of counts of number of individuals with four traits measured; all quadruples considered; NULL if M < 5}
 
 \item{fastapprox}{logical that is TRUE when fast approximation is used that does not include unequal sample size adjustments; default is FALSE}
+
+\item{NCORES}{number of cores for parallel computing; recommend NCORES=M, but if on Windows, use NCORES=1;}
 }
 \value{
 list of trait-adjusted posterior probabilities for each trait at sharing parameter kappa

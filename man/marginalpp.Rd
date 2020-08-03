@@ -19,7 +19,8 @@ marginalpp(
   xcovo,
   Nq3,
   Nq4,
-  fastapprox
+  fastapprox,
+  NCORES
 )
 }
 \arguments{
@@ -58,6 +59,8 @@ included, and if not will be prepended.}
 \item{Nq4}{vector of counts of number of individuals with four traits measured; all quadruples considered; NULL if M < 5}
 
 \item{fastapprox}{logical that is TRUE when fast approximation is used that does not include unequal sample size adjustments; default is FALSE}
+
+\item{NCORES}{number of cores for parallel computing; recommend NCORES=M, but if on Windows, use NCORES=1}
 }
 \value{
 list of: - single.pp: list of pp for each model in

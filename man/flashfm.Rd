@@ -11,7 +11,8 @@ flashfm(
   ss.stats,
   cpp = 0.99,
   maxmod = NULL,
-  fastapprox = FALSE
+  fastapprox = FALSE,
+  NCORES
 )
 }
 \arguments{
@@ -29,6 +30,8 @@ This could be obtained from flashfm.input or JAMexpanded.multi.}
 \item{maxmod}{maximum number of top models to output; NULL by default}
 
 \item{fastapprox}{logical that is TRUE when fast approximation is used that does not include unequal sample size adjustments; default is FALSE}
+
+\item{NCORES}{number of cores for parallel computing; recommend NCORES=M, but if on Windows, use NCORES=1}
 }
 \value{
 List consisting of PP: marginal PP for models and MPP: marginal PP of SNP inclusion

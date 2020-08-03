@@ -107,7 +107,7 @@ nc <- nchar(newnames)
 snames <- c(LETTERS[1:26],paste0(LETTERS[1:26],2),paste0(LETTERS[1:26],3),paste0(LETTERS[1:26],4))
 if(any(nc==0)){
 	ind <- which(nc==0)
-	newnames[ind] <-  snames[(ng+1):(ng+1+ng2)]	
+	newnames[ind] <-  snames[(ng+1):(ng+length(ind))]	
 	}     
 names(snpgroups2) <- newnames 
 snpgroups2 <- snpgroups2[order(names(snpgroups2))]
@@ -257,17 +257,17 @@ groupmulti <- function (SM2, snp.data, is.snpmat, min.mppi = 0.01, minsnpmppi=0.
         if (max(ab[[1]]) < min.mppi) 
             return(labels(object))
         if (max(ab[[1]]) > mppi.max) 
-            return(list(cutter(object[[1]]), cutter(object[[2]])))
+            return(list(cutter(object[[1]],min.r2 =min.r2), cutter(object[[2]],min.r2 =min.r2)))
         mxmn <- mem.maxr.minr2(members)
         if (mxmn[1] > r.tol || mxmn[2] < min.r2) 
-            return(list(cutter(object[[1]]), cutter(object[[2]])))
+            return(list(cutter(object[[1]],min.r2 =min.r2), cutter(object[[2]],min.r2 =min.r2)))
         if (min(c(mem.sum(labels(object[[1]])), mem.sum(labels(object[[2]]))) < 
             min.mppi)) 
-            return(list(cutter(object[[1]]), cutter(object[[2]])))
+            return(list(cutter(object[[1]],min.r2 =min.r2), cutter(object[[2]],min.r2 =min.r2)))
         if (max(ab[[1]]) <= mppi.max & all(ab[[1]] < ab[[2]] * 
             marg.sum.ratio)) 
             return(labels(object))
-        return(list(cutter(object[[1]]), cutter(object[[2]])))
+        return(list(cutter(object[[1]],min.r2 =min.r2), cutter(object[[2]],min.r2 =min.r2)))
     }
     mem.summ <- function(members) {
         n <- length(members)
@@ -282,7 +282,7 @@ groupmulti <- function (SM2, snp.data, is.snpmat, min.mppi = 0.01, minsnpmppi=0.
             r = r.summ["Min."], r = r.summ["Max."], mppi.min = mppi.min, 
             mppi.max = mppi.max)
     }
-    ret <- cutter(d)
+    ret <- cutter(d,min.r2=r2.minmerge)
     if (!is.list(ret)) 
         ret <- list(ret)
     ret <- LinearizeNestedList(ret)

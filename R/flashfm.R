@@ -102,11 +102,12 @@ return(list(N=N, Nqq=Nqq, Nq3=Nq3, Nq4=Nq4))
 ##' @param Nq3  vector of counts of number of individuals with three traits measured; all triples considered; NULL if M < 4
 ##' @param Nq4  vector of counts of number of individuals with four traits measured; all quadruples considered; NULL if M < 5
 #' @param fastapprox logical that is TRUE when fast approximation is used that does not include unequal sample size adjustments; default is FALSE
+#' @param NCORES number of cores for parallel computing; recommend NCORES=M, but if on Windows, use NCORES=1
 ##' @return list of: - single.pp: list of pp for each model in
 ##'     \code{STR[[i]]} for trait i - shared.pp: list of pp for each model
 ##'     in \code{STR[[i]]} for trait i
 						
-marginalpp <- function(STR, PP, mbeta, covY, SSy, Sxy, kappa, N,Nqq,nsnps,Mx,xcovo,Nq3,Nq4,fastapprox) {  
+marginalpp <- function(STR, PP, mbeta, covY, SSy, Sxy, kappa, N,Nqq,nsnps,Mx,xcovo,Nq3,Nq4,fastapprox,NCORES) {  
     
     nq <- diag(Nqq)
     n <- length(STR) # number of traits
@@ -136,7 +137,7 @@ marginalpp <- function(STR, PP, mbeta, covY, SSy, Sxy, kappa, N,Nqq,nsnps,Mx,xco
     vr <- Vres.all(Nqq,mbeta,SSy,Sxy)
     
    
-    alt.pp <- calcAdjPP(qt=qt,STR=STR,SS=SS,tau=tau,nsnpspermodel=nsnpspermodel,kappa=kappa,PP=PP,beta=mbeta,SSy=SSy,Sxy=Sxy,xcovo=xcovo,Mx=Mx,N=N,allVres=vr,covY=covY,Nqq=Nqq,Nq3=Nq3,Nq4=Nq4,fastapprox)
+    alt.pp <- calcAdjPP(qt=qt,STR=STR,SS=SS,tau=tau,nsnpspermodel=nsnpspermodel,kappa=kappa,PP=PP,beta=mbeta,SSy=SSy,Sxy=Sxy,xcovo=xcovo,Mx=Mx,N=N,allVres=vr,covY=covY,Nqq=Nqq,Nq3=Nq3,Nq4=Nq4,fastapprox,NCORES)
 
     
     for(i in seq_along(alt.pp)){
@@ -159,10 +160,11 @@ marginalpp <- function(STR, PP, mbeta, covY, SSy, Sxy, kappa, N,Nqq,nsnps,Mx,xco
 #' @param cpp cumulative posterior probability threshold for selecting top models; this is ignored when maxmod is spe$
 #' @param maxmod maximum number of top models to output; NULL by default
 #' @param fastapprox logical that is TRUE when fast approximation is used that does not include unequal sample size adjustments; default is FALSE
+#' @param NCORES number of cores for parallel computing; recommend NCORES=M, but if on Windows, use NCORES=1
 #' @return List consisting of PP: marginal PP for models and MPP: marginal PP of SNP inclusion
 #' @export
 #' @author Jenn Asimit
-flashfm <- function(main.input,TOdds,covY,ss.stats,cpp=0.99,maxmod=NULL,fastapprox=FALSE) {
+flashfm <- function(main.input,TOdds,covY,ss.stats,cpp=0.99,maxmod=NULL,fastapprox=FALSE,NCORES) {
 	
 	Nlist <- main.input$Nlist
 	Nqq <- as.matrix(Nlist$Nqq)
@@ -186,7 +188,11 @@ flashfm <- function(main.input,TOdds,covY,ss.stats,cpp=0.99,maxmod=NULL,fastappr
     kappas <- round(kappas)
     traits <- paste(qt, collapse = "-")
     bestmod.thr <- vector("list",M)
- for(i in 1:M) bestmod.thr[[i]] <- best.models.cpp(SM[[i]],cpp.thr=cpp,maxmod)   
+ for(i in 1:M) {
+ 	bm <- best.models.cpp(SM[[i]],cpp.thr=cpp,maxmod)   
+ 	bestmod.thr[[i]] <- bm$models
+ 	message("Trait ",i, " (",qt[i],") ", "has cpp before adjustment: ",bm$old.cpp)
+ 	}
    
  STR <- lapply(bestmod.thr, "[[", "str") 
  PP <- lapply(bestmod.thr, "[[", "PP")
@@ -202,7 +208,7 @@ flashfm <- function(main.input,TOdds,covY,ss.stats,cpp=0.99,maxmod=NULL,fastappr
        
      for(kappa in kappas) {
      
-     ret <- marginalpp(STR, PP, mbeta, covY, SSy, Sxy, kappa, N,Nqq,nsnps,Mx,xcovo,Nq3,Nq4,fastapprox)    
+     ret <- marginalpp(STR, PP, mbeta, covY, SSy, Sxy, kappa, N,Nqq,nsnps,Mx,xcovo,Nq3,Nq4,fastapprox,NCORES)    
      for(i in 1:nd) pp[[i]] <- cbind(pp[[i]],ret[[i]]$shared.pp)
      } 
       for(i in 1:nd) {
@@ -212,7 +218,7 @@ flashfm <- function(main.input,TOdds,covY,ss.stats,cpp=0.99,maxmod=NULL,fastappr
        }
 
    
-    mpp <- lapply(pp, MPP.fn)
+    mpp <- lapply(pp, MFM::MPP.fn)
     names(pp) <- qt
     mpp1 <- lapply(mpp, t)
    
@@ -494,9 +500,10 @@ Dij <- diag(M)
 #' @param Nq3  vector of counts of number of individuals with three traits measured; all triples considered; NULL if M < 4
 #' @param Nq4  vector of counts of number of individuals with four traits measured; all quadruples considered; NULL if M < 5
 #' @param fastapprox logical that is TRUE when fast approximation is used that does not include unequal sample size adjustments; default is FALSE
+#' @param NCORES number of cores for parallel computing; recommend NCORES=M, but if on Windows, use NCORES=1; 
 #' @return list of trait-adjusted posterior probabilities for each trait at sharing parameter kappa
 #' @author Jenn Asimit
-calcAdjPP <- function(qt,STR,SS,tau,nsnpspermodel,kappa,PP,beta,SSy,Sxy,xcovo,Mx,N,allVres,covY,Nqq,Nq3,Nq4,fastapprox) {
+calcAdjPP <- function(qt,STR,SS,tau,nsnpspermodel,kappa,PP,beta,SSy,Sxy,xcovo,Mx,N,allVres,covY,Nqq,Nq3,Nq4,fastapprox,NCORES) {
  
     M <- length(qt)
     np <- choose(M,2)
@@ -540,7 +547,21 @@ calcAdjPP <- function(qt,STR,SS,tau,nsnpspermodel,kappa,PP,beta,SSy,Sxy,xcovo,Mx
 		Cij <- allC12(M,nummods,beta,SSy,Sxy,xcovo,Mx,Nqq)
 		lPP <- lapply(PP,log)
 		
-		for(i in 1:M) { # for each trait
+		PPadj <- vector("list",M)
+		ivec <- vector("list",M)
+		for(i in 1:M) ivec[[i]] <- i
+		PPadj <- parallel::mclapply(ivec,PPadjOne,qns,Q,STR,covY,Nqq,N,nummods,allVres,Cij,Dcon,lPP,M, Nq3, Nq4, fastapprox,mc.cores =NCORES)	
+		names(PPadj) <- qt	
+     	}
+	return(PPadj) 
+	 
+}
+
+
+#### ppadj functions ####
+
+pre.ppadj <- function(i,qns,Q) {
+	    
 	    qn  <- paste0("Q",i)
 	 	ind <- grep(qn,qns,fixed=TRUE)
 	 	whO <- ind[which(ind %% 2 == 1)] # odd indices so first list component 	 
@@ -571,10 +592,11 @@ calcAdjPP <- function(qt,STR,SS,tau,nsnpspermodel,kappa,PP,beta,SSy,Sxy,xcovo,Mx
 	 	keep <- keep[sort(names(keep),decreasing=FALSE)]
 	 	keep <- lapply(keep,log)
 	 	keep <- lapply(keep,as.matrix)
+	 	return(keep)
+	 	}
 
-	 	
-	 	if(M==3) {
-	 	
+
+ppadjM3 <- function(i,STR,covY,Nqq,N,nummods,allVres,Cij,Dcon,keep,lPP,M,fastapprox) {
 	 	  if(length(STR[[i]])>1) {
 	 	  Vind <- c(i,setdiff(1:3,i))
 	 	  Cind <- combn(Vind,2,simplify=TRUE)
@@ -586,13 +608,15 @@ calcAdjPP <- function(qt,STR,SS,tau,nsnpspermodel,kappa,PP,beta,SSy,Sxy,xcovo,Mx
 	 	  
 		 Nsame <-1; 
 		 if(var(diag(Nqq))==0 | fastapprox) Nsame <- 0 
-		 PPadj[[i]] <- ppadjT3(N, nummods[Vind], allVres[Vind], Cij[pnames], Dcon, keep,Nqq[Vind,Vind],Ldcon12,c2ind-1,lPP[Vind],Nsame)
-	 	 	} else { PPadj[[i]] <- 1 }
-	 	 }
-	 	 
+		 pp <- ppadjT3(N, nummods[Vind], allVres[Vind], Cij[pnames], Dcon, keep,Nqq[Vind,Vind],Ldcon12,c2ind-1,lPP[Vind],Nsame)
+	 	 	} else { pp <- 1 }
+	 	
+	 	return(pp)
+	 	}
 	 	
 	 	
-	 	if(M==4) {
+ppadjM4 <- function(i,STR,covY,Nqq,N,nummods,allVres,Cij,Dcon,keep,lPP,M, Nq3, fastapprox) {
+	 	
 	 	 if(length(STR[[i]])>1) {
 	 	  Vind <- c(i,setdiff(1:4,i))
 	 	  Cind <- combn(Vind,2,simplify=TRUE)
@@ -619,11 +643,14 @@ calcAdjPP <- function(qt,STR,SS,tau,nsnpspermodel,kappa,PP,beta,SSy,Sxy,xcovo,Mx
 	 	 Nsame <-1; 
 		 if(var(diag(Nqq))==0 | fastapprox) Nsame <- 0 
 		
-		 PPadj[[i]] <- ppadjT4(N, nummods[Vind], allVres[Vind], CijI, Dcon, keep,Nqq[Vind,Vind],Ldcon12,Nq3[pnames],Ldcon123,CijI.3,lPP[Vind],Nsame)	
-	 	 	} else { PPadj[[i]] <- 1 }
-	 	 }
+		 pp <- ppadjT4(N, nummods[Vind], allVres[Vind], CijI, Dcon, keep,Nqq[Vind,Vind],Ldcon12,Nq3[pnames],Ldcon123,CijI.3,lPP[Vind],Nsame)	
+	 	 	} else { pp <- 1 }
 	 	 
-	 	  	 if(M==5) {
+	 	 return(pp)
+	 	 }	 	
+
+ppadjM5 <- function(i,STR,covY,Nqq,N,nummods,allVres,Cij,Dcon,keep,lPP,M, Nq3, Nq4, fastapprox) {
+
 	 	 if(length(STR[[i]])>1) {
 	 	  Vind <- c(i,setdiff(1:5,i))
 	 	  Cind <- combn(Vind,2,simplify=TRUE)
@@ -656,23 +683,28 @@ calcAdjPP <- function(qt,STR,SS,tau,nsnpspermodel,kappa,PP,beta,SSy,Sxy,xcovo,Mx
 	 	  
 		Nsame <-1; 
 		if(var(diag(Nqq))==0 | fastapprox) Nsame <- 0
-		 PPadj[[i]] <- ppadjT5(N, nummods[Vind], allVres[Vind], CijI, Dcon, keep,Nqq[Vind,Vind],Ldcon12,Nq3[pnames],Ldcon123,CijI.3,Nq4[Vind],Ldcon1234,CijI.4,lPP[Vind],Nsame)	
-	 	 	} else { PPadj[[i]] <- 1 }
+		 pp <- ppadjT5(N, nummods[Vind], allVres[Vind], CijI, Dcon, keep,Nqq[Vind,Vind],Ldcon12,Nq3[pnames],Ldcon123,CijI.3,Nq4[Vind],Ldcon1234,CijI.4,lPP[Vind],Nsame)	
+	 	 	} else { pp <- 1 }
+	 	 	
+	 	 return(pp)	
 	 	 }
 	 	 
 	 	 
-	 
+ PPadjOne <- function(i,qns,Q,STR,covY,Nqq,N,nummods,allVres,Cij,Dcon,lPP,M, Nq3, Nq4, fastapprox) { 	
+	    	
+	    	keep <- pre.ppadj(i,qns,Q)	    	
 	 	
-	 		 	
-	 	}
-     }
-	return(PPadj) 
-	 
-}
+	 		if(M==3) { ppadj <- ppadjM3(i,STR,covY,Nqq,N,nummods,allVres,Cij,Dcon,keep,lPP,M, fastapprox) }
+	 	
+	 		if(M==4) { ppadj <- ppadjM4(i,STR,covY,Nqq,N,nummods,allVres,Cij,Dcon,keep,lPP,M, Nq3,fastapprox) }
+	 	 
+	 	  	 if(M==5) { ppadj <- ppadjM5(i,STR,covY,Nqq,N,nummods,allVres,Cij,Dcon,keep,lPP,M, Nq3, Nq4, fastapprox) }
+	
+			return(ppadj) 	 
+	 	  	} 	 
+	 	
 
-
-
-
+#####
 
 Ctrans <- function(Vind,Cind) {
  M <- length(Vind)
@@ -691,7 +723,7 @@ makestr <- function(x) {paste(sort(unique(x)),collapse="%")}
 #' @param d snpmod object
 #' @param cpp.thr cumulative posterior probability threshold for selecting top models; this is ignored when maxmod is specified
 #' @param maxmod maximum number of top models to output; NULL by default
-#' @return data.frame of top SNP models ordered by posterior probability (PP); if maxmod is specified the PPs are re-scaled to sum to 1.
+#' @return list of two objects: models = data.frame of top SNP models ordered by posterior probability (PP); the PPs are re-scaled to sum to 1; old.cpp = cpp before PPs adjusted to sum to 1
 #' @export
 best.models.cpp <- function (d, cpp.thr = .99,maxmod=NULL) 
 {
@@ -708,16 +740,18 @@ best.models.cpp <- function (d, cpp.thr = .99,maxmod=NULL)
                 
         d@models <- d@models[wh, ]
         d@models$PP <- d@models$PP/sum(d@models$PP)
+        old.cpp <- cpp.thr
         }
         
         if(!is.null(maxmod)){
         d@models <- d@models[order(d@models$PP, decreasing = TRUE) , ][1:min(maxmod,nrow(d@models)),]
         message("Before adjustment, CPP of top",maxmod,"models is", sum(d@models$PP))
+		old.cpp <- sum(d@models$PP)
         d@models$PP <- d@models$PP/sum(d@models$PP)
         }
            
     out <- cbind(d@models, snps = unlist(lapply(strsplit(d@models$str, "%"), makestr)))
      
-    return(out)
+    return(list(models=out,old.cpp=old.cpp))
 }
 

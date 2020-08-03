@@ -30,7 +30,8 @@ Imports:
     Matrix,
     methods,
     data.table,
-    xtable
+    xtable,
+    parallel
 Suggests:
     roxygen2,
     devtools,

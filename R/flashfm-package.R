@@ -10,6 +10,7 @@
 #' @importFrom snpStats ld
 #' @importFrom data.table rbindlist
 #' @importFrom xtable xtable
+#' @importFrom parallel mclapply
 #' @import R2BGLiMS 
 #' @import GUESSFM
 #' @import Matrix

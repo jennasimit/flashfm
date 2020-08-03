@@ -14,7 +14,7 @@ best.models.cpp(d, cpp.thr = 0.99, maxmod = NULL)
 \item{maxmod}{maximum number of top models to output; NULL by default}
 }
 \value{
-data.frame of top SNP models ordered by posterior probability (PP); if maxmod is specified the PPs are re-scaled to sum to 1.
+list of two objects: models = data.frame of top SNP models ordered by posterior probability (PP); the PPs are re-scaled to sum to 1; old.cpp = cpp before PPs adjusted to sum to 1
 }
 \description{
 Best models from a snpmpd object by cpp or maximum number of models - modification of best.models from GUESSFM by Chris Wallace
