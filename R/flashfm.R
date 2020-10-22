@@ -692,7 +692,7 @@ ppadjM5 <- function(i,STR,covY,Nqq,N,nummods,allVres,Cij,Dcon,keep,lPP,M, Nq3, N
 ppadjM6 <- function(i,STR,covY,Nqq,N,nummods,allVres,Cij,Dcon,keep,lPP,M) {
 
 	 	 if(length(STR[[i]])>1) {
-	 	  Vind <- c(i,setdiff(1:5,i))
+	 	  Vind <- c(i,setdiff(1:6,i))
 	 	  Cind <- combn(Vind,2,simplify=TRUE)
 	 	  pnames <- apply(Cind,2,function(x) {x <- sort(x); paste(x,collapse=".")})
 	 	  npair <- length(pnames)
