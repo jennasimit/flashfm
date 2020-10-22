@@ -31,7 +31,7 @@ return(snpgroups)
 #' @param fm.multi output from flashfm function
 #' @param is.snpmat logical taking value TRUE when genotype matrix is provided and FALSE when covariance matrix is given
 #' @param min.mppi trim snp groups with total MPPI < min.mppi in all diseases; default 0.01
-#' @param minsnpmppi only group snps with total MPPI > minsnpmppi; default 0.01
+#' @param minsnpmppi only group snps with total MPPI > minsnpmppi; default 0.001
 #' @param r2.minmerge merge groups with minimum between-group r2 > r2.minmerge; default 0.5
 #' @return list of  three objects: groups.fm is a list of SNP groups using the single-trait results; groups.flashfm is a list of SNP groups using the flashfm results; group.sizes is  a table of SNP group sizes for the two sets of groups
 #' @export

@@ -208,7 +208,7 @@ double calcQD3(const int mod1, const int N,
 	
 	IntegerVector imods(M), im2(M-1);
 	
-	const NumericVector& tmp = indices(M);
+//	const NumericVector& tmp = indices(M);
 //	NumericVector notT1 = tmp[ tmp != T1 ];
 //	int T2 = notT1(0);
 //	int T3 = notT1(1);
@@ -731,3 +731,123 @@ NumericVector ppadjT5(const int N, const NumericVector& nummods,
 	 					
 return(ppadj);					
 }					
+
+
+
+
+
+
+
+// [[Rcpp::export]]
+double calcQD6fast(const int mod1, const int N,
+					const NumericVector& nummods,
+					const List Vr, const List Cr, const double dcon,
+					const List keep, const List lPP) {		
+	
+	const int T1 = 0;
+	const int M = 6;
+	
+	IntegerVector imods(M), im2(M-1);
+	
+	
+	const int T2 = 1;
+	const int T3 = 2;
+	const int T4 = 3;
+	const int T5 = 4;
+	const int T6 = 5;
+	
+	const int mT2 = nummods(T2);
+	const int mT3 = nummods(T3);
+	const int mT4 = nummods(T4);
+	const int mT5 = nummods(T5);
+	const int mT6 = nummods(T6);
+
+	const int Nc = mT2*mT3*mT4*mT5*mT6;
+	NumericVector QD(Nc);
+	NumericVector Kterm(Nc);
+
+	
+	
+	const NumericVector& lPP2 = lPP[1];
+	const NumericVector& lPP3 = lPP[2];
+	const NumericVector& lPP4 = lPP[3];
+	const NumericVector& lPP5 = lPP[4];
+	const NumericVector& lPP6 = lPP[5];
+
+//	int Tt1, Tt2;
+	
+	const NumericMatrix& K1 = keep[0];
+	const NumericMatrix& K2 = keep[1]; // keep is in order and on log scale
+	const NumericMatrix& K3 = keep[2];
+	const NumericMatrix& K4 = keep[3];
+	const NumericMatrix& K5 = keep[4];
+	
+
+//	const int np = M*(M-1)/2; // number of pairs
+	const NumericMatrix& c2 = pairs(M);		
+	
+	
+		imods(T1) = mod1;
+		int i = 0;  // each i is for a (j,k,l,r,s) models for T2,T3,T4,T5,T6
+		
+		for(int j = 0; j < mT2; j++) {
+			imods(T2) = j;
+			for(int k = 0; k < mT3; k++) {
+				imods(T3) = k;	
+				for(int l = 0; l < mT4; l++) {
+					imods(T4) = l;
+					for(int r = 0; r < mT5; r++) {	
+					imods(T5) = r;
+						for(int s = 0; s < mT6; s++) {	
+						imods(T6) = s;				
+						
+				QD(i) = calcDelta(imods, N, M, dcon, Vr, Cr, c2) + lPP2(j) + lPP3(k) +lPP4(l) +lPP5(r) +lPP6(s);
+				Kterm(i) = K1(mod1,j)+K2(mod1,k)+K3(mod1,l)+K4(mod1,r)+K5(mod1,s);
+		
+	}
+			 
+			i += 1;			
+					
+			}
+			
+			
+		} 
+		
+		}
+		
+		}
+
+		
+
+	QD = logsum1K(QD,Kterm); // sum(exp(qd))=1 then add K 
+
+			
+	double out = logsum(QD);			
+
+						
+
+return(out);			
+}
+
+// [[Rcpp::export]]
+NumericVector ppadjT6fast(const int N, const NumericVector& nummods,
+					const List Vr, const List Cr, const double dcon,
+					const List keep, const List lPP) {		
+					
+	const int mT1 = nummods(0);
+	const NumericVector& lPP1 = lPP[0];
+	NumericVector QD(mT1);
+//	NumericVector lppadj(mT1);
+	
+	for(int i=0; i<mT1; i++) {
+		QD(i) = calcQD6fast(i, N,nummods,Vr, Cr, dcon,keep, lPP);
+	}
+	
+	NumericVector lppadj = logsum1K(QD,lPP1);
+	 	 
+	 const NumericVector& lppadj1 = logsum1(lppadj);
+	 const NumericVector& ppadj = exp(lppadj1);
+	 					
+return(ppadj);					
+}					
+

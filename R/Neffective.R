@@ -33,7 +33,7 @@ makeNlist.rel <- function(Ne,y=NULL,Nsame=NULL){
 
  M <- length(Ne)
 
-if(M==2 | M==3) {
+if(M==2 | M==3 | M==6) {
  Nq3 <- NULL
  Nq4 <- NULL
  }

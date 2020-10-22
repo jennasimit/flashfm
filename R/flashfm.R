@@ -13,7 +13,7 @@ makeNlist <- function(Nall,y=NULL,Nsame=NULL) {
  
  M <- length(Nall)
  
- if(M==2 | M==3) {
+ if(M==2 | M==3 | M==6) {
  Nq3 <- NULL
  Nq4 <- NULL
  }
@@ -688,6 +688,28 @@ ppadjM5 <- function(i,STR,covY,Nqq,N,nummods,allVres,Cij,Dcon,keep,lPP,M, Nq3, N
 	 	 	
 	 	 return(pp)	
 	 	 }
+
+ppadjM6 <- function(i,STR,covY,Nqq,N,nummods,allVres,Cij,Dcon,keep,lPP,M) {
+
+	 	 if(length(STR[[i]])>1) {
+	 	  Vind <- c(i,setdiff(1:5,i))
+	 	  Cind <- combn(Vind,2,simplify=TRUE)
+	 	  pnames <- apply(Cind,2,function(x) {x <- sort(x); paste(x,collapse=".")})
+	 	  npair <- length(pnames)
+	 	  CijI <- vector("list",npair)
+	 	  for(l in 1:npair) {
+	 	    ij <- Cind[,l]
+	 	    if(ij[1]>ij[2]) {CijI[[l]] <- t(Cij[[paste(sort(ij),collapse=".")]])
+	 	    } else { CijI[[l]] <- Cij[[paste(ij,collapse=".")]] }
+	 	    names(CijI)[l] <- paste(ij,collapse=".")
+	 	  }
+		 pp <- ppadjT6fast(N, nummods[Vind], allVres[Vind], CijI, Dcon, keep,lPP[Vind])	
+	 	 	} else { pp <- 1 }
+	 	 	
+	 	 return(pp)	
+	 	 }
+	 	 
+
 	 	 
 	 	 
  PPadjOne <- function(i,qns,Q,STR,covY,Nqq,N,nummods,allVres,Cij,Dcon,lPP,M, Nq3, Nq4, fastapprox) { 	
@@ -699,6 +721,8 @@ ppadjM5 <- function(i,STR,covY,Nqq,N,nummods,allVres,Cij,Dcon,keep,lPP,M, Nq3, N
 	 		if(M==4) { ppadj <- ppadjM4(i,STR,covY,Nqq,N,nummods,allVres,Cij,Dcon,keep,lPP,M, Nq3,fastapprox) }
 	 	 
 	 	  	 if(M==5) { ppadj <- ppadjM5(i,STR,covY,Nqq,N,nummods,allVres,Cij,Dcon,keep,lPP,M, Nq3, Nq4, fastapprox) }
+	 	  	 
+	 	  	 if(M==6) { ppadj <- ppadjM6(i,STR,covY,Nqq,N,nummods,allVres,Cij,Dcon,keep,lPP,M) }
 	
 			return(ppadj) 	 
 	 	  	} 	 

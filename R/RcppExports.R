@@ -53,3 +53,11 @@ ppadjT5 <- function(N, nummods, Vr, Cr, dcon, keep, Nqq, Ldcon12, Nq3, Ldcon123,
     .Call(`_flashfm_ppadjT5`, N, nummods, Vr, Cr, dcon, keep, Nqq, Ldcon12, Nq3, Ldcon123, Cr3, Nq4, Ldcon1234, Cr4, lPP, Nsame)
 }
 
+calcQD6fast <- function(mod1, N, nummods, Vr, Cr, dcon, keep, lPP) {
+    .Call(`_flashfm_calcQD6fast`, mod1, N, nummods, Vr, Cr, dcon, keep, lPP)
+}
+
+ppadjT6fast <- function(N, nummods, Vr, Cr, dcon, keep, lPP) {
+    .Call(`_flashfm_ppadjT6fast`, N, nummods, Vr, Cr, dcon, keep, lPP)
+}
+

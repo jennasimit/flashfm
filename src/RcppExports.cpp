@@ -236,6 +236,41 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// calcQD6fast
+double calcQD6fast(const int mod1, const int N, const NumericVector& nummods, const List Vr, const List Cr, const double dcon, const List keep, const List lPP);
+RcppExport SEXP _flashfm_calcQD6fast(SEXP mod1SEXP, SEXP NSEXP, SEXP nummodsSEXP, SEXP VrSEXP, SEXP CrSEXP, SEXP dconSEXP, SEXP keepSEXP, SEXP lPPSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const int >::type mod1(mod1SEXP);
+    Rcpp::traits::input_parameter< const int >::type N(NSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type nummods(nummodsSEXP);
+    Rcpp::traits::input_parameter< const List >::type Vr(VrSEXP);
+    Rcpp::traits::input_parameter< const List >::type Cr(CrSEXP);
+    Rcpp::traits::input_parameter< const double >::type dcon(dconSEXP);
+    Rcpp::traits::input_parameter< const List >::type keep(keepSEXP);
+    Rcpp::traits::input_parameter< const List >::type lPP(lPPSEXP);
+    rcpp_result_gen = Rcpp::wrap(calcQD6fast(mod1, N, nummods, Vr, Cr, dcon, keep, lPP));
+    return rcpp_result_gen;
+END_RCPP
+}
+// ppadjT6fast
+NumericVector ppadjT6fast(const int N, const NumericVector& nummods, const List Vr, const List Cr, const double dcon, const List keep, const List lPP);
+RcppExport SEXP _flashfm_ppadjT6fast(SEXP NSEXP, SEXP nummodsSEXP, SEXP VrSEXP, SEXP CrSEXP, SEXP dconSEXP, SEXP keepSEXP, SEXP lPPSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const int >::type N(NSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type nummods(nummodsSEXP);
+    Rcpp::traits::input_parameter< const List >::type Vr(VrSEXP);
+    Rcpp::traits::input_parameter< const List >::type Cr(CrSEXP);
+    Rcpp::traits::input_parameter< const double >::type dcon(dconSEXP);
+    Rcpp::traits::input_parameter< const List >::type keep(keepSEXP);
+    Rcpp::traits::input_parameter< const List >::type lPP(lPPSEXP);
+    rcpp_result_gen = Rcpp::wrap(ppadjT6fast(N, nummods, Vr, Cr, dcon, keep, lPP));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_flashfm_concat", (DL_FUNC) &_flashfm_concat, 1},
@@ -251,6 +286,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_flashfm_ppadjT4", (DL_FUNC) &_flashfm_ppadjT4, 13},
     {"_flashfm_calcQD5", (DL_FUNC) &_flashfm_calcQD5, 17},
     {"_flashfm_ppadjT5", (DL_FUNC) &_flashfm_ppadjT5, 16},
+    {"_flashfm_calcQD6fast", (DL_FUNC) &_flashfm_calcQD6fast, 8},
+    {"_flashfm_ppadjT6fast", (DL_FUNC) &_flashfm_ppadjT6fast, 7},
     {NULL, NULL, 0}
 };
 
