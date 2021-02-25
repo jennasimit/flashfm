@@ -78,10 +78,13 @@ GUESSFM, MFM, and R2BGLiMS are from github and to install do
 ``` r
 install.packages("devtools")
 library(devtools)
+# install and load GUESSFM
 remotes::install_github("chr1swallace/GUESSFM","nor2guess")
 library(GUESSFM)  
+# install and load MFM
 install_github("jennasimit/MFM")
 library(MFM)  
+# install and load R2BGLiMS
 install_github("pjnewcombe/R2BGLiMS")
 library(R2BGLiMS)
 ```

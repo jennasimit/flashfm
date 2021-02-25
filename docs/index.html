@@ -83,7 +83,7 @@
   <div class="contents col-md-9">
 <div id="flashfm" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#flashfm" class="anchor"></a>flashfm</h1></div>
+<a href="#flashfm" class="anchor"></a>Flashfm</h1></div>
 <!-- badges: start -->
 <!-- badges: end -->
 <p>The goal of flashfm is to use GWAS summary statistics to jointly fine-map genetic associations for several related quantitative traits in a Bayesian framework that leverages information between the traits.</p>
@@ -91,7 +91,7 @@
 <div id="system-requirements" class="section level2">
 <h2 class="hasAnchor">
 <a href="#system-requirements" class="anchor"></a>System Requirements</h2>
-<p>Flashfm could be installed with ease on versions of R &gt; 3.6.0 and requires additional steps for R &lt; 3.6.0</p>
+<p>Flashfm could be installed with ease on versions of R &gt; 3.6.0 and requires additional steps for R &lt; 3.6.0 If installing on a Windows machine, Rtools must be installed.</p>
 </div>
 <div id="installation-guide" class="section level2">
 <h2 class="hasAnchor">
@@ -133,15 +133,17 @@
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"mixOmics"</span>, <span class="at">repos =</span> <span class="st">"mixOmics_6.3.2.tar.gz"</span>, <span class="at">type=</span><span class="st">"source"</span>)</span></code></pre></div>
 <p>where if in a different working directory than where the zip file is contained, a file path may be needed for the repos argument.</p>
 <p>GUESSFM, MFM, and R2BGLiMS are from github and to install do</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"devtools"</span>) <span class="co"># if you don't already have the package</span></span>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"devtools"</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(devtools)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"chr1swallace/GUESSFM"</span>,<span class="st">"nor2guess"</span>)</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(GUESSFM)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(GUESSFM)  </span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">install_github</span>(<span class="st">"jennasimit/MFM"</span>)</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">install_github</span>(<span class="st">"pjnewcombe/R2BGLiMS"</span>)</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(R2BGLiMS)</span></code></pre></div>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MFM)  </span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="fu">install_github</span>(<span class="st">"pjnewcombe/R2BGLiMS"</span>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(R2BGLiMS)</span></code></pre></div>
 <p>NB: Must have a Java JDK installed in order to install and run R2BGLiMS. This is only needed if you need to run single-trait fine-mapping using JAM. If single-trait fine-mapping results are available, then it is not necessary to have Java JDK installed.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install_github</span>(<span class="st">"jennasimit/flashfm"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install_github</span>(<span class="st">"jennasimit/flashfm"</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(flashfm)</span></code></pre></div>
 </div>
 </div>
 </div>
