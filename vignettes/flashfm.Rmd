@@ -1,0 +1,197 @@
+---
+title: "flashfm"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{flashfm}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Introduction
+
+Flashfm (flexible and shared information fine-mapping) is a package to simultaneously fine-map genetic associations for
+multiple quantitative traits that are measured in the same study(s) by sharing information between the traits. It is flexible 
+to the inclusion of related individuals in the sample and to missing trait measurements.
+
+Flashfm makes use of summary-level data and requires as input: 
+ 
+- GWAS summary statistics  
+- trait covariance matrix 
+- vector of trait means 
+- reference genotype matrix OR reference genotype covariance matrix and vector of RAFs 
+- single-trait fine-mapping results (models and their posterior probabilities); within flashfm is a function for single-trait fine-mapping, 
+if needed 
+
+This vignette introduces flashfm and gives an illustration of its use - with both forms of input for the reference genotype information - 
+on simulated data of two traits with a shared causal variant. A simulated data set is provided in flashfm.
+
+# Flashfm overview
+
+Flashfm shares information between traits by up-weighting joint models that have a shared causal variant between traits, in a similar 
+Bayesian framework to Multinomial Fine-Mapping ([MFM](https://www.nature.com/articles/s41467-019-11271-0)) for joint fine-mapping of multiple 
+diseases with shared controls.
+
+To generate posterior support for fine-mapping models, flashfm needs to calculate the Bayes' factor (BF) for all possible model 
+combinations across SNPs and traits. To make this computationally feasible, we derive an expression for the the joint BF that depends on 
+the individual (marginal) trait BFs and terms that depend on the GWAS summary statistics, covariance matrix of the traits, and sample 
+sizes; either a genotype matrix or both a SNP covariance matrix and relative allele frequencies (RAFs) are needed from a reference panel or 
+in-study sample.
+
+As in MFM, rather than reporting posterior probabilities (PPs) for each SNP model, we focus on SNP groups that we construct such that 
+SNPs in the same group are in LD, have a similar effect on traits, and rarely appear together in a trait model. We constuct SNP groups 
+based on the model PPs from single-trait fine-mapping and a separate set of SNP groups based on the model PPs from flashfm. In general, 
+the groups constructed by flashfm tend to be a subset of those from single-trait fine-mapping, indicating that flashfm gives finer 
+resolution that single-trait fine-mapping.
+
+# Simulation Example
+
+In this simulated data example, we simulate two traits that each hae two causal variants, of which one (rs61839660) is shared between 
+traits; trait 1 has second causal variant rs62626317 and trait 2 has second causal variant rs11594656. The trait correlatin is 0.4.
+
+For a region of 345 SNPs in chromosme 10p-6030000-6220000 (GRCh37/hg19), containing IL2RA, 
+we generated a population of 100,000 individuals based on the CEU 1000 Genomes Phase 3 data 
+using HapGen2. We selected a random sample of 2000 from this population and only retained 
+the 334 variants with MAF > 0.005 in this sample. This genotype matrix is available in flashfm as the object X.
+
+Measurements of two traits were generated using the mvrnorm function in R and genotype matrix X. In this example there are no missing
+measurements, so N=2000 for both traits. 
+
+
+```{r}
+library(flashfm)
+head(snpinfo)
+covY
+ybar
+lapply(beta,head)
+X[1:5,1:5]
+N
+```
+
+### Reference genotype matrix provided
+
+In this example, we make use of a reference genotype matrix as input to flashfm and use the internal flashfm function for single-trait 
+fine-mappping, JAMexpanded.multi. This function is an expanded version of 
+[JAM](https://onlinelibrary.wiley.com/doi/full/10.1002/gepi.21953), and requires a pathway to the software 
+[PLINK](http://zzz.bwh.harvard.edu/plink/).
+
+For efficiency, we provide the output from JAMexpanded.multi in the object JAMmain.input. The command used to generate it is:
+
+```{r,eval=FALSE}
+JAMmain.input <- JAMexpanded.multi(beta,X,snpinfo,ybar,diag(covY),N,chr=10,fstub=fstub,mafthr=0.005,path2plink="/software/plink",r2=0.99,save.path=fstubJ,related=FALSE,y=NULL)
+```
+
+In the above command, ftsub and fstubJ are file prefixes, including file path, to save intermediate results. The related logical flag 
+indicates whether or not there are related individuals in the sample. In the simulated data there is no relatedness, so relate=FALSE. If 
+relatedness, then effective sample sizes need to be input for N; the built-in function Neff estimates effective sample size for each trait from 
+the GWAS summary statistics.
+
+Flashfm is then run with the following lines:
+
+```{r}
+ss.stats <- summaryStats(Xmat=TRUE,ybar.all=ybar,main.input=JAMmain.input)
+fm.multi <- flashfm(JAMmain.input, TOdds=1,covY,ss.stats,cpp=0.99,maxmod=NULL,fastapprox=FALSE)
+```
+
+and SNP groups for both single-trait fine-mapping and flashfm are constructed by 
+
+```{r} 
+snpGroups <- makeSNPgroups2(JAMmain.input,fm.multi,is.snpmat=TRUE,r2.minmerge=0.7) 
+``` 
+
+where the is.snpmat flag=TRUE indicates that the reference genotype matrix was provided and 
+r2.minmerge is the minimum LD between SNPs in different groups for them to merge; r2.minmerge=0.7 means 
+that if a SNP in 1 group has r2>0.7 with a SNP in another group, these 2 groups are merged.
+The first list of SNP groups were based on single-trait fine-mapping and the second list is based on flashfm.
+
+The next function summarises the fine-mapping results using the SNP groups:
+
+```{r}
+mpp.pp <- PPsummarise(fm.multi, snpGroups, minPP=0.05)
+```
+
+This returns a list of 4 objects: MPP lists trait-specific PP of SNP inclusion in a model; MPPg lists trait-specific PP of SNP group 
+inclusion in a model; PP lists trait-specific model PP; PPg lists trait-specific model PP in terms of  SNP group
+Setting minPP=0.05 restricts output for group models to only those with PP>0.05 for at least one trait.
+
+Our top group models are: 
+```{r}
+mpp.pp$PPg
+```
+
+Let's check if our causal variants (in cvs vector) are included in the SNP groups from single and multi-trait fine-mapping and the sizes 
+of the SNP groups
+
+```{r}
+flashfm:::groupIDs.fn(snpGroups[[1]],cvs)
+flashfm:::groupIDs.fn(snpGroups[[2]],cvs)
+snpGroups$group.sizes
+```
+Notice that the groups for the causal variants that were not shared (cvs[c(2,3)]) are the same size for both methods and that
+for the shared variant (cvs[1]), flashfm constructs a smaller group than JAMexpanded.multi. This illustrates how sharing information
+between the traits can refine fine-mapping resolution.
+
+
+### Reference genotype covariance matrix, RAF vector, and FINEMAP results for each trait provided 
+
+Here, we use single-trait fine-mapping results from [FINEMAP](https://academic.oup.com/bioinformatics/article/32/10/1493/1743040) and 
+show how to prepare it for use in flashfm.
+
+The *.config files from FINEMAP are processed by the lines
+```{r,eval=FALSE}
+FMconfig <- vector("list",2)
+for(i in 1:2) FMconfig[[i]] <- read.table(paste0("finemap",i,".config"), header = TRUE, as.is = TRUE, sep = " ")
+```
+and saved in the flashfm object FMconfig, which is prepared for flashfm by creating a list of the FINEMAP results for each trait:
+
+```{r}
+modPP.list <- vector("list",2)
+for(i in 1:2) {modPP.list[[i]] <- data.frame(FMconfig[[i]][,c("config","prob")]); colnames(modPP.list[[i]]) <- c("snps","PP")}
+names(modPP.list) <- names(beta)
+lapply(modPP.list,head)
+```
+
+We provide the covariance matrix of the genotypes from X:
+```{r}
+msnps <- names(raf) # filtered on maf 0.005
+covX = cov(X[,msnps])
+```
+
+Similar lines to the previous example are run, but flashfm.input is needed to prepare input to flashfm, and its output has the
+same form as JAMexpanded.multi.
+
+```{r}
+FMmain.input <- flashfm.input(modPP.list,beta1.list=beta,Gmat=covX,Nall=N,ybar.all=ybar,related=FALSE,y=NULL,Nsame=NULL,is.snpmat=FALSE,raf=raf)
+ss.stats <- summaryStats(Xmat=FALSE,ybar.all=ybar,main.input=FMmain.input)
+fm.multi <- flashfm(FMmain.input, TOdds=1,covY,ss.stats,cpp=0.99,maxmod=NULL,fastapprox=FALSE)
+```
+
+```{r}
+snpGroups <- makeSNPgroups2(FMmain.input,fm.multi,is.snpmat=FALSE,r2.minmerge=0.7)
+mpp.pp <- PPsummarise(fm.multi, snpGroups, minPP=0.05)
+```
+
+Our top group models are:
+```{r}
+mpp.pp$PPg
+```
+
+Let's check if our causal variants (in cvs vector) are included in the SNP groups from single and multi-trait fine-mapping and the sizes
+of the SNP groups
+
+```{r}
+flashfm:::groupIDs.fn(snpGroups[[1]],cvs)
+flashfm:::groupIDs.fn(snpGroups[[2]],cvs)
+snpGroups$group.sizes
+```
+
+Notice that the groups for the causal variants that were not shared (cvs[c(2,3)]) are the same size for both methods and that
+for the shared variant (cvs[1]), flashfm constructs a smaller group than FINEMAP.
+This illustrates how sharing information between the traits can refine fine-mapping resolution.
+
