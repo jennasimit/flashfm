@@ -60,7 +60,7 @@ if (!requireNamespace("BiocManager", quietly = TRUE))
 BiocManager::install("mixOmics")     
 ```
 
-R < 3.5.1:
+## R < 3.5.1:
 
 Go to https://cran.r-project.org/src/contrib/Archive/mixOmics/ and download mixOmics_6.3.2.tar.gz. Then, in R:
 ``` r
