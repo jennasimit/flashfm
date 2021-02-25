@@ -45,3 +45,5 @@ LinkingTo:
     Rcpp,
     RcppArmadillo
 VignetteBuilder: knitr
+URL: https://github.com/jennasimit/flashfm
+BugReports: https://github.com/jennasimit/flashfm/issues

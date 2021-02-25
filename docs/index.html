@@ -62,7 +62,14 @@
   <a href="news/index.html">Changelog</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="https://github.com/jennasimit/flashfm">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -111,14 +118,16 @@
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">install.packages</span>(<span class="st">"BiocManager"</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>BiocManager<span class="sc">::</span><span class="fu">install</span>(<span class="st">"snpStats"</span>)</span></code></pre></div>
 <p>R2GUESS, a dependency of GUESSFM, has the dependency mixOmics, which is available from Bioconductor for R versions &gt;=3.5 and at cran in archive form for R &lt; 3.5.</p>
-</div>
-<div id="r--351" class="section level2">
-<h2 class="hasAnchor">
-<a href="#r--351" class="anchor"></a>R &gt;= 3.5.1:</h2>
+<div id="r--351" class="section level4">
+<h4 class="hasAnchor">
+<a href="#r--351" class="anchor"></a>R &gt;= 3.5.1:</h4>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">"BiocManager"</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>))</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">install.packages</span>(<span class="st">"BiocManager"</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>BiocManager<span class="sc">::</span><span class="fu">install</span>(<span class="st">"mixOmics"</span>)     </span></code></pre></div>
-<p>R &lt; 3.5.1:</p>
+</div>
+<div id="r--351-1" class="section level4">
+<h4 class="hasAnchor">
+<a href="#r--351-1" class="anchor"></a>R &lt; 3.5.1:</h4>
 <p>Go to <a href="https://cran.r-project.org/src/contrib/Archive/mixOmics/" class="uri">https://cran.r-project.org/src/contrib/Archive/mixOmics/</a> and download mixOmics_6.3.2.tar.gz. Then, in R:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"mixOmics"</span>, <span class="at">repos =</span> <span class="st">"mixOmics_6.3.2.tar.gz"</span>, <span class="at">type=</span><span class="st">"source"</span>)</span></code></pre></div>
 <p>where if in a different working directory than where the zip file is contained, a file path may be needed for the repos argument.</p>
@@ -134,10 +143,20 @@
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install_github</span>(<span class="st">"jennasimit/flashfm"</span>)</span></code></pre></div>
 </div>
 </div>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <div class="license">
+    <div class="links">
+<h2>Links</h2>
+<ul class="list-unstyled">
+<li>Browse source code at <br><a href="https://github.com/jennasimit/flashfm">https://​github.com/​jennasimit/​flashfm</a>
+</li>
+<li>Report a bug at <br><a href="https://github.com/jennasimit/flashfm/issues">https://​github.com/​jennasimit/​flashfm/​issues</a>
+</li>
+</ul>
+</div>
+<div class="license">
 <h2>License</h2>
 <ul class="list-unstyled">
 <li>GPL</li>
