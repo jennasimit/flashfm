@@ -53,14 +53,14 @@ BiocManager::install("snpStats")
 
 R2GUESS, a dependency of GUESSFM, has the dependency mixOmics, which is available from Bioconductor for R versions >=3.5 and at cran in archive form for R < 3.5.
 
-## R >= 3.5.1:
+#### R >= 3.5.1:
 ``` r
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 BiocManager::install("mixOmics")     
 ```
 
-## R < 3.5.1:
+#### R < 3.5.1:
 
 Go to https://cran.r-project.org/src/contrib/Archive/mixOmics/ and download mixOmics_6.3.2.tar.gz. Then, in R:
 ``` r
