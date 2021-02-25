@@ -11,6 +11,9 @@
 The goal of flashfm is to use GWAS summary statistics to jointly fine-map genetic associations for several 
 related quantitative traits in a Bayesian framework that leverages information between the traits. 
 
+Website available at: https://jennasimit.github.io/flashfm/.
+
+
 ## System Requirements
 
 Flashfm could be installed with ease on versions of R > 3.6.0 and requires additional steps for R < 3.6.0
