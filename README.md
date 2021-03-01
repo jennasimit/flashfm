@@ -69,24 +69,20 @@ where if in a different working directory than where the zip file is contained, 
 GUESSFM, MFM, and R2BGLiMS are from github and to install do
 
 ``` r
-install.packages("devtools")
-library(devtools)
+install.packages("remotes")
 # install and load GUESSFM
 remotes::install_github("chr1swallace/GUESSFM","nor2guess")
-library(GUESSFM)  
 # install and load MFM
-install_github("jennasimit/MFM")
-library(MFM)  
+remotes::install_github("jennasimit/MFM")
 # install and load R2BGLiMS
-install_github("pjnewcombe/R2BGLiMS")
-library(R2BGLiMS)
+remotes::install_github("pjnewcombe/R2BGLiMS")
 ```
 
 NB: Must have a Java JDK installed in order to install and run R2BGLiMS. This is only needed if you need to run single-trait fine-mapping using JAM. 
 If single-trait fine-mapping results are available, then it is not necessary to have Java JDK installed.
 
 ``` r
-install_github("jennasimit/flashfm")
+remotes::install_github("jennasimit/flashfm")
 library(flashfm)
 ```
 
