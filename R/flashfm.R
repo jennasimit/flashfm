@@ -757,13 +757,16 @@ best.models.cpp <- function (d, cpp.thr = .99,maxmod=NULL)
 #        stop("expected d to be a snpmod object, found ", class(d))
     
         if(is.null(maxmod)){
-        cpp <- cumsum(d@models$PP)
+	d2 <- d
+    	d2@models <- d@models[order(d@models$PP, decreasing = TRUE),]
+        cpp <- cumsum(d2@models$PP)
         wh <- which(cpp <= cpp.thr)
         if (!length(wh))  wh <- 1
         wh <- c(wh, max(wh) + 1)
                 
-        d@models <- d@models[wh, ]
-        d@models$PP <- d@models$PP/sum(d@models$PP)
+        d2@models <- d2@models[wh, ]
+        d2@models$PP <- d2@models$PP/sum(d2@models$PP)
+	d <- d2
         old.cpp <- cpp.thr
         }
         
