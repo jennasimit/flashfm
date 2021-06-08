@@ -185,7 +185,7 @@
 <span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; D          1</span></span>
 <span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; E          3</span></span>
 <span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; G          6</span></span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; H         10</span></span></code></pre></div>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; H          5</span></span></code></pre></div>
 <p>where the is.snpmat flag=TRUE indicates that the reference genotype matrix was provided and r2.minmerge is the minimum LD between SNPs in different groups for them to merge; r2.minmerge=0.7 means that if a SNP in 1 group has r2&gt;0.7 with a SNP in another group, these 2 groups are merged. The first list of SNP groups were based on single-trait fine-mapping and the second list is based on flashfm.</p>
 <p>The next function summarises the fine-mapping results using the SNP groups:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>mpp.pp <span class="ot">&lt;-</span> <span class="fu">PPsummarise</span>(fm.multi, snpGroups, <span class="at">minPP=</span><span class="fl">0.05</span>)</span></code></pre></div>
@@ -194,12 +194,12 @@
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>mpp.pp<span class="sc">$</span>PPg</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $AD</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;             null        182</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; G%H   0.78649673 0.85800363</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; B%G%H 0.05951929 0.04655532</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; G%H   0.78639873 0.84899405</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; B%G%H 0.06359364 0.05141176</span></span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $AC</span></span>
 <span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;          null       182</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; E%H 0.9941071 0.9970277</span></span></code></pre></div>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; E%H 0.9929384 0.9967118</span></span></code></pre></div>
 <p>Let’s check if our causal variants (in cvs vector) are included in the SNP groups from single and multi-trait fine-mapping and the sizes of the SNP groups</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>flashfm<span class="sc">:::</span><span class="fu">groupIDs.fn</span>(snpGroups[[<span class="dv">1</span>]],cvs)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "H" "G" "E"</span></span>
@@ -208,7 +208,7 @@
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>snpGroups<span class="sc">$</span>group.sizes</span>
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      A B C D E F G  H</span></span>
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; null 1 2 2 5 3 1 6 15</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 182  1 2 1 1 3 0 6 10</span></span></code></pre></div>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 182  1 2 1 1 3 0 6  5</span></span></code></pre></div>
 <p>Notice that the groups for the causal variants that were not shared (cvs[c(2,3)]) are the same size for both methods and that for the shared variant (cvs[1]), flashfm constructs a smaller group than JAMexpanded.multi. This illustrates how sharing information between the traits can refine fine-mapping resolution.</p>
 </div>
 <div id="reference-genotype-covariance-matrix-raf-vector-and-finemap-results-for-each-trait-provided" class="section level3">

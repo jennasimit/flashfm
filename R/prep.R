@@ -352,7 +352,7 @@ marg.snps <- function(d) {
 makemod <- function(snps) {
   snps <- strsplit(snps,"%")
   all.snps <- unique(unlist(snps))
-  mod <- Matrix(0,length(snps),length(all.snps),dimnames=list(NULL,all.snps))
+  mod <- Matrix:::Matrix(0,length(snps),length(all.snps),dimnames=list(NULL,all.snps),doDiag=FALSE)
   snum <- lapply(snps, function(s) which(all.snps %in% s))
   I <- rep(1:length(snum),times=sapply(snum,length))
   J <- unlist(snum)
