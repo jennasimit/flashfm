@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Marginal PP for models of a set of traits, sharing information between the traits — flashfm • flashfm</title>
+<title>Correlation Matrix to Covariance Matrix Conversion — cor2cov • flashfm</title>
 
 
 <!-- jquery -->
@@ -35,8 +35,8 @@
 
 
 
-<meta property="og:title" content="Marginal PP for models of a set of traits, sharing information between the traits — flashfm" />
-<meta property="og:description" content="Marginal PP for models of a set of traits, sharing information between the traits" />
+<meta property="og:title" content="Correlation Matrix to Covariance Matrix Conversion — cor2cov" />
+<meta property="og:description" content="Function to convert a correlation matrix to a covariance matrix." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -111,78 +111,52 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Marginal PP for models of a set of traits, sharing information between the traits</h1>
-    <small class="dont-index">Source: <a href='https://github.com/jennasimit/flashfm/blob/master/R/flashfm.R'><code>R/flashfm.R</code></a></small>
-    <div class="hidden name"><code>flashfm.Rd</code></div>
+    <h1>Correlation Matrix to Covariance Matrix Conversion</h1>
+    <small class="dont-index">Source: <a href='https://github.com/jennasimit/flashfm/blob/master/R/jamexpanded.corX.R'><code>R/jamexpanded.corX.R</code></a></small>
+    <div class="hidden name"><code>cor2cov.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Marginal PP for models of a set of traits, sharing information between the traits</p>
+    <p>Function to convert a correlation matrix to a covariance matrix.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>flashfm</span>(
-  <span class='no'>main.input</span>,
-  <span class='no'>TOdds</span>,
-  <span class='no'>covY</span>,
-  <span class='no'>ss.stats</span>,
-  <span class='kw'>cpp</span> <span class='kw'>=</span> <span class='fl'>0.99</span>,
-  <span class='kw'>maxmod</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>fastapprox</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='no'>NCORES</span>
-)</pre>
+    <pre class="usage"><span class='fu'>cor2cov</span>(<span class='no'>cor.mat</span>, <span class='no'>sd</span>, <span class='kw'>discrepancy</span> <span class='kw'>=</span> <span class='fl'>1e-05</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>main.input</th>
-      <td><p>List of 3 components: SM=list of snpmod objects for a set of traits; mbeta=list of joint effects for each trait; nsnps= number of SNPs in the region 
-This could be obtained from flashfm.input or JAMexpanded.multi.</p></td>
+      <th>cor.mat</th>
+      <td><p>the correlation matrix to be converted</p></td>
     </tr>
     <tr>
-      <th>TOdds</th>
-      <td><p>Vector of target odds of no sharing to sharing</p></td>
+      <th>sd</th>
+      <td><p>a vector that contains the standard deviations of the variables in the correlation matrix</p></td>
     </tr>
     <tr>
-      <th>covY</th>
-      <td><p>trait covariance matrix</p></td>
-    </tr>
-    <tr>
-      <th>ss.stats</th>
-      <td><p>output from summaryStats; list of 4 components: Mx = mean of SNPs, xcovo = covariance matrix of SNPs, Sxy = matrix of Sxy values (column traits), ybar=vector of trait means</p></td>
-    </tr>
-    <tr>
-      <th>cpp</th>
-      <td><p>cumulative posterior probability threshold for selecting top models; this is ignored when maxmod is spespecified</p></td>
-    </tr>
-    <tr>
-      <th>maxmod</th>
-      <td><p>maximum number of top models to output; NULL by default</p></td>
-    </tr>
-    <tr>
-      <th>fastapprox</th>
-      <td><p>logical that is TRUE when fast approximation is used that does not include unequal sample size adjustments; default is FALSE</p></td>
-    </tr>
-    <tr>
-      <th>NCORES</th>
-      <td><p>number of cores for parallel computing; recommend NCORES=M, but if on Windows, use NCORES=1</p></td>
+      <th>discrepancy</th>
+      <td><p>a neighborhood of 1, such that numbers on the main diagonal of the correlation matrix will be considered as equal to 1 if they fall in this neighborhood</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>List consisting of PP: marginal PP for models and MPP: marginal PP of SNP inclusion</p>
+    <p>The correlation matrix to convert can be either symmetric or triangular. The covariance matrix returned is always a symmetric matrix.</p>
+    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
+
+    <p>The correlation matrix input should be a square matrix, and the length of sd should be equal to the number of variables in the correlation matrix (i.e., the number of rows/columns). Sometimes the correlation matrix input may not have exactly 1's on the main diagonal, due to, eg, rounding; discrepancy specifies the allowable discrepancy so that the function still considers the input as a correlation matrix and can proceed (but the function does not change the numbers on the main diagonal).</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
+      <li><a href="#details">Details</a></li>
+      <li><a href="#note">Note</a></li>
     </ul>
 
     <h2>Author</h2>
-    <p>Jenn Asimit</p>
+    <p>Ken Kelley (University of Notre Dame; (<a href='mailto:KKelley@ND.Edu'>KKelley@ND.Edu</a>) and Keke Lai (the <code>MBESS</code> package), with modifications by Dustin Fife <a href='mailto:fife.dustin@gmail.com'>fife.dustin@gmail.com</a>.</p>
   </div>
 </div>
 
