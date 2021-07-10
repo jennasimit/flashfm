@@ -25,7 +25,7 @@ This could be obtained from flashfm.input or JAMexpanded.multi.}
 
 \item{ss.stats}{output from summaryStats; list of 4 components: Mx = mean of SNPs, xcovo = covariance matrix of SNPs, Sxy = matrix of Sxy values (column traits), ybar=vector of trait means}
 
-\item{cpp}{cumulative posterior probability threshold for selecting top models; this is ignored when maxmod is spe$}
+\item{cpp}{cumulative posterior probability threshold for selecting top models; this is ignored when maxmod is spespecified}
 
 \item{maxmod}{maximum number of top models to output; NULL by default}
 

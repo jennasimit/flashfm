@@ -157,7 +157,7 @@ marginalpp <- function(STR, PP, mbeta, covY, SSy, Sxy, kappa, N,Nqq,nsnps,Mx,xco
 #' @param TOdds Vector of target odds of no sharing to sharing
 #' @param covY trait covariance matrix
 #' @param ss.stats output from summaryStats; list of 4 components: Mx = mean of SNPs, xcovo = covariance matrix of SNPs, Sxy = matrix of Sxy values (column traits), ybar=vector of trait means 
-#' @param cpp cumulative posterior probability threshold for selecting top models; this is ignored when maxmod is spe$
+#' @param cpp cumulative posterior probability threshold for selecting top models; this is ignored when maxmod is spespecified
 #' @param maxmod maximum number of top models to output; NULL by default
 #' @param fastapprox logical that is TRUE when fast approximation is used that does not include unequal sample size adjustments; default is FALSE
 #' @param NCORES number of cores for parallel computing; recommend NCORES=M, but if on Windows, use NCORES=1

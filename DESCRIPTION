@@ -17,16 +17,20 @@ Authors@R: c(person("Jenn", "Asimit", role=c("aut","cre"), email = "ja628@cam.ac
     person("Chris", "Wallace", role=c("aut"), email = "cew54@cam.ac.uk"))
 Maintainer: Jenn Asimit <ja628@cam.ac.uk> 
 Depends: R (>= 3.6.0)
+Remotes:
+    pjnewcombe/R2BGLiMS,
+    jennasimit/MFM,
+    chr1swallace/GUESSFM
 Imports:
-    GUESSFM,
     snpStats,
-    R2BGLiMS,
     rlist,
+    R2BGLiMS,
+    MFM,
+    GUESSFM,
     gtools,
     Rcpp,
     RcppArmadillo,
     MASS,
-    MFM,
     Matrix,
     methods,
     data.table,
@@ -34,6 +38,7 @@ Imports:
     parallel
 Suggests:
     roxygen2,
+    testthat,
     devtools,
     knitr,
     rmarkdown
