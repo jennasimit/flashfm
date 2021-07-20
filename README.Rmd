@@ -25,6 +25,8 @@ Website available at: https://jennasimit.github.io/flashfm/.
 
 Flashfm could be installed with ease on versions of R > 3.6.0 and requires additional steps for R < 3.6.0
 If installing on a Windows machine, Rtools must be installed.
+Installation time is estimated as 2 minutes.
+
 
 ## Installation Guide
 
@@ -57,14 +59,14 @@ BiocManager::install("snpStats")
 
 R2GUESS, a dependency of GUESSFM, has the dependency mixOmics, which is available from Bioconductor for R versions >=3.5 and at cran in archive form for R < 3.5.
 
-#### R >= 3.5.1:
+##### R >= 3.5.1:
 ``` r
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 BiocManager::install("mixOmics")     
 ```
 
-#### R < 3.5.1:
+##### R < 3.5.1:
 
 Go to https://cran.r-project.org/src/contrib/Archive/mixOmics/ and download mixOmics_6.3.2.tar.gz. Then, in R:
 ``` r
@@ -72,6 +74,9 @@ install.packages("mixOmics", repos = "mixOmics_6.3.2.tar.gz", type="source")
 ```
 
 where if in a different working directory than where the zip file is contained, a file path may be needed for the repos argument.
+
+
+##### Required dependencies from GitHub
 
 GUESSFM, MFM, and R2BGLiMS are from github and to install do
 
