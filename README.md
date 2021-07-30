@@ -32,6 +32,8 @@ devtools::install_github("jennasimit/flashfm")
 
 ## Longer version (if above fails)
 
+The following packages from CRAN and Bioconductor are required:
+
 ``` r
 install.packages("Rcpp")
 install.packages("RcppArmadillo")
@@ -41,44 +43,26 @@ install.packages("gtools")
 install.packages("rlist")
 install.packages("MASS")
 install.packages("xtable")
-```
-
-Some packages (e.g. snpStats) are from Bioconductor. For these, you need to do
-``` r
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 BiocManager::install("snpStats")
-```
-
-R2GUESS, a dependency of GUESSFM, has the dependency mixOmics, which is available from Bioconductor for R versions >=3.5 and at cran in archive form for R < 3.5.
-
-##### R >= 3.5.1:
-``` r
-if (!requireNamespace("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
 BiocManager::install("mixOmics")     
 ```
 
-##### R < 3.5.1:
-
-Go to https://cran.r-project.org/src/contrib/Archive/mixOmics/ and download mixOmics_6.3.2.tar.gz. Then, in R:
-``` r
-install.packages("mixOmics", repos = "mixOmics_6.3.2.tar.gz", type="source")
-```
-
-where if in a different working directory than where the zip file is contained, a file path may be needed for the repos argument.
-
-
-##### Required dependencies from GitHub
-
-GUESSFM, MFM, and R2BGLiMS are from github and to install do
+as well as the following dependencies from GitHUb
 
 ``` r
 install.packages("remotes")
 # install and load GUESSFM
 remotes::install_github("chr1swallace/GUESSFM","nor2guess")
+```
+
+``` r
 # install and load MFM
 remotes::install_github("jennasimit/MFM")
+```
+
+``` r
 # install and load R2BGLiMS
 remotes::install_github("pjnewcombe/R2BGLiMS")
 ```
@@ -89,5 +73,16 @@ If single-trait fine-mapping results are available, then it is not necessary to 
 ``` r
 remotes::install_github("jennasimit/flashfm")
 library(flashfm)
+library(R2BGLiMS)  # if running internal JAM functions for single-trait fine-mapping
 ```
+
+##### NOTE: If R < 3.5.1, to install mixOmics do the following:
+
+Go to https://cran.r-project.org/src/contrib/Archive/mixOmics/ and download mixOmics_6.3.2.tar.gz. Then, in R:
+``` r
+install.packages("mixOmics", repos = "mixOmics_6.3.2.tar.gz", type="source")
+```
+
+where if in a different working directory than where the zip file is contained, a file path may be needed for the repos argument.
+
 
