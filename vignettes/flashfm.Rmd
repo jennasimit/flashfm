@@ -162,9 +162,9 @@ flashfm:::groupIDs.fn(fm$snpGroups[[2]],cvs)
 fm$snpGroups$group.sizes
 ```
 
-Notice that the groups for the causal variants that were not shared (cvs[c(2,3)]) are the same size for both methods and that for the shared 
-variant (cvs[1]), flashfm constructs a smaller group than FINEMAP. This illustrates how sharing information between the traits can refine 
-fine-mapping resolution.
+Notice that the groups for the causal variants that were not shared (cvs[c(2,3)]) are the same size for both methods and that 
+for the shared variant (cvs[1]), flashfm constructs a smaller group than FINEMAP. This illustrates how sharing information 
+between the traits can refine fine-mapping resolution.
 
 ### Reference genotype matrix provided
 
@@ -288,7 +288,7 @@ fm.multi <- flashfm(FMmain.input, TOdds=1,covY,ss.stats,cpp=0.99,maxmod=NULL,fas
 ```
 
 ```{r}
-snpGroups <- makeSNPgroups2(FMmain.input,fm.multi,is.snpmat=FALSE,r2.minmerge=0.7)
+snpGroups <- makeSNPgroups2(FMmain.input,fm.multi,is.snpmat=FALSE,r2.minmerge=0.6)
 mpp.pp <- PPsummarise(fm.multi, snpGroups, minPP=0.05)
 ```
 
