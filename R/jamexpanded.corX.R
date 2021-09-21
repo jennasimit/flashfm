@@ -56,14 +56,6 @@ cor.refdata.fn <- function(corX,r2=0.99) {
  gt <- unlist(gmat2t)
  tg=gt[names(gt)=="tagsnp"]
  refG<-corX[tg,tg]
- m <- apply(refG, 2, mean)
- Mmat <- matrix(m, ncol = length(m), nrow = nrow(refG), byrow = TRUE)
- r0 <- refG - Mmat
- rtr <- t(r0) %*% r0
- rtr_qr <- qr(rtr)
- tmp <- refG[rtr_qr$pivot[seq(rtr_qr$rank)], rtr_qr$pivot[seq(rtr_qr$rank)]]
- rg <- corX[colnames(tmp),colnames(tmp)]
- refG <- rg
  return(refG)
  }
 
@@ -160,8 +152,11 @@ JAMexpandedCor.multi <- function(beta1, corX, raf, ybar, Vy, N, r2 = 0.99, save.
     else {
         ts <- names(ybar)
     }
-    snps <- NULL
-    for (i in 1:M) snps <- union(snps, names(beta1[[i]]))
+#    snps <- NULL
+#    for (i in 1:M) snps <- union(snps, names(beta1[[i]]))
+	snps <- names(beta1[[1]])
+	for (i in 2:M) snps <- intersect(snps, names(beta1[[i]]))
+
     snps <- intersect(snps, names(raf))
     for (i in 1:M) beta1[[i]] <- beta1[[i]][snps]
     if (is.null(colnames(corX))) 
@@ -280,7 +275,7 @@ FLASHFMwithJAM <- function(beta1, corX, raf, ybar, N, r2 = 0.99, save.path,TOdds
 
  M <- length(ybar)
  Vy <- diag(covY)
- main.input <- JAMexpandedCor.multi(beta1, corX, raf, ybar, Vy, N, r2 = 0.99, save.path)
+ main.input <- JAMexpandedCor.multi(beta1, corX, raf, ybar, Vy, N, r2 = r2, save.path)
  gc(verbose=FALSE)
  ss.stats <- summaryStats(Xmat = FALSE, ybar.all = ybar, main.input = main.input)
  fm.multi <- flashfm(main.input, TOdds=TOdds,covY,ss.stats,cpp=cpp,maxmod=NULL,fastapprox=FALSE,NCORES=NCORES)
