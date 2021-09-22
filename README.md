@@ -6,6 +6,7 @@
 # Flashfm
 
 <!-- badges: start -->
+[![DOI](https://zenodo.org/badge/267086751.svg)](https://zenodo.org/badge/latestdoi/267086751)
 <!-- badges: end -->
 
 The goal of flashfm is to use GWAS summary statistics to jointly fine-map genetic associations for several 
