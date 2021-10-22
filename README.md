@@ -14,6 +14,13 @@ related quantitative traits in a Bayesian framework that leverages information b
 
 Website available at: https://jennasimit.github.io/flashfm/.
 
+Details available in https://rdcu.be/czYpf . 
+
+Hernandez, N., Soenksen, J., Newcombe, P., Sandhu, M., Barroso, I., 
+Wallace, C., Asimit, J.  The flashfm approach for fine-mapping multiple 
+quantitative traits. Nat Commun 12, 6147 (2021). 
+https://doi.org/10.1038/s41467-021-26364-y
+
 
 ## System Requirements
 
