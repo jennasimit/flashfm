@@ -7,7 +7,6 @@
 #' @importFrom rlist list.cbind list.stack list.append
 #' @importFrom gtools smartbind
 #' @importFrom MASS mvrnorm
-#' @importFrom snpStats ld
 #' @importFrom data.table rbindlist
 #' @importFrom xtable xtable
 #' @importFrom parallel mclapply

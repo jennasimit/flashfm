@@ -22,7 +22,6 @@ Remotes:
     jennasimit/MFM,
     chr1swallace/GUESSFM
 Imports:
-    snpStats,
     rlist,
     R2BGLiMS,
     MFM,
