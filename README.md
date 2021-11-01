@@ -50,11 +50,6 @@ install.packages("data.table")
 install.packages("gtools")
 install.packages("rlist")
 install.packages("MASS")
-install.packages("xtable")
-if (!requireNamespace("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
-BiocManager::install("snpStats")
-BiocManager::install("mixOmics")     
 ```
 
 as well as the following dependencies from GitHUb
@@ -63,11 +58,6 @@ as well as the following dependencies from GitHUb
 install.packages("remotes")
 # install and load GUESSFM
 remotes::install_github("chr1swallace/GUESSFM","nor2guess")
-```
-
-``` r
-# install and load MFM
-remotes::install_github("jennasimit/MFM")
 ```
 
 ``` r
@@ -84,13 +74,5 @@ library(flashfm)
 library(R2BGLiMS)  # if running internal JAM functions for single-trait fine-mapping
 ```
 
-##### NOTE: If R < 3.5.1, to install mixOmics do the following:
-
-Go to https://cran.r-project.org/src/contrib/Archive/mixOmics/ and download mixOmics_6.3.2.tar.gz. Then, in R:
-``` r
-install.packages("mixOmics", repos = "mixOmics_6.3.2.tar.gz", type="source")
-```
-
-where if in a different working directory than where the zip file is contained, a file path may be needed for the repos argument.
 
 

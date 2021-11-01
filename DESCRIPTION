@@ -19,12 +19,10 @@ Maintainer: Jenn Asimit <ja628@cam.ac.uk>
 Depends: R (>= 3.6.0)
 Remotes:
     pjnewcombe/R2BGLiMS,
-    jennasimit/MFM,
     chr1swallace/GUESSFM
 Imports:
     rlist,
     R2BGLiMS,
-    MFM,
     GUESSFM,
     gtools,
     Rcpp,
