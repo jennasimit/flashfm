@@ -6,6 +6,19 @@
 
 using namespace Rcpp;
 
+// odds_no_sharing
+double odds_no_sharing(const double kappa, const NumericVector p, const int ndis);
+RcppExport SEXP _flashfm_odds_no_sharing(SEXP kappaSEXP, SEXP pSEXP, SEXP ndisSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const double >::type kappa(kappaSEXP);
+    Rcpp::traits::input_parameter< const NumericVector >::type p(pSEXP);
+    Rcpp::traits::input_parameter< const int >::type ndis(ndisSEXP);
+    rcpp_result_gen = Rcpp::wrap(odds_no_sharing(kappa, p, ndis));
+    return rcpp_result_gen;
+END_RCPP
+}
 // concat
 String concat(CharacterVector x);
 RcppExport SEXP _flashfm_concat(SEXP xSEXP) {
@@ -273,6 +286,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_flashfm_odds_no_sharing", (DL_FUNC) &_flashfm_odds_no_sharing, 3},
     {"_flashfm_concat", (DL_FUNC) &_flashfm_concat, 1},
     {"_flashfm_calcDij", (DL_FUNC) &_flashfm_calcDij, 5},
     {"_flashfm_pairs", (DL_FUNC) &_flashfm_pairs, 1},

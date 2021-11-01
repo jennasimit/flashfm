@@ -28,7 +28,23 @@ PPmodGroups <- function(modPP,snpgroups,minPP=0.05) {
  return(list(snp=Sout,group=Gout))
  }
 
+sep.fn <- function (k, mnames) 
+{
+    msep <- unlist(strsplit(as.character(mnames[k]), "%"))
+    return(msep)
+}
 
+
+check.fn <- function (k, msep, out, gnames) {
+    g <- length(gnames)
+    p1 <- numeric(g)
+    for (j in 1:g) {
+        ind1 <- gnames[j] %in% msep[[k]]
+        if (ind1) 
+            p1[j] <- out[k]
+    }
+    return(p1)
+}
 
 MPPmodGroups <- function(PP1) {
 
@@ -38,7 +54,7 @@ MPPmodGroups <- function(PP1) {
     gnames <- unique(unlist(msep))
     mpp1 <- NULL   
         tmp1 <- apply(matrix(1:length(mnames), ncol = 1), 1, 
-            MFM:::check.fn, msep, PP1$PP, gnames)
+            check.fn, msep, PP1$PP, gnames)
         mpp1 <- apply(as.matrix(tmp1), 1, sum)   
     mpp1 <- data.frame(mpp1, row.names = gnames)  
     return(mpp1)

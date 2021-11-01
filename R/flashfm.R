@@ -184,7 +184,7 @@ flashfm <- function(main.input,TOdds,covY,ss.stats,cpp=0.99,maxmod=NULL,fastappr
 	nd <- M <- length(SM)
 	qt <- names(main.input$SM)    	
 	kappas <- c()
-	for(j in 1:length(TOdds)) kappas <- c(kappas,MFM::calckappa(nsnps=nsnps,p=2/nsnps,ndis=nd,target.odds=TOdds[j]))
+	for(j in 1:length(TOdds)) kappas <- c(kappas,calckappa(nsnps=nsnps,p=2/nsnps,ndis=nd,target.odds=TOdds[j]))
     kappas <- round(kappas)
     traits <- paste(qt, collapse = "-")
     bestmod.thr <- vector("list",M)
@@ -218,7 +218,7 @@ flashfm <- function(main.input,TOdds,covY,ss.stats,cpp=0.99,maxmod=NULL,fastappr
        }
 
    
-    mpp <- lapply(pp, MFM::MPP.fn)
+    mpp <- lapply(pp, MPP.fn)
     names(pp) <- qt
     mpp1 <- lapply(mpp, t)
    
@@ -227,8 +227,36 @@ flashfm <- function(main.input,TOdds,covY,ss.stats,cpp=0.99,maxmod=NULL,fastappr
     return(list(PP = pp, MPP = MPP,sharing=c("null",kappas)))
 }
 
+# from MFM package
+#  author Chris Wallace
+calckappa <- function (nsnps, p, ndis, target.odds) 
+{
+    prob <- dbinom(0:nsnps, size = nsnps, prob = p)
+    f <- function(kappa) {
+        abs(odds_no_sharing(kappa, prob, ndis) - log(target.odds))
+    }
+    out <- optimize(f, c(1, 9e+05))$minimum
+    if (9e+05 - out < 0.5) 
+        warning("Optimizing kappa near boundary, maximum value 900,000")
+    return(out)
+}
 
-
+# from MFM package
+MPP.fn <- function (PP1) {
+    mnames <- rownames(PP1)
+    msep <- apply(matrix(1:length(mnames), ncol = 1), 1, sep.fn, 
+        mnames)
+    gnames <- unique(unlist(msep))
+    mpp1 <- NULL
+    for (k in 1:dim(PP1)[2]) {
+        tmp1 <- apply(matrix(1:length(mnames), ncol = 1), 1, 
+            check.fn, msep, PP1[, k], gnames)
+        mpp1 <- rbind(mpp1, apply(tmp1, 1, sum))
+    }
+    mpp1 <- data.frame(mpp1, row.names = colnames(PP1))
+    names(mpp1) <- gnames
+    return(t(mpp1))
+}
 
 
 logminus <- function(x,y) {
