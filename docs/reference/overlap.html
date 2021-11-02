@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>internal function marg.snps — marg.snps • flashfm</title>
+<title>overlap — overlap • flashfm</title>
 
 
 <!-- jquery -->
@@ -35,8 +35,8 @@
 
 
 
-<meta property="og:title" content="internal function marg.snps — marg.snps" />
-<meta property="og:description" content="internal function marg.snps" />
+<meta property="og:title" content="overlap — overlap" />
+<meta property="og:description" content="overlap can be used to examine the overlap between groups before the union is created" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -111,32 +111,40 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>internal function marg.snps</h1>
-    <small class="dont-index">Source: <a href='https://github.com/jennasimit/flashfm/blob/master/R/prep.R'><code>R/prep.R</code></a></small>
-    <div class="hidden name"><code>marg.snps.Rd</code></div>
+    <h1>overlap</h1>
+    <small class="dont-index">Source: <a href='https://github.com/jennasimit/flashfm/blob/master/R/GUESSFMfn.R'><code>R/GUESSFMfn.R</code></a></small>
+    <div class="hidden name"><code>overlap.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>internal function marg.snps</p>
+    <p>overlap can be used to examine the overlap between groups before the union is created</p>
     </div>
 
-    <pre class="usage"><span class='fu'>marg.snps</span>(<span class='no'>d</span>)</pre>
+    <pre class="usage"><span class='fu'>overlap</span>(<span class='no'>x</span>, <span class='no'>y</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>d</th>
-      <td><p>snpmod object</p></td>
+      <th>x</th>
+      <td><p>object of class <code>groups</code>, <code>snppicker</code> or <code>tags</code></p></td>
+    </tr>
+    <tr>
+      <th>y</th>
+      <td><p>object of same class as x</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>object of class groups</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#value">Value</a></li>
     </ul>
 
     <h2>Author</h2>

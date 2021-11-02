@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>internal function marg.snps — marg.snps • flashfm</title>
+<title>Best SNPs — best.snps • flashfm</title>
 
 
 <!-- jquery -->
@@ -35,8 +35,8 @@
 
 
 
-<meta property="og:title" content="internal function marg.snps — marg.snps" />
-<meta property="og:description" content="internal function marg.snps" />
+<meta property="og:title" content="Best SNPs — best.snps" />
+<meta property="og:description" content="Display the SNPs with greatest marginal posterior probability of inclusion (MPPI)" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -111,32 +111,44 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>internal function marg.snps</h1>
-    <small class="dont-index">Source: <a href='https://github.com/jennasimit/flashfm/blob/master/R/prep.R'><code>R/prep.R</code></a></small>
-    <div class="hidden name"><code>marg.snps.Rd</code></div>
+    <h1>Best SNPs</h1>
+    <small class="dont-index">Source: <a href='https://github.com/jennasimit/flashfm/blob/master/R/group.multi.R'><code>R/group.multi.R</code></a></small>
+    <div class="hidden name"><code>best.snps.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>internal function marg.snps</p>
+    <p>Display the SNPs with greatest marginal posterior probability of inclusion (MPPI)</p>
     </div>
 
-    <pre class="usage"><span class='fu'>marg.snps</span>(<span class='no'>d</span>)</pre>
+    <pre class="usage"><span class='fu'>best.snps</span>(<span class='no'>d</span>, <span class='kw'>mppi.thr</span> <span class='kw'>=</span> <span class='no'>pp.thr</span>, <span class='kw'>pp.thr</span> <span class='kw'>=</span> <span class='fl'>0.1</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>d</th>
-      <td><p>snpmod object</p></td>
+      <td><p>snpmod object or a list of snpmod objects</p></td>
+    </tr>
+    <tr>
+      <th>mppi.thr</th>
+      <td><p>MPPI threshold, SNPs with MPPI&gt;mppi.thr will be shown</p></td>
+    </tr>
+    <tr>
+      <th>pp.thr</th>
+      <td><p>deprecated, alias for mppi.thr</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>subset of <code><a href='accessors.html'>snps(d)</a></code> data.frame including best SNPs</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#value">Value</a></li>
     </ul>
 
     <h2>Author</h2>

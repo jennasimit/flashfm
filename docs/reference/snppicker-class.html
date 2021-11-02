@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>internal function marg.snps — marg.snps • flashfm</title>
+<title>Class to hold results of snp.picker algorithm — snppicker-class • flashfm</title>
 
 
 <!-- jquery -->
@@ -35,8 +35,9 @@
 
 
 
-<meta property="og:title" content="internal function marg.snps — marg.snps" />
-<meta property="og:description" content="internal function marg.snps" />
+<meta property="og:title" content="Class to hold results of snp.picker algorithm — snppicker-class" />
+<meta property="og:description" content="snp.picker groups SNPs according to LD and model inclusion
+and outputs objects of class snppicker." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -111,36 +112,39 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>internal function marg.snps</h1>
-    <small class="dont-index">Source: <a href='https://github.com/jennasimit/flashfm/blob/master/R/prep.R'><code>R/prep.R</code></a></small>
-    <div class="hidden name"><code>marg.snps.Rd</code></div>
+    <h1>Class to hold results of snp.picker algorithm</h1>
+    <small class="dont-index">Source: <a href='https://github.com/jennasimit/flashfm/blob/master/R/GUESSFMfn.R'><code>R/GUESSFMfn.R</code></a></small>
+    <div class="hidden name"><code>snppicker-class.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>internal function marg.snps</p>
+    <p><code>snp.picker</code> groups SNPs according to LD and model inclusion
+and outputs objects of class snppicker.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>marg.snps</span>(<span class='no'>d</span>)</pre>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>d</th>
-      <td><p>snpmod object</p></td>
-    </tr>
-    </table>
 
+    <h2 class="hasAnchor" id="slots"><a class="anchor" href="#slots"></a>Slots</h2>
+
+    
+
+<dl class='dl-horizontal'>
+<dt><code>groups</code></dt><dd><p>list of data.frames describing SNPs in each group</p></dd>
+
+<dt><code>plotsdata</code></dt><dd><p>list of additional data relating to the snp.picker
+process that allows a summary of that process to be plotted via
+<code>plot</code>.
+new("snppicker")</p></dd>
+
+</dl>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#slots">Slots</a></li>
     </ul>
 
-    <h2>Author</h2>
-    <p>Chris Wallace</p>
   </div>
 </div>
 

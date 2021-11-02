@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>internal function marg.snps — marg.snps • flashfm</title>
+<title>tag — tag • flashfm</title>
 
 
 <!-- jquery -->
@@ -35,8 +35,8 @@
 
 
 
-<meta property="og:title" content="internal function marg.snps — marg.snps" />
-<meta property="og:description" content="internal function marg.snps" />
+<meta property="og:title" content="tag — tag" />
+<meta property="og:description" content="Derive tag SNPs for a SnpMatrix object using heirarchical clustering" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -111,32 +111,78 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>internal function marg.snps</h1>
+    <h1>tag</h1>
     <small class="dont-index">Source: <a href='https://github.com/jennasimit/flashfm/blob/master/R/prep.R'><code>R/prep.R</code></a></small>
-    <div class="hidden name"><code>marg.snps.Rd</code></div>
+    <div class="hidden name"><code>tag.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>internal function marg.snps</p>
+    <p>Derive tag SNPs for a SnpMatrix object using heirarchical clustering</p>
     </div>
 
-    <pre class="usage"><span class='fu'>marg.snps</span>(<span class='no'>d</span>)</pre>
+    <pre class="usage"><span class='fu'>tag</span>(
+  <span class='no'>X</span>,
+  <span class='kw'>tag.threshold</span> <span class='kw'>=</span> <span class='fl'>0.99</span>,
+  <span class='kw'>snps</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>samples</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>strata</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>quiet</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"single"</span>,
+  <span class='kw'>split.at</span> <span class='kw'>=</span> <span class='fl'>500</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>d</th>
-      <td><p>snpmod object</p></td>
+      <th>X</th>
+      <td><p>SnpMatrix object</p></td>
+    </tr>
+    <tr>
+      <th>tag.threshold</th>
+      <td><p>threshold to cut tree, default=0.99</p></td>
+    </tr>
+    <tr>
+      <th>snps</th>
+      <td><p>colnames of the SnpMatrix object to be used</p></td>
+    </tr>
+    <tr>
+      <th>samples</th>
+      <td><p>optional, subset of samples to use</p></td>
+    </tr>
+    <tr>
+      <th>strata</th>
+      <td><p>optional, return a list of tag vectors, one for each stratum defined by as.factor(strata)</p></td>
+    </tr>
+    <tr>
+      <th>quiet</th>
+      <td><p>if FALSE (default), show progress messages</p></td>
+    </tr>
+    <tr>
+      <th>method</th>
+      <td><p>method used for heirarchical clustering.  See hclust for options.</p></td>
+    </tr>
+    <tr>
+      <th>split.at</th>
+      <td><p>for large numbers of SNPs, tag first splits them into subsets of size split.at with similar MAF, then groups tag groups in high LD between subsets.  If you wish to avoid this, at additional computational cost, set split.at=NULL</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>character vector, names are <code>snps</code>, values are the tag for each SNP</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Uses complete linkage and the <code><a href='https://rdrr.io/r/stats/hclust.html'>hclust</a></code> function to define clusters,
+then cuts the tree at 1-tag.threshold</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#value">Value</a></li>
+      <li><a href="#details">Details</a></li>
     </ul>
 
     <h2>Author</h2>
