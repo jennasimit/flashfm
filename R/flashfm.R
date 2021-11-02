@@ -301,7 +301,6 @@ calctau <- function(n1,n2,nsnps,kappa) {
 ##' @examples
 ##' x <- 1:10
 ##' log(sum(x))
-##' MFM:::logsum(log(x))
 logsum <- function(x) {
   my.max <- max(x)                              ##take out the maximum value in log form
   my.res <- my.max + log(sum(exp(x - my.max )))

@@ -49,7 +49,6 @@ check.fn <- function (k, msep, out, gnames) {
 MPPmodGroups <- function(PP1) {
 
     mnames <- rownames(PP1)
-#    msep <- apply(matrix(1:length(mnames), ncol = 1), 1, MFM:::sep.fn, mnames)
 	msep <- sapply(mnames,function(x) unlist(strsplit(as.character(x), "%")),simplify=FALSE)
     gnames <- unique(unlist(msep))
     mpp1 <- NULL   

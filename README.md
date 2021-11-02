@@ -24,7 +24,7 @@ https://doi.org/10.1038/s41467-021-26364-y
 
 ## System Requirements
 
-Flashfm could be installed with ease on versions of R > 3.6.0 and requires additional steps for R < 3.6.0
+Flashfm could be installed with ease on versions of R > 3.6.0.
 If installing on a Windows machine, Rtools must be installed.
 Installation time is estimated as 2 minutes.
 
@@ -50,15 +50,13 @@ install.packages("data.table")
 install.packages("gtools")
 install.packages("rlist")
 install.packages("MASS")
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("snpStats")
 ```
 
 as well as the following dependencies from GitHUb
 
-``` r
-install.packages("remotes")
-# install and load GUESSFM
-remotes::install_github("chr1swallace/GUESSFM","nor2guess")
-```
 
 ``` r
 # install and load R2BGLiMS

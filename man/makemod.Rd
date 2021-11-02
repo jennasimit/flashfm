@@ -2,7 +2,7 @@
 % Please edit documentation in R/prep.R
 \name{makemod}
 \alias{makemod}
-\title{internal function makemod from GUESSFM}
+\title{internal function makemod}
 \usage{
 makemod(snps)
 }
@@ -10,7 +10,7 @@ makemod(snps)
 \item{snps}{model given by snp ids separated by \code{"\%"}}
 }
 \description{
-internal function makemod from GUESSFM
+internal function makemod
 }
 \author{
 Chris Wallace

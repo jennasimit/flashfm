@@ -129,7 +129,7 @@ return(list(groups.fm=snpgroups,groups.flashfm=snpgroups2, group.sizes=group.siz
 
 
 PP2snpmod <- function (ppdf) 
-# modified abf2snpmod from GUESSFM
+# modified abf2snpmod from Chris Wallace
 # have data.frame with columns "str" = models with SNPs separated by %; "PP" model PP
 {
     tmp <- new("snpmod")
@@ -144,7 +144,7 @@ PP2snpmod <- function (ppdf)
 }
 
 
-##' @title Group SNPs; adapted from group.multi of https://github.com/chr1swallace/GUESSFM
+##' @title Group SNPs; adapted from group.multi by Chris Wallace
 ##' @param SM2 snpmod object
 ##' @param snp.data SnpMatrix or SNP covariance matrix with snp ids as column names 
 ##' @param is.snpmat logical taking value TRUE when SnpMatrix is provided and FALSE when covariance matrix is given
@@ -185,7 +185,7 @@ groupmulti <- function (SM2, snp.data, is.snpmat, min.mppi = 0.01, minsnpmppi=0.
     }
        
     
-    bs <- GUESSFM::best.snps(SM2, pp.thr = 0)
+    bs <- best.snps(SM2, pp.thr = 0)
     bs <- do.call("rbind", bs)
 
     snps <- setdiff(unique(bs[bs$Marg_Prob_Incl > minsnpmppi, ]$var), 
@@ -193,7 +193,6 @@ groupmulti <- function (SM2, snp.data, is.snpmat, min.mppi = 0.01, minsnpmppi=0.
     
     if(is.snpmat) {
     	snp.data <- snp.data[, snps]
-#    	r2 <- snpStats::ld(snp.data, snp.data, stats = "R.squared", symmetric = TRUE)
 		r2 <- cor(snp.data)^2
 		} else { 
 			snp.data <- snp.data[snps,snps]
@@ -555,4 +554,22 @@ LinearizeNestedList <- function(NList, LinearizeDataFrames=FALSE,
         B <- length(NList)
     }
     return(NList)
+}
+
+
+##' Display the SNPs with greatest marginal posterior probability of inclusion (MPPI)
+##'
+##' @title Best SNPs
+##' @param d snpmod object or a list of snpmod objects
+##' @param mppi.thr MPPI threshold, SNPs with MPPI>mppi.thr will be shown
+##' @param pp.thr deprecated, alias for mppi.thr
+##' @return subset of \code{snps(d)} data.frame including best SNPs
+##' @author Chris Wallace
+best.snps <- function(d,mppi.thr=pp.thr,pp.thr=0.1) {
+  if(is.list(d))
+    return(lapply(d,best.snps,mppi.thr=mppi.thr,pp.thr=pp.thr))
+  if(!is(d,"snpmod"))
+    stop("expected d to be a snpmod object, found ",class(d))
+  tmp <- subset(d@snps, d@snps$Marg_Prob_Incl>mppi.thr)
+  return(tmp[order(tmp$Marg_Prob_Incl,decreasing=TRUE),])
 }

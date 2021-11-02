@@ -63,6 +63,135 @@ prune_maximal <- function(genotype_matrix) {
     genotype_matrix[, gm_qr$pivot[seq(gm_qr$rank)]]
 } 
 
+##' Derive tag SNPs for a SnpMatrix object using heirarchical clustering
+##'
+##' Uses complete linkage and the \code{\link{hclust}} function to define clusters,
+##' then cuts the tree at 1-tag.threshold
+##' @title tag
+##' @param X SnpMatrix object
+##' @param tag.threshold threshold to cut tree, default=0.99
+##' @param snps colnames of the SnpMatrix object to be used
+##' @param samples optional, subset of samples to use
+##' @param strata optional, return a list of tag vectors, one for each stratum defined by as.factor(strata)
+##' @param quiet if FALSE (default), show progress messages
+##' @param method method used for heirarchical clustering.  See hclust for options.
+##' @param split.at for large numbers of SNPs, tag first splits them into subsets of size split.at with similar MAF, then groups tag groups in high LD between subsets.  If you wish to avoid this, at additional computational cost, set split.at=NULL
+##' @return character vector, names are \code{snps}, values are the tag for each SNP
+##' @author Chris Wallace
+##' @export
+tag <- function(X,tag.threshold=0.99, snps=NULL, samples=NULL, strata=NULL,quiet=FALSE,method="single",split.at=500) {
+  if(!is(X,"SnpMatrix"))
+    X <- as(X,"SnpMatrix")
+  
+  if(!is.null(snps) && !is.null(samples)) {
+    X <- X[samples,snps]
+  } else {
+    if(!is.null(snps))
+      X <- X[,snps]
+    if(!is.null(samples))
+      X <- X[samples,]
+  }
+  if(!is.null(strata)) {
+    strata <- factor(strata)
+    tags <- lapply(levels(strata), function(l) {
+      wh <- which(strata==l)
+      if(!length(wh))
+        return(NULL)
+      return(tag(X[wh,], tag.threshold=tag.threshold, method=method))
+    })
+    return(tags)
+  }
+
+  cs <- col.summary(X)
+  if(any(is.na(cs[,"z.HWE"])))
+    stop("some SNPs have zero standard deviation (missing HWE stat). Please fix and rerun")
+  ## X <- X[,order(cs$MAF)]
+  
+
+  ## if too large, split first, then join
+  if(!is.null(split.at) && ncol(X)>split.at) {
+    cs <- col.summary(X)
+    Q <- quantile(cs$MAF,seq(0,1,length=ceiling(ncol(X)/split.at)+1))
+    maf <- cut(cs$MAF,breaks=unique(Q),include.lowest=TRUE)
+    tags <- mclapply(levels(maf), function(l) {
+      wh <- which(maf==l)
+      if(!length(wh))
+        return(NULL)
+      return(tag(X, snps=wh, tag.threshold=tag.threshold, method=method, split.at=NULL))
+    })
+
+    ## merge any high-LD groups between tag sets
+    TAGS <- tags[[1]]
+    for(i in 2:length(tags)) {
+      tg.0 <- unique(tags(tags[[i-1]]))
+      tg.1 <- unique(tags(tags[[i]]))
+      r2 <-   ld(X[,tg.0],
+                 X[,tg.1],
+                 symmetric=TRUE,
+                 stats="R.squared")
+      wh <- which(r2 >= tag.threshold, arr.ind=TRUE)
+      if(nrow(wh)) {
+        wh <- wh[!duplicated(wh[,2]),,drop=FALSE] # just in case
+        for(j in 1:nrow(wh)) {
+          tags[[i]]@tags[ tags[[i]]@tags==tg.1[wh[j,2]] ] <- tg.0[wh[j,1]]
+        }
+      }
+      TAGS <- new("tags", .Data=c(TAGS@.Data,tags[[i]]@.Data),
+                  tags=c(TAGS@tags,tags[[i]]@tags))
+    }
+    return(TAGS)
+  }
+  
+  r2 <- myr2(X)
+  D <- as.dist(1-r2)
+  hc <- hclust(D, method=method)
+  clusters <- cutree(hc, h=1-tag.threshold)
+  
+  snps.use <- names(clusters)[!duplicated(clusters)]
+  groups <- split(names(clusters),clusters)
+  
+  ## now process each group, picking best tag
+  n <- sapply(groups,length)
+  names(groups)[n==1] <- unlist(groups[n==1])
+  for(i in which(n>1)) {
+    g <- groups[[i]]
+##     cat(i,g,"\n")
+##     print(r2[g,g])
+    a <- apply(r2[g,g],1,mean)
+    names(groups)[i] <- g[ which.max(a) ]
+  }
+  groups <- new("groups",groups,tags=names(groups))
+  
+  ## check
+  r2 <- r2[tags(groups),tags(groups)]
+  diag(r2) <- 0
+##   if(max(r2)==1) 
+##     stop("max r2 still 1!")
+  if(!quiet)
+    message("max r2 is now",max(r2),"\n")
+  return(as(groups,"tags"))
+}
+  
+group.tags <- function(tags, keep) {
+    groups <- tags[ names(tags) %in% keep ]
+    groups <- split(names(groups), groups)
+}
+myr2 <- function(X) {
+  r2 <- ld(X,
+           depth=ncol(X)-1,
+           symmetric=TRUE,
+           stats="R.squared")
+  if(any(is.na(r2))) {
+    r2.na <- as(is.na(r2),"matrix")
+    use <- rowSums(r2.na)>0
+    ## work around for r2=NA bug.  
+    r2.cor <- as(cor(as(X[,use,drop=FALSE],"numeric"), use="pairwise.complete.obs")^2,"Matrix")
+    r2[ which(r2.na) ] <- r2.cor[ which(r2.na[use,use]) ]
+  }
+  diag(r2) <- 1
+  return(r2)
+}
+
 
 
 #' @title Thin genotype matrix for JAM input
@@ -286,7 +415,7 @@ calcABF <- function(mod,mbeta,SSy,Sxy,Vy,N) {
  return(out)
 }
 
-# SNP prior based on binomial distribution; modification of snpprior from GUESSFM package (Chris Wallace)
+# SNP prior based on binomial distribution; modification of snpprior function (Chris Wallace)
 SNPprior <- function(x=0:10, n, expected, overdispersion=1, pi0=NA, truncate=NA, overdispersion.warning=TRUE) {
   if(overdispersion < 1 & overdispersion.warning)
     stop("overdispersion parameter should be >= 1")
@@ -316,7 +445,7 @@ SNPprior <- function(x=0:10, n, expected, overdispersion=1, pi0=NA, truncate=NA,
   return(exp(prob))
 }
 
-# converts data.frame of abfs to snpmod object; modified abf2snpmod from GUESSFM (Chris Wallace)
+# converts data.frame of abfs to snpmod object; modified abf2snpmod (Chris Wallace)
 makesnpmod <- function (abf, expected, overdispersion = 1, nsnps = NULL) {
     tmp <- new("snpmod")
     msize <- nchar(gsub("[^%]", "", abf$model)) + 1
@@ -336,7 +465,7 @@ makesnpmod <- function (abf, expected, overdispersion = 1, nsnps = NULL) {
     marg.snps(tmp)
 }
 
-#' internal function marg.snps from GUESSFM
+#' internal function marg.snps 
 #' @param d snpmod object
 #' @author Chris Wallace
 marg.snps <- function(d) {
@@ -346,7 +475,7 @@ marg.snps <- function(d) {
     return(d)
 }
 
-#' internal function makemod from GUESSFM
+#' internal function makemod 
 #' @param snps model given by snp ids separated by \code{"\%"}
 #' @author Chris Wallace
 makemod <- function(snps) {
@@ -360,7 +489,7 @@ makemod <- function(snps) {
   mod
 }
 
-#' internal function marg.snps.vec from GUESSFM
+#' internal function marg.snps.vec 
 #' @param str models given by snp ids separated by \code{"\%"}
 #' @param pp posterior probabilities
 #' @author Chris Wallace

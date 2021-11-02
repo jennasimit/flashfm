@@ -2,7 +2,7 @@
 % Please edit documentation in R/group.multi.R
 \name{groupmulti}
 \alias{groupmulti}
-\title{Group SNPs; adapted from group.multi of https://github.com/chr1swallace/GUESSFM}
+\title{Group SNPs; adapted from group.multi by Chris Wallace}
 \usage{
 groupmulti(
   SM2,
@@ -39,5 +39,5 @@ Second is a groups object, each elements ordered according to the rows of the su
 Third is the r2 matrix calculated.
 }
 \description{
-Group SNPs; adapted from group.multi of https://github.com/chr1swallace/GUESSFM
+Group SNPs; adapted from group.multi by Chris Wallace
 }

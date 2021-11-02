@@ -2,7 +2,7 @@
 % Please edit documentation in R/prep.R
 \name{marg.snps}
 \alias{marg.snps}
-\title{internal function marg.snps from GUESSFM}
+\title{internal function marg.snps}
 \usage{
 marg.snps(d)
 }
@@ -10,7 +10,7 @@ marg.snps(d)
 \item{d}{snpmod object}
 }
 \description{
-internal function marg.snps from GUESSFM
+internal function marg.snps
 }
 \author{
 Chris Wallace

@@ -19,11 +19,9 @@ Maintainer: Jenn Asimit <ja628@cam.ac.uk>
 Depends: R (>= 3.6.0)
 Remotes:
     pjnewcombe/R2BGLiMS,
-    chr1swallace/GUESSFM
 Imports:
     rlist,
     R2BGLiMS,
-    GUESSFM,
     gtools,
     Rcpp,
     RcppArmadillo,
@@ -32,7 +30,8 @@ Imports:
     methods,
     data.table,
     xtable,
-    parallel
+    parallel,
+    snpStats
 Suggests:
     roxygen2,
     testthat,

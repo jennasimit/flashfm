@@ -2,7 +2,7 @@
 % Please edit documentation in R/prep.R
 \name{marg.snps.vecs}
 \alias{marg.snps.vecs}
-\title{internal function marg.snps.vec from GUESSFM}
+\title{internal function marg.snps.vec}
 \usage{
 marg.snps.vecs(str, pp)
 }
@@ -12,7 +12,7 @@ marg.snps.vecs(str, pp)
 \item{pp}{posterior probabilities}
 }
 \description{
-internal function marg.snps.vec from GUESSFM
+internal function marg.snps.vec
 }
 \author{
 Chris Wallace
