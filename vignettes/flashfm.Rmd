@@ -98,6 +98,13 @@ flashfm function for single-trait fine-mappping, JAMexpandedCor.multi. This func
 fine-mapping on each trait and then uses these results as input to flashfm. The SNP groups are also constructed within this wrapper function, 
 as well as output from flashfm summarised at both the SNP-level and SNP group level.
 
+NOTE: SNP names must not contain ":" in FLASHFMwithJAM, JAMexpanded.multi, and JAMexpandedCor.multi.
+So, if SNP names are in the form "19:45301088_T_C" change to "chr19_45301088_T_C". 
+This could be done using the command 
+```{r,eval=FALSE}
+paste0("chr", gsub(":", "_", snpnames)
+```
+
 We first need the correlation matrix, which we compute from our genotype matrix X, retaining only the SNPs that are in the raf vector; the raf 
 vector was previously filtered at MAF 0.005.
 
@@ -174,6 +181,13 @@ In this example, we make use of a reference genotype matrix as input to flashfm 
 fine-mappping, JAMexpanded.multi. This function is an expanded version of 
 [JAM](https://onlinelibrary.wiley.com/doi/full/10.1002/gepi.21953), and requires a pathway to the software 
 [PLINK](http://zzz.bwh.harvard.edu/plink/).
+
+NOTE: SNP names must not contain ":" in FLASHFMwithJAM, JAMexpanded.multi, and JAMexpandedCor.multi.
+So, if SNP names are in the form "19:45301088_T_C" change to "chr19_45301088_T_C". 
+This could be done using the command
+```{r,eval=FALSE}
+paste0("chr", gsub(":", "_", snpnames)
+```
 
 For efficiency, we provide the output from JAMexpanded.multi in the object JAMmain.input. The command used to generate it is:
 
