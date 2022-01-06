@@ -124,7 +124,9 @@ fm <- FLASHFMwithJAM(beta, corX, raf, ybar, N, r2 = 0.99, save.path="DIRtmp",TOd
 where arguments are described in detail here, though each object gives an example of format:
 
 - beta is a list of named vectors for each trait to be included in fine-mapping; see example format of object beta in this package;
-create this object using b <- vector("list",2) and then assign beta vectors to each b[[i]], i=1,2.
+create this object using b <- vector("list",2) and then assign beta vectors to each b[[i]], i=1,2. At most 5 traits can be used with this function.
+There is a fast approximation version called FLASHFMwithJAMhat that is used in the exact same way as FLASHFMwithJAM, and allows at most 6 traits. 
+Only include traits that have a signal in the region, e.g. traits that have min p < 1E-6 in the region.
 
 - corX is a SNP correlation matrix from an in-sample or reference panel; 
 corX may have column and row names as in this example, though this is not necessary. Otherwise, column names are taken from the raf vector
