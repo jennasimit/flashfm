@@ -51,16 +51,20 @@ the groups constructed by flashfm tend to be a subset of those from single-trait
 resolution that single-trait fine-mapping.
 
 Details of how to run flashfm on your own data are explained through detailed examples of simulated data. 
-We provide three ways to run flashfm, depending on whether or not single-trait fine-mapping results are already available or not.
+We provide four ways to run flashfm, depending on whether or not single-trait fine-mapping results are already available or not.
 
 1. Single-trait fine-mapping has not yet been run - need GWAS summary statistics for each trait, SNP correlation matrix, 
-reference allele frequency vector, and trait covariance matrix. In one command, run single-trait fine-mapping and flashfm, as well as construct SNP groups 
-for each approach and summarise results by SNPs and by SNP groups. See first example.
+reference allele frequency vector, and trait covariance matrix. In one command, run single-trait fine-mapping (using JAM) and flashfm, as well as construct SNP groups 
+for each approach and summarise results by SNPs and by SNP groups. 
 
-2. Single-trait fine-mapping has not yet been run - need GWAS summary statistics for each trait, SNP matrix, and 
+2. Single-trait fine-mapping has not yet been run - need GWAS summary statistics for each trait, SNP correlation matrix, 
+reference allele frequency vector, and trait covariance matrix. In one command, run single-trait fine-mapping (using FINEMAP) and flashfm, as well as construct SNP groups 
+for each approach and summarise results by SNPs and by SNP groups. 
+
+3. Single-trait fine-mapping has not yet been run - need GWAS summary statistics for each trait, SNP matrix, and 
 trait covariance matrix. See second example.
 
-3. Single-trait fine-mapping has been run using [FINEMAP](https://academic.oup.com/bioinformatics/article/32/10/1493/1743040) - need *config files from FINEMAP for each trait, GWAS summary statistics for each trait, SNP correlation matrix, 
+4. Single-trait fine-mapping has been run using [FINEMAP](https://academic.oup.com/bioinformatics/article/32/10/1493/1743040) - need *config files from FINEMAP for each trait, GWAS summary statistics for each trait, SNP correlation matrix, 
 reference allele frequency vector, and trait covariance matrix. See third (last) example.
 
 # Simulation Example
@@ -88,7 +92,7 @@ N
 head(raf)
 ```
 
-### SNP correlation matrix and RAF vector provided - run single-trait and multi-trait fine-mapping 
+### SNP correlation matrix and RAF vector provided - run single-trait (JAM) and multi-trait fine-mapping 
 
 This example takes seconds to run since the output is saved as an object, fm, in the flashfm package - details follow.
 
@@ -129,7 +133,8 @@ There is a fast approximation version called FLASHFMwithJAMhat that is used in t
 Only include traits that have a signal in the region, e.g. traits that have min p < 1E-6 in the region.
 
 - corX is a SNP correlation matrix from an in-sample or reference panel; 
-corX may have column and row names as in this example, though this is not necessary. Otherwise, column names are taken from the raf vector
+corX may have column and row names as in this example, though this is not necessary. Otherwise, column names are taken from the raf vector; ; SNPs in corX MUST 
+be in the same order as SNPs in raf. The allele coding for corX and raf MUST be based on the effect allele used for beta.
 
 - raf is a reference allele frequency named vector with names given by snp IDs; snps must appear in same order as in corX; 
 the reference allele must match the effect allele in the GWAS that generated the beta vectors
@@ -166,14 +171,96 @@ Let’s check if our causal variants (in cvs vector) are included in the SNP gro
 the SNP groups
 
 ```{r}
-flashfm:::groupIDs.fn(fm$snpGroups[[1]],cvs)
-flashfm:::groupIDs.fn(fm$snpGroups[[2]],cvs)
-fm$snpGroups$group.sizes
+flashfm:::groupIDs.fn(fm$snpGroups[[1]],cvs) # based on FINEMAP SNP groups
+flashfm:::groupIDs.fn(fm$snpGroups[[2]],cvs) # based on flashfm SNP groups
+fm$snpGroups$group.sizes # first set of SNP groups is from FINEMAP, second set of SNP groups is from flashfm
 ```
 
 Notice that the groups for the causal variants that were not shared (cvs[c(2,3)]) are the same size for both methods and that 
-for the shared variant (cvs[1]), flashfm constructs a smaller group than FINEMAP. This illustrates how sharing information 
+for the shared variant (cvs[1]), flashfm  constructs a smaller group than FINEMAP. This illustrates how sharing information 
 between the traits can refine fine-mapping resolution.
+
+
+### SNP correlation matrix and RAF vector provided - run single-trait (FINEMAP) and multi-trait fine-mapping 
+
+This example takes seconds to run since the output is saved as an object, fm2, in the flashfm package - details follow.
+
+In this example, we make use of a SNP correlation matrix and reference allele frequency (RAF) vector as input to flashfm and use the 
+[FINEMAP](http://www.christianbenner.com/) software ([Benner et al. 2016](https://academic.oup.com/bioinformatics/article/32/10/1493/1743040)). 
+The function FLASHFMwithFINEMAP provides a wrapper to run single-trait 
+fine-mapping on each trait and then uses these results as input to flashfm. The SNP groups are also constructed within this wrapper function, 
+as well as output from flashfm summarised at both the SNP-level and SNP group level.
+
+We first need the correlation matrix, which we compute from our genotype matrix X, retaining only the SNPs that are in the raf vector; the raf 
+vector was previously filtered at MAF 0.005.
+
+```{r}
+msnps <- names(raf) # filtered on maf 0.005
+corX = cor(X[,msnps])
+```
+
+The command to run is as below, and for convenience the output from this function is saved in the object fm2. 
+
+```{r,eval=FALSE} 
+fm2 <- FLASHFMwithFINEMAP(gwas.list,corX,raf,ybar,N,fstub="DIRresults/eg",TOdds=1,covY,cpp=.99,NCORES=2,FMpath="/software/finemap_v1.4_x86_64/finemap_v1.4_x86_64") 
+``` 
+where arguments are described in detail here, though each object gives an example of format:
+
+- gwas.list is a list of two data.frames - one for each trait. 
+It has columns "rsid", "chromosome", "position", "allele1", "allele2", "maf", "beta", "se", which are, respectively,
+the SNP id, base-pair position, effect allele, non-effect allele, minor allele frequency, effect estimate, standard error of effect estimate;
+this is the same format as the .z file of FINEMAP.
+At most 5 traits can be used with this function.
+Only include traits that have a signal in the region, e.g. traits that have min p < 1E-6 in the region.
+
+- corX is a SNP correlation matrix from an in-sample or reference panel; 
+corX may have column and row names as in this example, though this is not necessary. Otherwise, column names are taken from the raf vector; SNPs in corX MUST 
+be in the same order as SNPs in raf. The allele coding for corX and raf MUST be based on the effect allele used for beta.
+
+- raf is a reference allele frequency named vector with names given by snp IDs; snps must appear in same order as in corX; 
+the reference allele must match the effect allele in the GWAS that generated the beta vectors
+
+- ybar is a vector of trait means; if traits transformed to normal(0,1), set ybar to a vector of 0.
+
+- N is a vector of sample sizes for traits, in same order as trait effect vectors given in beta. This can be based on data, if
+unrelated samples, as here. Especially for samples with related individuals, we recommend finding the effective sample size for
+each trait using the built-in function: 
+
+Neff(raf, seB, Vy = 1), 
+
+where raf is the reference allele frequency vector, seB is the vector of standard errors of the effect estimates in the same order 
+of SNPs in raf, and Vy is the trait variance, which is 1 by default, assuming traits are transformed to normal(0,1). 
+
+- fstub is the file stub for input/output files of FINEMAP, e.g. if fstub="DIRresults/region1", FINEMAP files of the form "DIRresults/region1.z"  will be created
+
+- TOdds=1 is the default for flashfm which gives a 50/50 odds that the traits share at least one causal variant
+
+- cpp=0.99 is the default for flashfm which prioritises single-trait fine-mapping models with cumulative posterior probability 0.99
+
+- NCORES is set to the number of traits to allow parallel processing in flashfm, though if on a Windows machine use NCORES=1
+
+- FMpath is the file pathway to the FINEMAP software e.g. "/software/finemap_v1.4_x86_64/finemap_v1.4_x86_64"
+
+Our top group models are:
+
+```{r}
+lapply(fm2$mpp.pp$PPg,head)
+```
+
+Let’s check if our causal variants (in cvs vector) are included in the SNP groups from single and multi-trait fine-mapping and the sizes of 
+the SNP groups
+
+```{r}
+flashfm:::groupIDs.fn(fm2$snpGroups[[1]],cvs)
+flashfm:::groupIDs.fn(fm2$snpGroups[[2]],cvs)
+fm2$snpGroups$group.sizes  # first set of SNP groups is from FINEMAP, second set of SNP groups is from flashfm
+```
+
+Notice that the groups for the causal variants that were not shared (cvs[c(2,3)]) are the same size for both methods and that 
+for the shared variant (cvs[1]), flashfm (fm2$snpGroups[[2]]) constructs a smaller group than FINEMAP (fm2$snpGroups[[1]]). This illustrates how sharing information 
+between the traits can refine fine-mapping resolution.
+
+
 
 ### Reference genotype matrix provided
 

@@ -159,8 +159,10 @@ JAMexpandedCor.multi <- function(beta1, corX, raf, ybar, Vy, N, r2 = 0.99, save.
 
     snps <- intersect(snps, names(raf))
     for (i in 1:M) beta1[[i]] <- beta1[[i]][snps]
-    if (is.null(colnames(corX))) 
+    if (is.null(colnames(corX))) {
         colnames(corX) <- names(raf)
+	rownames(corX) <- names(raf)
+	}
     corX <- corX[snps, snps] 
     covX <- covX[snps,snps]   
     maf <- raf * (raf <= 0.5) + (1 - raf) * (raf > 0.5)
