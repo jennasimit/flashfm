@@ -105,9 +105,10 @@
 <p>Flashfm shares information between traits by up-weighting joint models that have a shared causal variant between traits, in a similar Bayesian framework to Multinomial Fine-Mapping (<a href="https://www.nature.com/articles/s41467-019-11271-0">MFM</a>) for joint fine-mapping of multiple diseases with shared controls.</p>
 <p>To generate posterior support for fine-mapping models, flashfm needs to calculate the Bayes’ factor (BF) for all possible model combinations across SNPs and traits. To make this computationally feasible, we derive an expression for the the joint BF that depends on the individual (marginal) trait BFs and terms that depend on the GWAS summary statistics, covariance matrix of the traits, and sample sizes; either a genotype matrix or both a SNP covariance matrix and relative allele frequencies (RAFs) are needed from a reference panel or in-study sample.</p>
 <p>As in MFM, rather than reporting posterior probabilities (PPs) for each SNP model, we focus on SNP groups that we construct such that SNPs in the same group are in LD, have a similar effect on traits, and rarely appear together in a trait model. We constuct SNP groups based on the model PPs from single-trait fine-mapping and a separate set of SNP groups based on the model PPs from flashfm. In general, the groups constructed by flashfm tend to be a subset of those from single-trait fine-mapping, indicating that flashfm gives finer resolution that single-trait fine-mapping.</p>
-<p>Details of how to run flashfm on your own data are explained through detailed examples of simulated data. We provide three ways to run flashfm, depending on whether or not single-trait fine-mapping results are already available or not.</p>
+<p>Details of how to run flashfm on your own data are explained through detailed examples of simulated data. We provide four ways to run flashfm, depending on whether or not single-trait fine-mapping results are already available or not.</p>
 <ol style="list-style-type: decimal">
-<li><p>Single-trait fine-mapping has not yet been run - need GWAS summary statistics for each trait, SNP correlation matrix, reference allele frequency vector, and trait covariance matrix. In one command, run single-trait fine-mapping and flashfm, as well as construct SNP groups for each approach and summarise results by SNPs and by SNP groups. See first example.</p></li>
+<li><p>Single-trait fine-mapping has not yet been run - need GWAS summary statistics for each trait, SNP correlation matrix, reference allele frequency vector, and trait covariance matrix. In one command, run single-trait fine-mapping (using JAM) and flashfm, as well as construct SNP groups for each approach and summarise results by SNPs and by SNP groups.</p></li>
+<li><p>Single-trait fine-mapping has not yet been run - need GWAS summary statistics for each trait, SNP correlation matrix, reference allele frequency vector, and trait covariance matrix. In one command, run single-trait fine-mapping (using FINEMAP) and flashfm, as well as construct SNP groups for each approach and summarise results by SNPs and by SNP groups.</p></li>
 <li><p>Single-trait fine-mapping has not yet been run - need GWAS summary statistics for each trait, SNP matrix, and trait covariance matrix. See second example.</p></li>
 <li><p>Single-trait fine-mapping has been run using <a href="https://academic.oup.com/bioinformatics/article/32/10/1493/1743040">FINEMAP</a> - need *config files from FINEMAP for each trait, GWAS summary statistics for each trait, SNP correlation matrix, reference allele frequency vector, and trait covariance matrix. See third (last) example.</p></li>
 </ol>
@@ -154,9 +155,9 @@
 <span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(raf)</span>
 <span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; rs12722563 rs12572054 rs12722561 rs12722559 rs12722558 rs12722557 </span></span>
 <span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    0.09450    0.04100    0.15200    0.15200    0.08925    0.02600</span></span></code></pre></div>
-<div id="snp-correlation-matrix-and-raf-vector-provided---run-single-trait-and-multi-trait-fine-mapping" class="section level3">
+<div id="snp-correlation-matrix-and-raf-vector-provided---run-single-trait-jam-and-multi-trait-fine-mapping" class="section level3">
 <h3 class="hasAnchor">
-<a href="#snp-correlation-matrix-and-raf-vector-provided---run-single-trait-and-multi-trait-fine-mapping" class="anchor"></a>SNP correlation matrix and RAF vector provided - run single-trait and multi-trait fine-mapping</h3>
+<a href="#snp-correlation-matrix-and-raf-vector-provided---run-single-trait-jam-and-multi-trait-fine-mapping" class="anchor"></a>SNP correlation matrix and RAF vector provided - run single-trait (JAM) and multi-trait fine-mapping</h3>
 <p>This example takes seconds to run since the output is saved as an object, fm, in the flashfm package - details follow.</p>
 <p>In this example, we make use of a SNP correlation matrix and reference allele frequency (RAF) vector as input to flashfm and use the internal flashfm function for single-trait fine-mappping, JAMexpandedCor.multi. This function is an expanded version of <a href="https://onlinelibrary.wiley.com/doi/full/10.1002/gepi.21953">JAM</a>. The function FLASHFMwithJAM provides a wrapper to run single-trait fine-mapping on each trait and then uses these results as input to flashfm. The SNP groups are also constructed within this wrapper function, as well as output from flashfm summarised at both the SNP-level and SNP group level.</p>
 <p>NOTE: SNP names must not contain “:” in FLASHFMwithJAM, JAMexpanded.multi, and JAMexpandedCor.multi. So, if SNP names are in the form “19:45301088_T_C” change to “chr19_45301088_T_C”. This could be done using the command</p>
@@ -170,7 +171,7 @@
 <p>where arguments are described in detail here, though each object gives an example of format:</p>
 <ul>
 <li><p>beta is a list of named vectors for each trait to be included in fine-mapping; see example format of object beta in this package; create this object using b &lt;- vector(“list”,2) and then assign beta vectors to each b[[i]], i=1,2. At most 5 traits can be used with this function. There is a fast approximation version called FLASHFMwithJAMhat that is used in the exact same way as FLASHFMwithJAM, and allows at most 6 traits. Only include traits that have a signal in the region, e.g. traits that have min p &lt; 1E-6 in the region.</p></li>
-<li><p>corX is a SNP correlation matrix from an in-sample or reference panel; corX may have column and row names as in this example, though this is not necessary. Otherwise, column names are taken from the raf vector</p></li>
+<li><p>corX is a SNP correlation matrix from an in-sample or reference panel; corX may have column and row names as in this example, though this is not necessary. Otherwise, column names are taken from the raf vector; ; SNPs in corX MUST be in the same order as SNPs in raf. The allele coding for corX and raf MUST be based on the effect allele used for beta.</p></li>
 <li><p>raf is a reference allele frequency named vector with names given by snp IDs; snps must appear in same order as in corX; the reference allele must match the effect allele in the GWAS that generated the beta vectors</p></li>
 <li><p>ybar is a vector of trait means; if traits transformed to normal(0,1), set ybar to a vector of 0.</p></li>
 <li><p>N is a vector of sample sizes for traits, in same order as trait effect vectors given in beta. This can be based on data, if unrelated samples, as here. Especially for samples with related individuals, we recommend finding the effective sample size for each trait using the built-in function:</p></li>
@@ -200,15 +201,72 @@
 <span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     null 178</span></span>
 <span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; A%J    1   1</span></span></code></pre></div>
 <p>Let’s check if our causal variants (in cvs vector) are included in the SNP groups from single and multi-trait fine-mapping and the sizes of the SNP groups</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>flashfm<span class="sc">:::</span><span class="fu">groupIDs.fn</span>(fm<span class="sc">$</span>snpGroups[[<span class="dv">1</span>]],cvs)</span>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>flashfm<span class="sc">:::</span><span class="fu">groupIDs.fn</span>(fm<span class="sc">$</span>snpGroups[[<span class="dv">1</span>]],cvs) <span class="co"># based on FINEMAP SNP groups</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "J" "C" "A"</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>flashfm<span class="sc">:::</span><span class="fu">groupIDs.fn</span>(fm<span class="sc">$</span>snpGroups[[<span class="dv">2</span>]],cvs)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>flashfm<span class="sc">:::</span><span class="fu">groupIDs.fn</span>(fm<span class="sc">$</span>snpGroups[[<span class="dv">2</span>]],cvs) <span class="co"># based on flashfm SNP groups</span></span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "J" "C" "A"</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>fm<span class="sc">$</span>snpGroups<span class="sc">$</span>group.sizes</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>fm<span class="sc">$</span>snpGroups<span class="sc">$</span>group.sizes <span class="co"># first set of SNP groups is from FINEMAP, second set of SNP groups is from flashfm</span></span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      A B C D E F G H I  J</span></span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; null 5 1 7 1 2 1 7 2 9 20</span></span>
 <span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 178  3 1 7 1 2 0 6 2 0  6</span></span></code></pre></div>
 <p>Notice that the groups for the causal variants that were not shared (cvs[c(2,3)]) are the same size for both methods and that for the shared variant (cvs[1]), flashfm constructs a smaller group than FINEMAP. This illustrates how sharing information between the traits can refine fine-mapping resolution.</p>
+</div>
+<div id="snp-correlation-matrix-and-raf-vector-provided---run-single-trait-finemap-and-multi-trait-fine-mapping" class="section level3">
+<h3 class="hasAnchor">
+<a href="#snp-correlation-matrix-and-raf-vector-provided---run-single-trait-finemap-and-multi-trait-fine-mapping" class="anchor"></a>SNP correlation matrix and RAF vector provided - run single-trait (FINEMAP) and multi-trait fine-mapping</h3>
+<p>This example takes seconds to run since the output is saved as an object, fm2, in the flashfm package - details follow.</p>
+<p>In this example, we make use of a SNP correlation matrix and reference allele frequency (RAF) vector as input to flashfm and use the <a href="http://www.christianbenner.com/">FINEMAP</a> software (<a href="https://academic.oup.com/bioinformatics/article/32/10/1493/1743040">Benner et al. 2016</a>). The function FLASHFMwithFINEMAP provides a wrapper to run single-trait fine-mapping on each trait and then uses these results as input to flashfm. The SNP groups are also constructed within this wrapper function, as well as output from flashfm summarised at both the SNP-level and SNP group level.</p>
+<p>We first need the correlation matrix, which we compute from our genotype matrix X, retaining only the SNPs that are in the raf vector; the raf vector was previously filtered at MAF 0.005.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>msnps <span class="ot">&lt;-</span> <span class="fu">names</span>(raf) <span class="co"># filtered on maf 0.005</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>corX <span class="ot">=</span> <span class="fu">cor</span>(X[,msnps])</span></code></pre></div>
+<p>The command to run is as below, and for convenience the output from this function is saved in the object fm2.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fm2 <span class="ot">&lt;-</span> <span class="fu">FLASHFMwithFINEMAP</span>(gwas.list,corX,raf,ybar,N,<span class="at">fstub=</span><span class="st">"DIRresults/eg"</span>,<span class="at">TOdds=</span><span class="dv">1</span>,covY,<span class="at">cpp=</span>.<span class="dv">99</span>,<span class="at">NCORES=</span><span class="dv">2</span>,<span class="at">FMpath=</span><span class="st">"/software/finemap_v1.4_x86_64/finemap_v1.4_x86_64"</span>) </span></code></pre></div>
+<p>where arguments are described in detail here, though each object gives an example of format:</p>
+<ul>
+<li><p>gwas.list is a list of two data.frames - one for each trait. It has columns “rsid”, “chromosome”, “position”, “allele1”, “allele2”, “maf”, “beta”, “se”, which are, respectively, the SNP id, base-pair position, effect allele, non-effect allele, minor allele frequency, effect estimate, standard error of effect estimate; this is the same format as the .z file of FINEMAP. At most 5 traits can be used with this function. Only include traits that have a signal in the region, e.g. traits that have min p &lt; 1E-6 in the region.</p></li>
+<li><p>corX is a SNP correlation matrix from an in-sample or reference panel; corX may have column and row names as in this example, though this is not necessary. Otherwise, column names are taken from the raf vector; SNPs in corX MUST be in the same order as SNPs in raf. The allele coding for corX and raf MUST be based on the effect allele used for beta.</p></li>
+<li><p>raf is a reference allele frequency named vector with names given by snp IDs; snps must appear in same order as in corX; the reference allele must match the effect allele in the GWAS that generated the beta vectors</p></li>
+<li><p>ybar is a vector of trait means; if traits transformed to normal(0,1), set ybar to a vector of 0.</p></li>
+<li><p>N is a vector of sample sizes for traits, in same order as trait effect vectors given in beta. This can be based on data, if unrelated samples, as here. Especially for samples with related individuals, we recommend finding the effective sample size for each trait using the built-in function:</p></li>
+</ul>
+<p>Neff(raf, seB, Vy = 1),</p>
+<p>where raf is the reference allele frequency vector, seB is the vector of standard errors of the effect estimates in the same order of SNPs in raf, and Vy is the trait variance, which is 1 by default, assuming traits are transformed to normal(0,1).</p>
+<ul>
+<li><p>fstub is the file stub for input/output files of FINEMAP, e.g. if fstub=“DIRresults/region1”, FINEMAP files of the form “DIRresults/region1.z” will be created</p></li>
+<li><p>TOdds=1 is the default for flashfm which gives a 50/50 odds that the traits share at least one causal variant</p></li>
+<li><p>cpp=0.99 is the default for flashfm which prioritises single-trait fine-mapping models with cumulative posterior probability 0.99</p></li>
+<li><p>NCORES is set to the number of traits to allow parallel processing in flashfm, though if on a Windows machine use NCORES=1</p></li>
+<li><p>FMpath is the file pathway to the FINEMAP software e.g. “/software/finemap_v1.4_x86_64/finemap_v1.4_x86_64”</p></li>
+</ul>
+<p>Our top group models are:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(fm2<span class="sc">$</span>mpp.pp<span class="sc">$</span>PPg,head)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $AD</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;               null         178</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; F%G     0.51730036 0.582679505</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; D%F%G   0.14201391 0.119526442</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; A%F%G   0.13593911 0.126942848</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; C%F%G   0.08873371 0.074572455</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; B%F%G   0.02782625 0.025925704</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; A%D%F%G 0.00968424 0.007232427</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $AC</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                        null         178</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; E%F             0.845159439 0.878740258</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; E%F%rs184023299 0.009990423 0.007476973</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; E%F%rs12722557  0.009574463 0.007445177</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; E%F%rs11256464  0.006689188 0.005138940</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; E%F%F           0.005154478 0.002898676</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; E%F%rs79496268  0.004633628 0.003615495</span></span></code></pre></div>
+<p>Let’s check if our causal variants (in cvs vector) are included in the SNP groups from single and multi-trait fine-mapping and the sizes of the SNP groups</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>flashfm<span class="sc">:::</span><span class="fu">groupIDs.fn</span>(fm2<span class="sc">$</span>snpGroups[[<span class="dv">1</span>]],cvs)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "F" "G" "E"</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>flashfm<span class="sc">:::</span><span class="fu">groupIDs.fn</span>(fm2<span class="sc">$</span>snpGroups[[<span class="dv">2</span>]],cvs)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "F" "G" "E"</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>fm2<span class="sc">$</span>snpGroups<span class="sc">$</span>group.sizes  <span class="co"># first set of SNP groups is from FINEMAP, second set of SNP groups is from flashfm</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      A B C D E  F G</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; null 7 7 1 2 3 20 7</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 178  7 7 1 2 3 11 7</span></span></code></pre></div>
+<p>Notice that the groups for the causal variants that were not shared (cvs[c(2,3)]) are the same size for both methods and that for the shared variant (cvs[1]), flashfm (fm2<span class="math inline">\(snpGroups[[2]]) constructs a smaller group than FINEMAP (fm2\)</span>snpGroups[[1]]). This illustrates how sharing information between the traits can refine fine-mapping resolution.</p>
 </div>
 <div id="reference-genotype-matrix-provided" class="section level3">
 <h3 class="hasAnchor">
@@ -216,73 +274,73 @@
 <p>This example takes seconds to run.</p>
 <p>In this example, we make use of a reference genotype matrix as input to flashfm and use the internal flashfm function for single-trait fine-mappping, JAMexpanded.multi. This function is an expanded version of <a href="https://onlinelibrary.wiley.com/doi/full/10.1002/gepi.21953">JAM</a>, and requires a pathway to the software <a href="http://zzz.bwh.harvard.edu/plink/">PLINK</a>.</p>
 <p>NOTE: SNP names must not contain “:” in FLASHFMwithJAM, JAMexpanded.multi, and JAMexpandedCor.multi. So, if SNP names are in the form “19:45301088_T_C” change to “chr19_45301088_T_C”. This could be done using the command</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">paste0</span>(<span class="st">"chr"</span>, <span class="fu">gsub</span>(<span class="st">":"</span>, <span class="st">"_"</span>, snpnames)</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">paste0</span>(<span class="st">"chr"</span>, <span class="fu">gsub</span>(<span class="st">":"</span>, <span class="st">"_"</span>, snpnames)</span></code></pre></div>
 <p>For efficiency, we provide the output from JAMexpanded.multi in the object JAMmain.input. The command used to generate it is:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>JAMmain.input <span class="ot">&lt;-</span> <span class="fu">JAMexpanded.multi</span>(beta,X,snpinfo,ybar,<span class="fu">diag</span>(covY),N,<span class="at">chr=</span><span class="dv">10</span>,<span class="at">fstub=</span>fstub,<span class="at">mafthr=</span><span class="fl">0.005</span>,<span class="at">path2plink=</span><span class="st">"/software/plink"</span>,<span class="at">r2=</span><span class="fl">0.99</span>,<span class="at">save.path=</span>fstubJ,<span class="at">related=</span><span class="cn">FALSE</span>,<span class="at">y=</span><span class="cn">NULL</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>JAMmain.input <span class="ot">&lt;-</span> <span class="fu">JAMexpanded.multi</span>(beta,X,snpinfo,ybar,<span class="fu">diag</span>(covY),N,<span class="at">chr=</span><span class="dv">10</span>,<span class="at">fstub=</span>fstub,<span class="at">mafthr=</span><span class="fl">0.005</span>,<span class="at">path2plink=</span><span class="st">"/software/plink"</span>,<span class="at">r2=</span><span class="fl">0.99</span>,<span class="at">save.path=</span>fstubJ,<span class="at">related=</span><span class="cn">FALSE</span>,<span class="at">y=</span><span class="cn">NULL</span>)</span></code></pre></div>
 <p>In the above command, ftsub and fstubJ are file prefixes, including file path, to save intermediate results. The related logical flag indicates whether or not there are related individuals in the sample. In the simulated data there is no relatedness, so relate=FALSE. If relatedness, then effective sample sizes need to be input for N; the built-in function Neff estimates effective sample size for each trait from the GWAS summary statistics.</p>
 <p>Flashfm is then run with the following lines:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>ss.stats <span class="ot">&lt;-</span> <span class="fu">summaryStats</span>(<span class="at">Xmat=</span><span class="cn">TRUE</span>,<span class="at">ybar.all=</span>ybar,<span class="at">main.input=</span>JAMmain.input)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>fm.multi <span class="ot">&lt;-</span> <span class="fu">flashfm</span>(JAMmain.input, <span class="at">TOdds=</span><span class="dv">1</span>,covY,ss.stats,<span class="at">cpp=</span><span class="fl">0.99</span>,<span class="at">maxmod=</span><span class="cn">NULL</span>,<span class="at">fastapprox=</span><span class="cn">FALSE</span>)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Loading required package: GUESSFM</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning: replacing previous import 'data.table::melt' by 'reshape::melt' when</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; loading 'GUESSFM'</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Attaching package: 'GUESSFM'</span></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; The following objects are masked from 'package:flashfm':</span></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     calc.maxmin, tag</span></span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Trait 1 (AD) has cpp before adjustment: 0.99</span></span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Trait 2 (AC) has cpp before adjustment: 0.99</span></span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>ss.stats <span class="ot">&lt;-</span> <span class="fu">summaryStats</span>(<span class="at">Xmat=</span><span class="cn">TRUE</span>,<span class="at">ybar.all=</span>ybar,<span class="at">main.input=</span>JAMmain.input)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>fm.multi <span class="ot">&lt;-</span> <span class="fu">flashfm</span>(JAMmain.input, <span class="at">TOdds=</span><span class="dv">1</span>,covY,ss.stats,<span class="at">cpp=</span><span class="fl">0.99</span>,<span class="at">maxmod=</span><span class="cn">NULL</span>,<span class="at">fastapprox=</span><span class="cn">FALSE</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Loading required package: GUESSFM</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning: replacing previous import 'data.table::melt' by 'reshape::melt' when</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; loading 'GUESSFM'</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Attaching package: 'GUESSFM'</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; The following objects are masked from 'package:flashfm':</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     calc.maxmin, tag</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Trait 1 (AD) has cpp before adjustment: 0.99</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Trait 2 (AC) has cpp before adjustment: 0.99</span></span></code></pre></div>
 <p>and SNP groups for both single-trait fine-mapping and flashfm are constructed by</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>snpGroups <span class="ot">&lt;-</span> <span class="fu">makeSNPgroups2</span>(JAMmain.input,fm.multi,<span class="at">is.snpmat=</span><span class="cn">TRUE</span>,<span class="at">r2.minmerge=</span><span class="fl">0.7</span>) </span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; calculating marginal SNP inclusion probabilities</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; calculating marginal SNP inclusion probabilities</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; calculating marginal SNP inclusion probabilities</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; calculating marginal SNP inclusion probabilities</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; calculating marginal SNP inclusion probabilities</span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; calculating marginal SNP inclusion probabilities</span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; SNP group sizes based on single-trait results are:</span></span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Group Size</span></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; A          1</span></span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; B          2</span></span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; C          2</span></span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; D          5</span></span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; E          3</span></span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; F          1</span></span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; G          6</span></span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; H         15</span></span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; SNP group sizes based on flashfm results are:</span></span>
-<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Group Size</span></span>
-<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; A          1</span></span>
-<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; B          2</span></span>
-<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; C          1</span></span>
-<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; D          1</span></span>
-<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; E          3</span></span>
-<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; G          6</span></span>
-<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; H          5</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>snpGroups <span class="ot">&lt;-</span> <span class="fu">makeSNPgroups2</span>(JAMmain.input,fm.multi,<span class="at">is.snpmat=</span><span class="cn">TRUE</span>,<span class="at">r2.minmerge=</span><span class="fl">0.7</span>) </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; calculating marginal SNP inclusion probabilities</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; calculating marginal SNP inclusion probabilities</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; calculating marginal SNP inclusion probabilities</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; calculating marginal SNP inclusion probabilities</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; calculating marginal SNP inclusion probabilities</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; calculating marginal SNP inclusion probabilities</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; SNP group sizes based on single-trait results are:</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Group Size</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; A          1</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; B          2</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; C          2</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; D          5</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; E          3</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; F          1</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; G          6</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; H         15</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; SNP group sizes based on flashfm results are:</span></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Group Size</span></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; A          1</span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; B          2</span></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; C          1</span></span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; D          1</span></span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; E          3</span></span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; G          6</span></span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; H          5</span></span></code></pre></div>
 <p>where the is.snpmat flag=TRUE indicates that the reference genotype matrix was provided and r2.minmerge is the minimum LD between SNPs in different groups for them to merge; r2.minmerge=0.7 means that if a SNP in 1 group has r2&gt;0.7 with a SNP in another group, these 2 groups are merged. The first list of SNP groups were based on single-trait fine-mapping and the second list is based on flashfm.</p>
 <p>The next function summarises the fine-mapping results using the SNP groups:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>mpp.pp <span class="ot">&lt;-</span> <span class="fu">PPsummarise</span>(fm.multi, snpGroups, <span class="at">minPP=</span><span class="fl">0.05</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>mpp.pp <span class="ot">&lt;-</span> <span class="fu">PPsummarise</span>(fm.multi, snpGroups, <span class="at">minPP=</span><span class="fl">0.05</span>)</span></code></pre></div>
 <p>This returns a list of 4 objects: MPP lists trait-specific PP of SNP inclusion in a model; MPPg lists trait-specific PP of SNP group inclusion in a model; PP lists trait-specific model PP; PPg lists trait-specific model PP in terms of SNP group Setting minPP=0.05 restricts output for group models to only those with PP&gt;0.05 for at least one trait.</p>
 <p>Our top group models are:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>mpp.pp<span class="sc">$</span>PPg</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $AD</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;             null        182</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; G%H   0.78639873 0.84899405</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; B%G%H 0.06359364 0.05141176</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $AC</span></span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;          null       182</span></span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; E%H 0.9929384 0.9967118</span></span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>mpp.pp<span class="sc">$</span>PPg</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $AD</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;             null        182</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; G%H   0.78639873 0.84899405</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; B%G%H 0.06359364 0.05141176</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $AC</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;          null       182</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; E%H 0.9929384 0.9967118</span></span></code></pre></div>
 <p>Let’s check if our causal variants (in cvs vector) are included in the SNP groups from single and multi-trait fine-mapping and the sizes of the SNP groups</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>flashfm<span class="sc">:::</span><span class="fu">groupIDs.fn</span>(snpGroups[[<span class="dv">1</span>]],cvs)</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "H" "G" "E"</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>flashfm<span class="sc">:::</span><span class="fu">groupIDs.fn</span>(snpGroups[[<span class="dv">2</span>]],cvs)</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "H" "G" "E"</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>snpGroups<span class="sc">$</span>group.sizes</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      A B C D E F G  H</span></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; null 1 2 2 5 3 1 6 15</span></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 182  1 2 1 1 3 0 6  5</span></span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>flashfm<span class="sc">:::</span><span class="fu">groupIDs.fn</span>(snpGroups[[<span class="dv">1</span>]],cvs)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "H" "G" "E"</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>flashfm<span class="sc">:::</span><span class="fu">groupIDs.fn</span>(snpGroups[[<span class="dv">2</span>]],cvs)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "H" "G" "E"</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>snpGroups<span class="sc">$</span>group.sizes</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      A B C D E F G  H</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; null 1 2 2 5 3 1 6 15</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 182  1 2 1 1 3 0 6  5</span></span></code></pre></div>
 <p>Notice that the groups for the causal variants that were not shared (cvs[c(2,3)]) are the same size for both methods and that for the shared variant (cvs[1]), flashfm constructs a smaller group than JAMexpanded.multi. This illustrates how sharing information between the traits can refine fine-mapping resolution.</p>
 </div>
 <div id="reference-genotype-covariance-matrix-raf-vector-and-finemap-results-for-each-trait-provided" class="section level3">
@@ -291,93 +349,93 @@
 <p>This example takes around one minute to run.</p>
 <p>Here, we use single-trait fine-mapping results from <a href="https://academic.oup.com/bioinformatics/article/32/10/1493/1743040">FINEMAP</a> and show how to prepare it for use in flashfm.</p>
 <p>The *.config files from FINEMAP are processed by the lines</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>FMconfig <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="st">"list"</span>,<span class="dv">2</span>)</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>) FMconfig[[i]] <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="fu">paste0</span>(<span class="st">"finemap"</span>,i,<span class="st">".config"</span>), <span class="at">header =</span> <span class="cn">TRUE</span>, <span class="at">as.is =</span> <span class="cn">TRUE</span>, <span class="at">sep =</span> <span class="st">" "</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>FMconfig <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="st">"list"</span>,<span class="dv">2</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>) FMconfig[[i]] <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="fu">paste0</span>(<span class="st">"finemap"</span>,i,<span class="st">".config"</span>), <span class="at">header =</span> <span class="cn">TRUE</span>, <span class="at">as.is =</span> <span class="cn">TRUE</span>, <span class="at">sep =</span> <span class="st">" "</span>)</span></code></pre></div>
 <p>and saved in the flashfm object FMconfig, which is prepared for flashfm by creating a list of the FINEMAP results for each trait:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>modPP.list <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="st">"list"</span>,<span class="dv">2</span>)</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>) {modPP.list[[i]] <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(FMconfig[[i]][,<span class="fu">c</span>(<span class="st">"config"</span>,<span class="st">"prob"</span>)]); <span class="fu">colnames</span>(modPP.list[[i]]) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"snps"</span>,<span class="st">"PP"</span>)}</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(modPP.list) <span class="ot">&lt;-</span> <span class="fu">names</span>(beta)</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(modPP.list,head)</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $AD</span></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                    snps        PP</span></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 rs12722496,rs62626317 0.0667081</span></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 rs12722495,rs62626317 0.0492379</span></span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3  rs7909519,rs62626317 0.0355550</span></span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 rs12722508,rs62626317 0.0340655</span></span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 rs12722522,rs62626317 0.0269347</span></span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 rs12722496,rs41295055 0.0189747</span></span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $AC</span></span>
-<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                    snps        PP</span></span>
-<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1  rs7909519,rs11594656 0.0882367</span></span>
-<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2  rs7909519,rs35285258 0.0757998</span></span>
-<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 rs61839660,rs11594656 0.0732223</span></span>
-<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 rs12722496,rs11594656 0.0717890</span></span>
-<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 rs12722508,rs11594656 0.0653850</span></span>
-<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 rs61839660,rs35285258 0.0629490</span></span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>modPP.list <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="st">"list"</span>,<span class="dv">2</span>)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>) {modPP.list[[i]] <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(FMconfig[[i]][,<span class="fu">c</span>(<span class="st">"config"</span>,<span class="st">"prob"</span>)]); <span class="fu">colnames</span>(modPP.list[[i]]) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"snps"</span>,<span class="st">"PP"</span>)}</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(modPP.list) <span class="ot">&lt;-</span> <span class="fu">names</span>(beta)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(modPP.list,head)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $AD</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                    snps        PP</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 rs12722496,rs62626317 0.0667081</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 rs12722495,rs62626317 0.0492379</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3  rs7909519,rs62626317 0.0355550</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 rs12722508,rs62626317 0.0340655</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 rs12722522,rs62626317 0.0269347</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 rs12722496,rs41295055 0.0189747</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $AC</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                    snps        PP</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1  rs7909519,rs11594656 0.0882367</span></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2  rs7909519,rs35285258 0.0757998</span></span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 rs61839660,rs11594656 0.0732223</span></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 rs12722496,rs11594656 0.0717890</span></span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 rs12722508,rs11594656 0.0653850</span></span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 rs61839660,rs35285258 0.0629490</span></span></code></pre></div>
 <p>We provide the covariance matrix of the genotypes from X:</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>msnps <span class="ot">&lt;-</span> <span class="fu">names</span>(raf) <span class="co"># filtered on maf 0.005</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>covX <span class="ot">=</span> <span class="fu">cov</span>(X[,msnps])</span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>msnps <span class="ot">&lt;-</span> <span class="fu">names</span>(raf) <span class="co"># filtered on maf 0.005</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>covX <span class="ot">=</span> <span class="fu">cov</span>(X[,msnps])</span></code></pre></div>
 <p>However, if the SNP correlation matrix is available, the covariance matrix may be found using the correlation matrix and reference allele frequencies in the function cor2cov. This function is from the MBESS package and has been imported to flashfm; cor2cov is authored by Ken Kelley (University of Notre Dame; () and Keke Lai (the  package), with modifications by Dustin Fife .</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>covX <span class="ot">&lt;-</span> <span class="fu">cor2cov</span>(corX,<span class="at">sd=</span><span class="fu">sqrt</span>(<span class="dv">2</span><span class="sc">*</span>raf<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>raf)))</span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>covX <span class="ot">&lt;-</span> <span class="fu">cor2cov</span>(corX,<span class="at">sd=</span><span class="fu">sqrt</span>(<span class="dv">2</span><span class="sc">*</span>raf<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>raf)))</span></code></pre></div>
 <p>N is a vector of sample sizes for traits, in same order as trait effect vectors given in beta. This can be based on data, if unrelated samples, as here. Especially for samples with related individuals, we recommend finding the effective sample size for each trait using the built-in function:</p>
 <p>Neff(raf, seB, Vy = 1),</p>
 <p>where raf is the reference allele frequency vector, seB is the vector of standard errors of the effect estimates in the same order of SNPs in raf, and Vy is the trait variance, which is 1 by default, assuming traits are transformed to normal(0,1).</p>
 <p>Similar lines to the previous example are run, but flashfm.input is needed to prepare input to flashfm, and its output has the same form as JAMexpanded.multi.</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>FMmain.input <span class="ot">&lt;-</span> <span class="fu">flashfm.input</span>(modPP.list,<span class="at">beta1.list=</span>beta,<span class="at">Gmat=</span>covX,<span class="at">Nall=</span>N,<span class="at">ybar.all=</span>ybar,<span class="at">is.snpmat=</span><span class="cn">FALSE</span>,<span class="at">raf=</span>raf)</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; calculating marginal SNP inclusion probabilities</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; calculating marginal SNP inclusion probabilities</span></span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>ss.stats <span class="ot">&lt;-</span> <span class="fu">summaryStats</span>(<span class="at">Xmat=</span><span class="cn">FALSE</span>,<span class="at">ybar.all=</span>ybar,<span class="at">main.input=</span>FMmain.input)</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>fm.multi <span class="ot">&lt;-</span> <span class="fu">flashfm</span>(FMmain.input, <span class="at">TOdds=</span><span class="dv">1</span>,covY,ss.stats,<span class="at">cpp=</span><span class="fl">0.99</span>,<span class="at">maxmod=</span><span class="cn">NULL</span>,<span class="at">fastapprox=</span><span class="cn">FALSE</span>)</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Trait 1 (AD) has cpp before adjustment: 0.99</span></span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Trait 2 (AC) has cpp before adjustment: 0.99</span></span></code></pre></div>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>snpGroups <span class="ot">&lt;-</span> <span class="fu">makeSNPgroups2</span>(FMmain.input,fm.multi,<span class="at">is.snpmat=</span><span class="cn">FALSE</span>,<span class="at">r2.minmerge=</span><span class="fl">0.6</span>)</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; calculating marginal SNP inclusion probabilities</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; calculating marginal SNP inclusion probabilities</span></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; calculating marginal SNP inclusion probabilities</span></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; calculating marginal SNP inclusion probabilities</span></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; calculating marginal SNP inclusion probabilities</span></span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; calculating marginal SNP inclusion probabilities</span></span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; SNP group sizes based on single-trait results are:</span></span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Group Size</span></span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; A          7</span></span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; B          7</span></span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; C          1</span></span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; D          2</span></span>
-<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; E          3</span></span>
-<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; F         20</span></span>
-<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; G          7</span></span>
-<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; SNP group sizes based on flashfm results are:</span></span>
-<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Group Size</span></span>
-<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; A          7</span></span>
-<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; B          7</span></span>
-<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; C          1</span></span>
-<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; D          2</span></span>
-<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; E          3</span></span>
-<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; F         11</span></span>
-<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; G          7</span></span>
-<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>mpp.pp <span class="ot">&lt;-</span> <span class="fu">PPsummarise</span>(fm.multi, snpGroups, <span class="at">minPP=</span><span class="fl">0.05</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>FMmain.input <span class="ot">&lt;-</span> <span class="fu">flashfm.input</span>(modPP.list,<span class="at">beta1.list=</span>beta,<span class="at">Gmat=</span>covX,<span class="at">Nall=</span>N,<span class="at">ybar.all=</span>ybar,<span class="at">is.snpmat=</span><span class="cn">FALSE</span>,<span class="at">raf=</span>raf)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; calculating marginal SNP inclusion probabilities</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; calculating marginal SNP inclusion probabilities</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>ss.stats <span class="ot">&lt;-</span> <span class="fu">summaryStats</span>(<span class="at">Xmat=</span><span class="cn">FALSE</span>,<span class="at">ybar.all=</span>ybar,<span class="at">main.input=</span>FMmain.input)</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>fm.multi <span class="ot">&lt;-</span> <span class="fu">flashfm</span>(FMmain.input, <span class="at">TOdds=</span><span class="dv">1</span>,covY,ss.stats,<span class="at">cpp=</span><span class="fl">0.99</span>,<span class="at">maxmod=</span><span class="cn">NULL</span>,<span class="at">fastapprox=</span><span class="cn">FALSE</span>)</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Trait 1 (AD) has cpp before adjustment: 0.99</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Trait 2 (AC) has cpp before adjustment: 0.99</span></span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>snpGroups <span class="ot">&lt;-</span> <span class="fu">makeSNPgroups2</span>(FMmain.input,fm.multi,<span class="at">is.snpmat=</span><span class="cn">FALSE</span>,<span class="at">r2.minmerge=</span><span class="fl">0.6</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; calculating marginal SNP inclusion probabilities</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; calculating marginal SNP inclusion probabilities</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; calculating marginal SNP inclusion probabilities</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; calculating marginal SNP inclusion probabilities</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; calculating marginal SNP inclusion probabilities</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; calculating marginal SNP inclusion probabilities</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; SNP group sizes based on single-trait results are:</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Group Size</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; A          7</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; B          7</span></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; C          1</span></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; D          2</span></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; E          3</span></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; F         20</span></span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; G          7</span></span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; SNP group sizes based on flashfm results are:</span></span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Group Size</span></span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; A          7</span></span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; B          7</span></span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; C          1</span></span>
+<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; D          2</span></span>
+<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; E          3</span></span>
+<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; F         11</span></span>
+<span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; G          7</span></span>
+<span id="cb23-26"><a href="#cb23-26" aria-hidden="true" tabindex="-1"></a>mpp.pp <span class="ot">&lt;-</span> <span class="fu">PPsummarise</span>(fm.multi, snpGroups, <span class="at">minPP=</span><span class="fl">0.05</span>)</span></code></pre></div>
 <p>Our top group models are:</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>mpp.pp<span class="sc">$</span>PPg</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $AD</span></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;             null        178</span></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; F%G   0.52565016 0.59025606</span></span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; D%F%G 0.13577230 0.11475159</span></span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; A%F%G 0.12812612 0.11900824</span></span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; C%F%G 0.08820581 0.07504605</span></span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $AC</span></span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;          null       178</span></span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; E%F 0.8460312 0.8790166</span></span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>mpp.pp<span class="sc">$</span>PPg</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $AD</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;             null        178</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; F%G   0.52565016 0.59025606</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; D%F%G 0.13577230 0.11475159</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; A%F%G 0.12812612 0.11900824</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; C%F%G 0.08820581 0.07504605</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $AC</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;          null       178</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; E%F 0.8460312 0.8790166</span></span></code></pre></div>
 <p>Let’s check if our causal variants (in cvs vector) are included in the SNP groups from single and multi-trait fine-mapping and the sizes of the SNP groups</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>flashfm<span class="sc">:::</span><span class="fu">groupIDs.fn</span>(snpGroups[[<span class="dv">1</span>]],cvs)</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "F" "G" "E"</span></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>flashfm<span class="sc">:::</span><span class="fu">groupIDs.fn</span>(snpGroups[[<span class="dv">2</span>]],cvs)</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "F" "G" "E"</span></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>snpGroups<span class="sc">$</span>group.sizes</span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      A B C D E  F G</span></span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; null 7 7 1 2 3 20 7</span></span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 178  7 7 1 2 3 11 7</span></span></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>flashfm<span class="sc">:::</span><span class="fu">groupIDs.fn</span>(snpGroups[[<span class="dv">1</span>]],cvs)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "F" "G" "E"</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>flashfm<span class="sc">:::</span><span class="fu">groupIDs.fn</span>(snpGroups[[<span class="dv">2</span>]],cvs)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "F" "G" "E"</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>snpGroups<span class="sc">$</span>group.sizes</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      A B C D E  F G</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; null 7 7 1 2 3 20 7</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 178  7 7 1 2 3 11 7</span></span></code></pre></div>
 <p>Notice that the groups for the causal variants that were not shared (cvs[c(2,3)]) are the same size for both methods and that for the shared variant (cvs[1]), flashfm constructs a smaller group than FINEMAP. This illustrates how sharing information between the traits can refine fine-mapping resolution.</p>
 </div>
 </div>
