@@ -112,7 +112,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Wrapper to run single-trait fine-mapping with JAMexpandedCor.multi on each trait, followed by flashfm (using fast approximation version) and then constuct SNP groups for each approach and summarises results</h1>
-    <small class="dont-index">Source: <a href='https://github.com/jennasimit/flashfm/blob/master/R/jamexpanded.corX.R'><code>R/jamexpanded.corX.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/jennasimit/flashfm/blob/master/R/JAMupdate.R'><code>R/JAMupdate.R</code></a></small>
     <div class="hidden name"><code>FLASHFMwithJAMhat.Rd</code></div>
     </div>
 
@@ -126,7 +126,6 @@
   <span class='no'>raf</span>,
   <span class='no'>ybar</span>,
   <span class='no'>N</span>,
-  <span class='kw'>r2</span> <span class='kw'>=</span> <span class='fl'>0.99</span>,
   <span class='no'>save.path</span>,
   <span class='kw'>TOdds</span> <span class='kw'>=</span> <span class='fl'>1</span>,
   <span class='no'>covY</span>,
@@ -156,10 +155,6 @@
     <tr>
       <th>N</th>
       <td><p>vector of sample sizes for each trait; recommended to give effective sample sizes using GWAS summary statistics in Neff function</p></td>
-    </tr>
-    <tr>
-      <th>r2</th>
-      <td><p>r.squared threshold for thinning SNPs before JAM and finding tag SNPs</p></td>
     </tr>
     <tr>
       <th>save.path</th>

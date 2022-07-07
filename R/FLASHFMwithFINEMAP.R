@@ -25,7 +25,7 @@ finemap <- function (GWAS, ldfile, N, fstub,FMpath)
     write.table(paste(zfile, ldfile, snpfile, confile, crfile, 
         logfile, N, sep = ";"), file = mfile, quote = FALSE, 
         col.names = FALSE, row.names = FALSE, append = TRUE)
-    fline <- paste0(FMpath, " --sss --log --n-configs-top 1000 --n-causal-snps 5 --in-files ", 
+    fline <- paste0(FMpath, " --sss --log --n-configs-top 1000 --n-causal-snps 10 --in-files ", 
         mfile)
     system(fline)
     fmresults <- read.table(confile, header = TRUE, as.is = TRUE, 
