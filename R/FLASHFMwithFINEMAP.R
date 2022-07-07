@@ -84,7 +84,7 @@ FLASHFMwithFINEMAP <- function(gwas.list, corX, raf, ybar, N, fstub, TOdds = 1,
 	 
 	FMmain.input <- flashfm.input(fm,beta1.list=beta,Gmat=covX,Nall=N,ybar.all=ybar,is.snpmat=FALSE,raf=raf)
 	ss.stats <- summaryStats(Xmat=FALSE,ybar.all=ybar,main.input=FMmain.input)
-	fm.multi <- flashfm(FMmain.input, TOdds=TOdds,covY,ss.stats,cpp=cpp,maxmod=NULL,fastapprox=FALSE)
+	fm.multi <- flashfm(FMmain.input, TOdds=TOdds,covY,ss.stats,cpp=cpp,maxmod=NULL,fastapprox=FALSE,NCORES)
 	snpGroups <- makeSNPgroups2(FMmain.input,fm.multi,is.snpmat=FALSE,r2.minmerge=0.6)
 	mpp.pp <- PPsummarise(fm.multi, snpGroups, minPP=0)
 
