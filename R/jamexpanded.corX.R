@@ -186,9 +186,12 @@ JAMexpandedCor.multi <- function(beta1, corX, raf, ybar, Vy, N, r2 = 0.99, save.
             mafs.ref <- maf[colnames(refG)]
             jam.results <- R2BGLiMS::JAM(marginal.betas = BETA, 
                 trait.variance = Vy[j], cor.ref = refG, mafs.ref=mafs.ref, model.space.priors = list(a = 1, 
-                  b = length(BETA), Variables = names(BETA)), 
+                  b = length(BETA), Variables = names(BETA)),  max.model.dim = 10,
                 n = N[j], xtx.ridge.term = 0.01, save.path = save.path)        
         topmods <- R2BGLiMS::TopModels(jam.results, n.top.models = 1000)
+ 	if (is.null(ncol(topmods))) {
+            stop("A single model of 10 variants was selected with PP=1. This may mean no convergence because a causal variant is missing from the data and it has no tags in your data.")
+        }
         binout <- as.matrix(topmods[, -ncol(topmods)])
         colnames(binout) <- colnames(topmods)[-ncol(topmods)]
         snpmods <- apply(binout, 1, mod.fn)

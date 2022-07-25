@@ -109,7 +109,7 @@ JAMexpandedCor.multi2 <- function (beta1, corX, raf, ybar, Vy, N, r2 = 0.99, sav
         jam.results <- R2BGLiMS::JAM(marginal.betas = BETA, trait.variance=Vy[j],
             cor.ref = refG, mafs.ref = mafs.ref, model.space.priors = list(a = 1, 
                 b = length(BETA), Variables = names(BETA)), n = N[j], max.model.dim =10,
-            xtx.ridge.term = 0.001, save.path = save.path)
+            xtx.ridge.term = 0.01, save.path = save.path)
              
         topmods <- R2BGLiMS::TopModels(jam.results, n.top.models = 1000)
  if(is.null(ncol(topmods))) {
