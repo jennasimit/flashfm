@@ -13,15 +13,25 @@ SMlist <- main.input$SM
 #} else {Xmat <- as.matrix(snp.data) } 
 Xmat <- as.matrix(snp.data)
 sg <- groupmulti(SMlist,Xmat,is.snpmat,min.mppi,minsnpmppi=.001,r2.minmerge)
+
+if(length(sg) > 1){ 
 snpgroups <- sg$groups@.Data
 ng <- length(snpgroups)
 names(snpgroups) <- LETTERS[1:ng] # arbitrary names
-if(ng>26) names(snpgroups)[27:min(ng,52)] <- paste0(LETTERS[1:(ng-26)],2)
-if(ng>52) names(snpgroups)[53:min(ng,78)] <- paste0(LETTERS[1:(ng-52)],3)
-if(ng>78) names(snpgroups)[79:min(ng,104)] <- paste0(LETTERS[1:(ng-78)],4)
+if(ng>26) names(snpgroups)[27:min(ng,52)] <- paste0(LETTERS[1:min(26,ng-26)],2)
+if(ng>52) {
+ names(snpgroups)[27:min(ng,52)] <- paste0(LETTERS[1:min(26,ng-26)],2) 
+ names(snpgroups)[53:min(ng,78)] <- paste0(LETTERS[1:min(26,ng-52)],3)
+} 
+if(ng>78) {
+ names(snpgroups)[27:min(ng,52)] <- paste0(LETTERS[1:min(26,ng-26)],2) 
+ names(snpgroups)[53:min(ng,78)] <- paste0(LETTERS[1:min(26,ng-52)],3)
+ names(snpgroups)[79:min(ng,104)] <- paste0(LETTERS[1:min(26,ng-78)],4)
+}
 Ng <- lapply(snpgroups,length)
 sgd <- t(data.frame(Ng)); colnames(sgd) <- "Group Size"
 message("SNP group sizes are: "); print(sgd)
+} else { snpgroups <- sg} 
 return(snpgroups)
 }
 
@@ -37,22 +47,40 @@ return(snpgroups)
 #' @export
 makeSNPgroups2 <- function(main.input,fm.multi,is.snpmat,min.mppi = 0.01,minsnpmppi=0.001,r2.minmerge=0.5) {
 snp.data <- main.input$Gmat
-
-SMlist <- main.input$SM
+M <- length(fm.multi$PP) 
+#SMlist <- main.input$SM
 #if(is.snpmat) { Xmat <- new("SnpMatrix",round(snp.data+1)) 
 #} else {Xmat <- as.matrix(snp.data) } 
+SMlist <- vector("list",M)
+fmpp  <- fm.multi$PP
+for(i in 1:M) {
+ ppdf <- data.frame(str=as.character(rownames(fmpp[[i]])),PP=fmpp[[i]][,1], stringsAsFactors = FALSE)
+ SMlist[[i]] <- PP2snpmod(ppdf)
+ } 
 Xmat <- as.matrix(snp.data)
 sg <- groupmulti(SMlist,Xmat,is.snpmat,min.mppi,minsnpmppi,r2.minmerge)
+if(length(sg) > 1){ 
 snpgroups <- sg$groups@.Data
 ng <- length(snpgroups)
 names(snpgroups) <- LETTERS[1:ng] # arbitrary names
-if(ng>26) names(snpgroups)[27:min(ng,52)] <- paste0(LETTERS[1:(ng-26)],2)
-if(ng>52) names(snpgroups)[53:min(ng,78)] <- paste0(LETTERS[1:(ng-52)],3)
-if(ng>78) names(snpgroups)[79:min(ng,104)] <- paste0(LETTERS[1:(ng-78)],4)
+if(ng>26) names(snpgroups)[27:min(ng,52)] <- paste0(LETTERS[1:min(26,ng-26)],2)
+if(ng>52) {
+ names(snpgroups)[27:min(ng,52)] <- paste0(LETTERS[1:min(26,ng-26)],2) 
+ names(snpgroups)[53:min(ng,78)] <- paste0(LETTERS[1:min(26,ng-52)],3)
+ }
+if(ng>78) {
+ names(snpgroups)[27:min(ng,52)] <- paste0(LETTERS[1:min(26,ng-26)],2) 
+ names(snpgroups)[53:min(ng,78)] <- paste0(LETTERS[1:min(26,ng-52)],3) 
+ names(snpgroups)[79:min(ng,104)] <- paste0(LETTERS[1:min(26,ng-78)],4)
+}
 Ng <- lapply(snpgroups,length)
 #sgd <- t(data.frame(Ng)); colnames(sgd) <- "Group Size"
 #message("SNP group sizes based on single-trait results are: "); print(sgd)
-
+} else {
+ snpgroups <- sg
+ ng <- 1
+ } 
+ 
 fmpp  <- fm.multi$PP
 M <- length(fmpp)
 SM2list <- vector("list",M)
@@ -61,15 +89,28 @@ for(i in 1:M) {
  SM2list[[i]] <- PP2snpmod(ppdf)
  }
 sg2 <- groupmulti(SM2list,Xmat,is.snpmat,min.mppi,minsnpmppi,r2.minmerge)
+if(length(sg2) > 1){ 
 snpgroups2 <- sg2$groups@.Data
 ng2 <- length(snpgroups2)
 names(snpgroups2) <- LETTERS[1:ng2] # arbitrary names
-if(ng2>26) names(snpgroups)[27:min(ng2,52)] <- paste0(LETTERS[1:(ng2-26)],2)
-if(ng2>52) names(snpgroups)[53:min(ng2,78)] <- paste0(LETTERS[1:(ng2-52)],3)
-if(ng2>78) names(snpgroups)[79:min(ng2,104)] <- paste0(LETTERS[1:(ng2-78)],4)
+if(ng2>26) names(snpgroups2)[27:min(ng2,52)] <- paste0(LETTERS[1:min(26,ng2-26)],2)
+if(ng2>52) {
+ names(snpgroups2)[27:min(ng2,52)] <- paste0(LETTERS[1:min(26,ng2-26)],2) 
+ names(snpgroups2)[53:min(ng2,78)] <- paste0(LETTERS[1:min(26,ng2-52)],3)
+ }
+if(ng2>78) {
+ names(snpgroups2)[27:min(ng2,52)] <- paste0(LETTERS[1:min(26,ng2-26)],2) 
+ names(snpgroups2)[53:min(ng2,78)] <- paste0(LETTERS[1:min(26,ng2-52)],3) 
+ names(snpgroups2)[79:min(ng2,104)] <- paste0(LETTERS[1:min(26,ng2-78)],4)
+ }
+ 
 Ng2 <- lapply(snpgroups2,length)
 #sgd2 <- t(data.frame(Ng2)); colnames(sgd2) <- "Group Size"
 #message("SNP group sizes based on flashfm results are: "); print(sgd2)
+} else {
+ snpgroups2 <- sg2
+ ng2 <- 1
+ } 
 
 wh <- NULL
 for(i in 1:ng) {
@@ -190,8 +231,23 @@ groupmulti <- function (SM2, snp.data, is.snpmat, min.mppi = 0.01, minsnpmppi=0.
 
     snps <- setdiff(unique(bs[bs$Marg_Prob_Incl > minsnpmppi, ]$var), 
         "1")
-    
-    if(is.snpmat) {
+
+ if(length(snps) == 1) {
+      snpGroups <- list(A=snps)
+      out <- snpGroups
+     }
+     if(length(snps) == 0) {
+      minsnpmppi = 0
+      min.mppi = 0
+      snps <- setdiff(unique(bs[bs$Marg_Prob_Incl > minsnpmppi, ]$var), "1")
+     }
+     if(length(snps) == 1) {
+      snpGroups <- list(A=snps)
+      out <- snpGroups
+     }
+
+   if(length(snps) > 1) {     
+   if(is.snpmat) {
     	snp.data <- snp.data[, snps]
 		r2 <- cor(snp.data)^2
 		} else { 
@@ -286,7 +342,7 @@ groupmulti <- function (SM2, snp.data, is.snpmat, min.mppi = 0.01, minsnpmppi=0.
         ret <- list(ret)
     ret <- LinearizeNestedList(ret)
     ret.mppi <- t(sapply(ret, mem.sum))
-    use <- apply(ret.mppi, 1, max) > 0.001
+    use <- apply(ret.mppi, 1, max) > minsnpmppi
     df <- sapply(ret, mem.summ)
     df <- t(df)
     union.summary <- df[use, , drop = FALSE]
@@ -330,8 +386,12 @@ groupmulti <- function (SM2, snp.data, is.snpmat, min.mppi = 0.01, minsnpmppi=0.
     tmp <- G[[2]]
     names(tmp) <- sapply(tmp, "[[", 1)
     newgroups <- new("groups", tmp, tags = names(tmp))
-    return(list(summary = G[[1]], groups = newgroups, r2 = r2))
+    
+    out <- list(summary = G[[1]], groups = newgroups, r2 = r2)
+	}
+	return(out)
 }
+
 
 ##
 

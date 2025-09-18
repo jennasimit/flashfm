@@ -6,6 +6,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // odds_no_sharing
 double odds_no_sharing(const double kappa, const NumericVector p, const int ndis);
 RcppExport SEXP _flashfm_odds_no_sharing(SEXP kappaSEXP, SEXP pSEXP, SEXP ndisSEXP) {

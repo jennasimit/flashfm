@@ -4,7 +4,9 @@
 \name{raf}
 \alias{raf}
 \title{Vector of RAFs from the simulated genotype matrix X used to generate two traits}
-\format{An object of class \code{numeric} of length 328.}
+\format{
+An object of class \code{numeric} of length 328.
+}
 \usage{
 raf
 }

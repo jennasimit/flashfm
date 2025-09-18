@@ -4,7 +4,9 @@
 \name{gwas.list}
 \alias{gwas.list}
 \title{List of GWAS data.frames for each of the two simulated traits; format of z files of FINEMAP}
-\format{An object of class \code{list} of length 2.}
+\format{
+An object of class \code{list} of length 2.
+}
 \usage{
 gwas.list
 }

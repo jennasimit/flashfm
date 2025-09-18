@@ -4,7 +4,9 @@
 \name{snpinfo}
 \alias{snpinfo}
 \title{Details of SNPs from the simulated genotype matrix X used to generate two traits}
-\format{An object of class \code{data.frame} with 336 rows and 4 columns.}
+\format{
+An object of class \code{data.frame} with 336 rows and 4 columns.
+}
 \usage{
 snpinfo
 }

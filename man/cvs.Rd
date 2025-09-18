@@ -4,7 +4,9 @@
 \name{cvs}
 \alias{cvs}
 \title{Vector of rsids for causal variants of two simulated traits}
-\format{An object of class \code{character} of length 3.}
+\format{
+An object of class \code{character} of length 3.
+}
 \usage{
 cvs
 }

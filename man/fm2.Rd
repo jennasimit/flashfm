@@ -4,7 +4,9 @@
 \name{fm2}
 \alias{fm2}
 \title{Output from FLASHFMwithFINEMAP for two simulated traits}
-\format{An object of class \code{list} of length 2.}
+\format{
+An object of class \code{list} of length 2.
+}
 \usage{
 fm2
 }

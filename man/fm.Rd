@@ -4,7 +4,9 @@
 \name{fm}
 \alias{fm}
 \title{Output from running FLASHFMwithJAM on the simulated dataset in this package}
-\format{An object of class \code{list} of length 2.}
+\format{
+An object of class \code{list} of length 2.
+}
 \usage{
 fm
 }

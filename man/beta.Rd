@@ -4,7 +4,9 @@
 \name{beta}
 \alias{beta}
 \title{List of vectors of single-SNP effects (GWAS) for two simulated traits}
-\format{An object of class \code{list} of length 2.}
+\format{
+An object of class \code{list} of length 2.
+}
 \usage{
 beta
 }

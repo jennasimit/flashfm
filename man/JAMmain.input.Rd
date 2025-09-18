@@ -4,7 +4,9 @@
 \name{JAMmain.input}
 \alias{JAMmain.input}
 \title{Output from JAMexpanded.multi for two simulated traits}
-\format{An object of class \code{list} of length 7.}
+\format{
+An object of class \code{list} of length 7.
+}
 \usage{
 JAMmain.input
 }

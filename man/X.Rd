@@ -4,7 +4,9 @@
 \name{X}
 \alias{X}
 \title{Simulated genotype matrix used to generate two traits}
-\format{An object of class \code{matrix} with 2000 rows and 334 columns.}
+\format{
+An object of class \code{matrix} (inherits from \code{array}) with 2000 rows and 334 columns.
+}
 \usage{
 X
 }

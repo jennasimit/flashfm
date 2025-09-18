@@ -4,7 +4,9 @@
 \name{N}
 \alias{N}
 \title{Vector of samples sizes for two simulated traits}
-\format{An object of class \code{numeric} of length 2.}
+\format{
+An object of class \code{numeric} of length 2.
+}
 \usage{
 N
 }

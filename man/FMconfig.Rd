@@ -4,7 +4,9 @@
 \name{FMconfig}
 \alias{FMconfig}
 \title{List of FINEMAP config file contents for two simulated traits}
-\format{An object of class \code{list} of length 2.}
+\format{
+An object of class \code{list} of length 2.
+}
 \usage{
 FMconfig
 }
